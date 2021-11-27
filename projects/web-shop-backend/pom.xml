@@ -8,19 +8,20 @@
 		<version>2.6.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>web.shop</groupId>
 	<artifactId>web-shop-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>web-shop-backend</name>
 	<description>Web shop spring boot project </description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-data-jdbc</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -49,11 +50,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.session</groupId>-->
+<!--			<artifactId>spring-session-jdbc</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-jdbc</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
 		</dependency>
-
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -73,6 +79,29 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>3.4.0</version>
 		</dependency>
 	</dependencies>
 
