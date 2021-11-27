@@ -19,6 +19,13 @@ public class User {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    //**
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private WebShop webShop;
+
+    @OneToOne(mappedBy = "user")
+    private ShoppingCard shoppingCard;
+
     public User() {
     }
 
