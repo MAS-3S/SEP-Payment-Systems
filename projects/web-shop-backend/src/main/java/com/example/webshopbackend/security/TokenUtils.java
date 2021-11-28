@@ -17,11 +17,14 @@ public class TokenUtils {
     @Value("webshop")
     private String APP_NAME;
 
-    @Value("some-secret")
+    @Value("${TOKENSECRET}")
     public String SECRET;
 
     @Value("60000")
     private int EXPIRES_IN;
+
+    @Value("3600000")
+    private int REFRESH_EXPIRES_IN;
 
     @Value("Authorization")
     private String AUTH_HEADER;
@@ -51,14 +54,19 @@ public class TokenUtils {
         return new Date(new Date().getTime() + EXPIRES_IN);
     }
 
-    public String refreshToken(String token) {
+    private Date generateExpirationDateForRefresh() {
+        return new Date(new Date().getTime() + REFRESH_EXPIRES_IN);
+    }
+
+    public String refreshToken(String token, String userId) {
         String refreshedToken;
         try {
             final Claims claims = this.getAllClaimsFromToken(token);
             claims.setIssuedAt(new Date());
             refreshedToken = Jwts.builder()
                     .setClaims(claims)
-                    .setExpiration(generateExpirationDate())
+                    .setSubject(userId)
+                    .setExpiration(generateExpirationDateForRefresh())
                     .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
         } catch (Exception e) {
             refreshedToken = null;

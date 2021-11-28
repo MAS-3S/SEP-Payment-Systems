@@ -4,15 +4,18 @@ public class UserTokenState {
 
     private String accessToken;
     private Long expiresIn;
+    private String refreshToken;
 
     public UserTokenState() {
         this.accessToken = null;
         this.expiresIn = null;
+        this.refreshToken = null;
     }
 
-    public UserTokenState(String accessToken, long expiresIn) {
+    public UserTokenState(String accessToken, long expiresIn, String refreshToken) {
         this.accessToken = accessToken;
         this.expiresIn = expiresIn;
+        this.refreshToken = refreshToken;
     }
 
     public String getAccessToken() {
@@ -31,4 +34,11 @@ public class UserTokenState {
         this.expiresIn = expiresIn;
     }
 
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
