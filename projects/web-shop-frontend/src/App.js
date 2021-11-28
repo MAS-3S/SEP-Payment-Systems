@@ -13,9 +13,15 @@ import { PublicRoute } from "./components/routing/PublicRoute";
 import NotFound from "./pages/NotFound";
 import LoginContainer from "./containers/LoginContainer";
 import RegistrationContainer from "./containers/RegistrationContainer";
-import HomePageContainer from "./containers/HomePageContainer";
+import LayoutPageNotFound from "./components/routing/LayoutPageNotFound";
 
 const publicRoutes = [
+  {
+    key: "webshop-unauthenticated-users/:name",
+    path: "/webshop-unauthenticated-users/:name",
+    component: LoginContainer,
+    exact: true,
+  },
   {
     key: "login",
     path: "/login",
@@ -32,9 +38,9 @@ const publicRoutes = [
 
 const privateRoutes = [
   {
-    key: "home-page",
-    path: "/home-page",
-    component: HomePageContainer,
+    key: "webshop-authenticated-users/:name",
+    path: "/webshop-authenticated-users/:name",
+    component: RegistrationContainer,
     exact: false,
   },
 ];
@@ -43,18 +49,15 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Redirect exact from="/" to="/login" />
-        <Route exact path={["/home-page"]}>
-          <LayoutAuthenticated>
-            <Switch>
-              {privateRoutes.map((privateRouteProps) => (
-                <PrivateRoute {...privateRouteProps} />
-              ))}
-            </Switch>
-          </LayoutAuthenticated>
-        </Route>
-
-        <Route exact path={["/login", "/registration"]}>
+        <Redirect exact from="/" to="/webshop-unauthenticated-users/name" />
+        <Route
+          exact
+          path={[
+            "/webshop-unauthenticated-users/:name",
+            "/login",
+            "/registration",
+          ]}
+        >
           <LayoutAnonymous>
             <Switch>
               {publicRoutes.map((publicRouteProps) => (
@@ -64,12 +67,22 @@ function App() {
           </LayoutAnonymous>
         </Route>
 
+        <Route exact path={["/webshop-authenticated-users/:name"]}>
+          <LayoutAuthenticated>
+            <Switch>
+              {privateRoutes.map((privateRouteProps) => (
+                <PrivateRoute {...privateRouteProps} />
+              ))}
+            </Switch>
+          </LayoutAuthenticated>
+        </Route>
+
         <Route path="*">
-          <LayoutAnonymous>
+          <LayoutPageNotFound>
             <Switch>
               <Route component={NotFound} />
             </Switch>
-          </LayoutAnonymous>
+          </LayoutPageNotFound>
         </Route>
       </Switch>
     </Router>
