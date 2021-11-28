@@ -9,11 +9,11 @@ import java.util.Date;
 @Table(name="conferences")
 public class Conference extends Product {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", updatable = false, nullable = false)
-    private String id;
+//    @Id
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @Column(name = "id", updatable = false, nullable = false)
+//    private String id;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -31,15 +31,6 @@ public class Conference extends Product {
     private Boolean isSubscription;
 
     public Conference() {
-    }
-
-    public String getId() {
-
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAddress() {

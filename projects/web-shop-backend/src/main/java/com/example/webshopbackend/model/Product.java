@@ -26,7 +26,7 @@ public class Product {
     private Double price;
 
     @Column(name = "available_balance", nullable = false)
-    private String availableBalance;
+    private int availableBalance;
 
     @Column(name = "image", nullable = false)
     private String image;
@@ -76,11 +76,11 @@ public class Product {
         this.price = price;
     }
 
-    public String getAvailableBalance() {
+    public int getAvailableBalance() {
         return availableBalance;
     }
 
-    public void setAvailableBalance(String availableBalance) {
+    public void setAvailableBalance(int availableBalance) {
         this.availableBalance = availableBalance;
     }
 
