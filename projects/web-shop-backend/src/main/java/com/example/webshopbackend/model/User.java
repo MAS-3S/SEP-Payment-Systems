@@ -38,6 +38,13 @@ public class User implements UserDetails {
     private List<Authority> authorities;
 
 
+    //**
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private WebShop webShop;
+
+    @OneToOne(mappedBy = "user")
+    private ShoppingCard shoppingCard;
+
     public User() {
     }
 
