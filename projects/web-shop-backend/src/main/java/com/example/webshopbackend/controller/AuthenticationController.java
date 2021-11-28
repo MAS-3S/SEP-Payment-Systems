@@ -28,7 +28,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
-
     @Autowired
     private TokenUtils tokenUtils;
 
@@ -46,7 +45,7 @@ public class AuthenticationController {
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
                                                        HttpServletResponse response) {
         AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
-        log.info("Signing up user with email: " + authenticationRequest.getEmail());
+//        log.info("Signing up user with email: " + authenticationRequest.getEmail());
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
                         authenticationRequest.getPassword()));
@@ -68,7 +67,7 @@ public class AuthenticationController {
     @PostMapping("/refreshToken")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) {
 
-        log.info("Getting new access token");
+//        log.info("Getting new access token");
         String authHeader = request.getHeader(AUTHORIZATION);
         if(authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
@@ -76,7 +75,7 @@ public class AuthenticationController {
                 String id = this.tokenUtils.getUsernameFromToken(refreshToken);
                 User user = userRepository.findById(id);
                 if (user == null) {
-                    log.error("Using access token instead of refresh token");
+//                    log.error("Using access token instead of refresh token");
                     return new ResponseEntity<>("Use refresh token for creating new access token!", HttpStatus.UNAUTHORIZED);
                 }
                 String accessToken = tokenUtils.generateToken(user.getEmail());
@@ -90,7 +89,7 @@ public class AuthenticationController {
             }
 
         } else {
-            log.error("Missing refresh token");
+//            log.error("Missing refresh token");
             return new ResponseEntity<>("Missing refresh token", HttpStatus.BAD_REQUEST);
         }
 
