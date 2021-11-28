@@ -9,11 +9,11 @@ import java.util.Date;
 @Table(name="accommodations")
 public class Accommodation extends Product {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", updatable = false, nullable = false)
-    private String id;
+//    @Id
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @Column(name = "id", updatable = false, nullable = false)
+//    private String id;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -32,14 +32,6 @@ public class Accommodation extends Product {
     private Transport transport;
 
     public Accommodation() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAddress() {
