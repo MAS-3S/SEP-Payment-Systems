@@ -1,4 +1,4 @@
-.loginContainer {
+.registrationContainer {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
@@ -6,33 +6,33 @@
   overflow: hidden;
   width: 768px;
   max-width: 100%;
-  min-height: 480px;
+  min-height: 540px;
 }
 
-.form-loginContainer {
+.form-registrationContainer {
   position: absolute;
   top: 0;
   height: 100%;
   transition: all 0.6s ease-in-out;
 }
 
-.sign-in-loginContainer {
+.sign-in-registrationContainer {
   left: 0;
   width: 50%;
   z-index: 1;
 }
 
-.loginContainer.right-panel-active .sign-in-loginContainer {
+.registrationContainer.right-panel-active .sign-in-registrationContainer {
   transform: translateX(100%);
 }
 
-.sign-up-loginContainer {
+.sign-up-registrationContainer {
   left: 0;
   width: 50%;
   z-index: 1;
 }
 
-.loginContainer.right-panel-active .sign-up-loginContainer {
+.registrationContainer.right-panel-active .sign-up-registrationContainer {
   transform: translateX(100%);
   opacity: 1;
   z-index: 5;
@@ -53,7 +53,7 @@
   }
 }
 
-.loginOverlay-loginContainer {
+.registrationOverlay-registrationContainer {
   position: absolute;
   top: 0;
   left: 50%;
@@ -64,11 +64,12 @@
   z-index: 100;
 }
 
-.loginContainer.right-panel-active .loginOverlay-loginContainer {
+.registrationContainer.right-panel-active
+  .registrationOverlay-registrationContainer {
   transform: translateX(-100%);
 }
 
-.loginOverlay {
+.registrationOverlay {
   background: #ff416c;
   background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
   background: linear-gradient(to right, #ff4b2b, #ff416c);
@@ -84,11 +85,11 @@
   transition: transform 0.6s ease-in-out;
 }
 
-.loginContainer.right-panel-active .loginOverlay {
+.registrationContainer.right-panel-active .registrationOverlay {
   transform: translateX(50%);
 }
 
-.loginOverlay-panel {
+.registrationOverlay-panel {
   position: absolute;
   display: flex;
   align-items: center;
@@ -103,28 +104,27 @@
   transition: transform 0.6s ease-in-out;
 }
 
-.loginOverlay-left {
-  transform: translateX(-20%);
+.registrationOverlay-left {
+  transform: translateX(100%);
 }
 
-.loginContainer.right-panel-active .loginOverlay-left {
+.registrationContainer.right-panel-active .registrationOverlay-left {
   transform: translateX(0);
 }
 
-.loginOverlay-right {
-  right: 0;
+.registrationOverlay-right {
   transform: translateX(0);
 }
 
-.loginContainer.right-panel-active .loginOverlay-right {
+.registrationContainer.right-panel-active .registrationOverlay-right {
   transform: translateX(20%);
 }
 
-.social-loginContainer {
+.social-registrationContainer {
   margin: 20px 0;
 }
 
-.social-loginContainer a {
+.social-registrationContainer a {
   border: 1px solid #dddddd;
   border-radius: 50%;
   display: inline-flex;
@@ -163,7 +163,7 @@
   transition: transform 80ms ease-in;
 }
 
-.signInButton {
+.signUpButton {
   border-radius: 20px;
   border: 1px solid #ff4b2b;
   background: #ff416c;
@@ -178,20 +178,20 @@
   transition: transform 80ms ease-in;
 }
 
-.signInButton:active {
+.signUpButton:active {
   transform: scale(0.95);
 }
 
-.signInButton:focus {
+.signUpButton:focus {
   outline: none;
 }
 
-.signInButton.ghost {
+.signUpButton.ghost {
   background-color: transparent;
   border-color: #ffffff;
 }
 
-.signInButtonDisabled {
+.signUpButtonDisabled {
   border-radius: 20px;
   border: 1px solid #999999;
   background-color: #acb2bd;

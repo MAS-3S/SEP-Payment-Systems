@@ -1,11 +1,27 @@
-import React, { Component } from "react";
+import React from "react";
 
-export default class LayoutAuthenticated extends Component {
-  render() {
-    return (
-      <div className="container">
-        <div className="wrapper">{this.props.children}</div>
-      </div>
-    );
-  }
+const MainLayoutRoot = {
+  position: "fixed",
+  height: "100%",
+  width: "100%",
+  overflow: "hidden",
+};
+
+const MainLayoutContent = {
+  display: "flex",
+  flex: "auto",
+  height: "100%",
+  overflow: "auto",
+  marginTop: 25,
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+export default function LayoutAuthenticated(props) {
+  return (
+    <div style={MainLayoutRoot}>
+      {/* <AuthenticatedUsersNavbar /> */}
+      <div style={MainLayoutContent}>{props.children}</div>
+    </div>
+  );
 }

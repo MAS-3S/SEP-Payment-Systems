@@ -1,7 +1,28 @@
-import React, { Component } from "react";
+import React from "react";
+import UnauthenticatedUsersNavbar from "../navbar/UnauthenticatedUsersNavbar";
 
-export default class LayoutAnonymous extends Component {
-  render() {
-    return <div>{this.props.children}</div>;
-  }
+const MainLayoutRoot = {
+  position: "fixed",
+  height: "100%",
+  width: "100%",
+  overflow: "hidden",
+};
+
+const MainLayoutContent = {
+  display: "flex",
+  flex: "auto",
+  height: "100%",
+  overflow: "auto",
+  marginTop: 25,
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+export default function LayoutAnonymous(props) {
+  return (
+    <div style={MainLayoutRoot}>
+      <UnauthenticatedUsersNavbar />
+      <div style={MainLayoutContent}>{props.children}</div>
+    </div>
+  );
 }
