@@ -6,7 +6,6 @@ import com.example.webshopbackend.repository.UserRepository;
 import com.example.webshopbackend.security.TokenUtils;
 import com.example.webshopbackend.security.UserTokenState;
 import com.example.webshopbackend.security.auth.JwtAuthenticationRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@Slf4j
+
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
@@ -62,7 +61,7 @@ public class AuthenticationController {
         String jwt = tokenUtils.generateToken(account.getEmail());
         String refresh = tokenUtils.refreshToken(jwt, account.getId());
         int expiresIn = tokenUtils.getExpiredIn();
-        authenticatedUserDTO = new AuthenticatedUserDTO(account.getId(), account.getEmail(), account.getRole(), new UserTokenState(jwt, expiresIn, refresh));
+        authenticatedUserDTO = new AuthenticatedUserDTO(account.getId(), account.getEmail(), account.getRole().toString(), new UserTokenState(jwt, expiresIn, refresh));
 
         return new ResponseEntity<>(authenticatedUserDTO, HttpStatus.OK);
     }
@@ -85,7 +84,7 @@ public class AuthenticationController {
                 String accessToken = tokenUtils.generateToken(user.getEmail());
                 int expiresIn = tokenUtils.getExpiredIn();
 
-                AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO(user.getId(), user.getEmail(), user.getRole(), new UserTokenState(accessToken, expiresIn, refreshToken));
+                AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO(user.getId(), user.getEmail(), user.getRole().toString(), new UserTokenState(accessToken, expiresIn, refreshToken));
                 return new ResponseEntity<>(authenticatedUserDTO, HttpStatus.OK);
 
             } catch (Exception exception) {

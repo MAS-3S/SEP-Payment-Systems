@@ -1,5 +1,7 @@
 package com.example.webshopbackend.model;
 
+import com.example.webshopbackend.model.enums.Role;
+import lombok.Builder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
@@ -17,27 +19,17 @@ public class User implements UserDetails {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", updatable = false, nullable = false)
     private String id;
-
-    @Column(name = "username", nullable = false)
-    private String username;
-
     @Column(name = "password", nullable = false)
     private String password;
-
     @Column(name = "full_name", nullable = false)
     private String fullName;
-
     @Column(name = "email", nullable = false)
     private String email;
-
     @Column(name = "address", nullable = false)
     private String address;
-
     @Column(name = "phone", nullable = false)
     private String phone;
-
-    @Column(insertable = false, updatable = false)
-    private String role;
+    private Role role;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "user_authority",
@@ -45,6 +37,10 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Authority> authorities;
+    @Column(name = "verification_code")
+    private String verificationCode;
+    @Column(name = "registered")
+    private boolean isRegistered;
 
 
     //**
@@ -82,9 +78,6 @@ public class User implements UserDetails {
         this.fullName = fullName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getEmail() {
         return email;
@@ -143,12 +136,27 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public boolean isRegistered() {
+        return isRegistered;
+    }
+
+    public void setRegistered(boolean registered) {
+        isRegistered = registered;
+    }
 }
