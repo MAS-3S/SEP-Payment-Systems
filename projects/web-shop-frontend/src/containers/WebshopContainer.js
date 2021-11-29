@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router";
-import WebshopUnauthenticated from "../pages/WebshopUnauthenticated";
+import Webshop from "../pages/Webshop";
 
 const webshops = [
   {
@@ -10,7 +10,7 @@ const webshops = [
   { id: 2, name: "Tehnomanija" },
 ];
 
-export default function WebshopUnauthenticatedContainer(props) {
+export default function WebshopContainer(props) {
   const [sholudRedirect, setSholudRedirect] = useState(false);
   const [activeWebshop, setActiveWebshop] = useState({});
 
@@ -43,6 +43,6 @@ export default function WebshopUnauthenticatedContainer(props) {
       }}
     />
   ) : (
-    <WebshopUnauthenticated activeWebshop={activeWebshop} />
+    <Webshop activeWebshop={activeWebshop} />
   );
 }
