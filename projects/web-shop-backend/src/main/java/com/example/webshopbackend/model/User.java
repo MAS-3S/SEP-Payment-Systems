@@ -110,8 +110,6 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
-
-
     public String getPassword() {
         return password;
     }

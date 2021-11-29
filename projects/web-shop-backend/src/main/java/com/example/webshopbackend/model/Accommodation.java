@@ -31,6 +31,10 @@ public class Accommodation extends Product {
     @JoinColumn(name = "transport_id", referencedColumnName = "id")
     private Transport transport;
 
+    //**
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private WebShop webShop;
+
     public Accommodation() {
     }
 
@@ -72,5 +76,15 @@ public class Accommodation extends Product {
 
     public void setTransport(Transport transport) {
         this.transport = transport;
+    }
+
+    @Override
+    public WebShop getWebShop() {
+        return webShop;
+    }
+
+    @Override
+    public void setWebShop(WebShop webShop) {
+        this.webShop = webShop;
     }
 }

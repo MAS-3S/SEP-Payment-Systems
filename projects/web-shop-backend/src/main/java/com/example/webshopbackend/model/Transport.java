@@ -1,10 +1,9 @@
 package com.example.webshopbackend.model;
 
+import com.example.webshopbackend.model.enums.Currency;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Currency;
-import java.util.List;
 
 @Entity
 @Table(name="transports")
@@ -63,5 +62,13 @@ public class Transport {
 
     public void setAccommodation(Accommodation accommodation) {
         this.accommodation = accommodation;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 }
