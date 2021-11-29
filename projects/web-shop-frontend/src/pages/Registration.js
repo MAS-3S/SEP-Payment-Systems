@@ -29,7 +29,6 @@ const MyTextField = withStyles({
 })(TextField);
 
 const SignUpSchema = Yup.object({
-  username: Yup.string().required("Username is required"),
   email: Yup.string()
     .email("Invalid email")
     .max(255)
@@ -60,15 +59,8 @@ const SignUpSchema = Yup.object({
 });
 
 export default function Registration() {
-  const handleRegistration = (
-    username,
-    email,
-    fullName,
-    phone,
-    address,
-    password
-  ) => {
-    console.log(username, email, fullName, phone, address, password);
+  const handleRegistration = (email, fullName, phone, address, password) => {
+    console.log(email, fullName, phone, address, password);
   };
 
   return (
@@ -99,19 +91,6 @@ export default function Registration() {
           }) => (
             <form onSubmit={handleSubmit}>
               <h1>Create Account</h1>
-              <MyTextField
-                error={Boolean(touched.username && errors.username)}
-                fullWidth
-                size="small"
-                helperText={touched.username && errors.username}
-                label="Username"
-                margin="normal"
-                name="username"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.username}
-                variant="outlined"
-              />
               <MyTextField
                 error={Boolean(touched.email && errors.email)}
                 fullWidth

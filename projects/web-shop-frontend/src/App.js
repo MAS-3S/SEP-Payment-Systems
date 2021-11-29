@@ -14,12 +14,21 @@ import NotFound from "./pages/NotFound";
 import LoginContainer from "./containers/LoginContainer";
 import RegistrationContainer from "./containers/RegistrationContainer";
 import LayoutPageNotFound from "./components/routing/LayoutPageNotFound";
+import WebshopUnauthenticatedContainer from "./containers/WebshopUnauthenticatedContainer";
+
+const webshops = [
+  {
+    id: 1,
+    name: "Gigatron",
+  },
+  { id: 2, name: "Tehnomanija" },
+];
 
 const publicRoutes = [
   {
-    key: "webshop-unauthenticated-users/:name",
-    path: "/webshop-unauthenticated-users/:name",
-    component: LoginContainer,
+    key: "webshop-unauthenticated/:webshop",
+    path: "/webshop-unauthenticated/:webshop",
+    component: WebshopUnauthenticatedContainer,
     exact: true,
   },
   {
@@ -38,8 +47,8 @@ const publicRoutes = [
 
 const privateRoutes = [
   {
-    key: "webshop-authenticated-users/:name",
-    path: "/webshop-authenticated-users/:name",
+    key: "webshop-authenticated/:webshop",
+    path: "/webshop-authenticated/:webshop",
     component: RegistrationContainer,
     exact: false,
   },
@@ -49,11 +58,17 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Redirect exact from="/" to="/webshop-unauthenticated-users/name" />
+        <Redirect
+          exact
+          from="/"
+          to={{
+            pathname: `/webshop-unauthenticated/${webshops[0].name.toLowerCase()}`,
+          }}
+        />
         <Route
           exact
           path={[
-            "/webshop-unauthenticated-users/:name",
+            "/webshop-unauthenticated/:webshop",
             "/login",
             "/registration",
           ]}
@@ -67,7 +82,7 @@ function App() {
           </LayoutAnonymous>
         </Route>
 
-        <Route exact path={["/webshop-authenticated-users/:name"]}>
+        <Route exact path={["/webshop-authenticated/:webshop"]}>
           <LayoutAuthenticated>
             <Switch>
               {privateRoutes.map((privateRouteProps) => (

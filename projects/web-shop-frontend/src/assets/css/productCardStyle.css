@@ -1,0 +1,190 @@
+#productCardContainer {
+  box-shadow: 0 15px 30px 1px grey;
+  background: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  margin: 4em;
+  height: 350px;
+  width: 700px;
+}
+
+.productCard-details {
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+  padding: 30px;
+  height: 100%;
+  float: left;
+  width: 55%;
+}
+
+#productCardContainer .productCard-details h1 {
+  font-family: "Bebas Neue", cursive;
+  display: inline-block;
+  position: relative;
+  font-size: 30px;
+  color: #344055;
+  margin: 0;
+}
+
+#productCardContainer .productCard-details h1:before {
+  position: absolute;
+  content: "";
+  right: 0%;
+  top: 0%;
+  transform: translate(25px, -15px);
+  font-family: "Bree Serif", serif;
+  display: inline-block;
+  background: #ffe6e6;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 5px;
+  color: white;
+  margin: 0;
+  animation: chan-sh 6s ease infinite;
+}
+
+.hint-star {
+  display: inline-block;
+  margin-left: 0.5em;
+  color: gold;
+  width: 50%;
+}
+
+#productCardContainer .productCard-details > p {
+  font-family: "EB Garamond", serif;
+  text-align: center;
+  font-size: 18px;
+  color: #7d7d7d;
+}
+
+.productCardInformation {
+  height: 65%;
+}
+
+.productCardControl {
+  position: absolute;
+  bottom: 5%;
+  left: 25.5%;
+}
+.productCardBtn {
+  transform: translateY(0px);
+  transition: 0.3s linear;
+  background: #ff688a;
+  background: -webkit-linear-gradient(to right, #ff7d66, #ff7c99);
+  background: linear-gradient(to right, #ff7d66, #ff7c99);
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  color: #eee;
+  padding: 0;
+  margin: 0;
+}
+
+.productCardBtn:hover {
+  transform: translateY(-6px);
+  background: #ff688a;
+  background: -webkit-linear-gradient(to right, #ff4b2b, #ff688a);
+  background: linear-gradient(to right, #ff4b2b, #ff688a);
+}
+
+.productCardBtn span {
+  font-family: "Farsan", cursive;
+  transition: transform 0.3s;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  margin: 0;
+}
+.productCardBtn .productCardPrice,
+.productCardShopping-cart {
+  background: #424e66;
+  border: 0;
+  margin: 0;
+}
+
+.productCardBtn .productCardPrice {
+  transform: translateX(-10%);
+  padding-right: 15px;
+}
+
+.productCardBtn .productCardShopping-cart {
+  transform: translateX(-100%);
+  position: absolute;
+  background: #424e66;
+  z-index: 1;
+  left: 0;
+  top: 0;
+}
+
+.productCardBtn .productCardBuy {
+  z-index: 3;
+  font-weight: bolder;
+}
+
+.productCardBtn:hover .productCardPrice {
+  transform: translateX(-110%);
+}
+
+.productCardBtn:hover .productCardShopping-cart {
+  transform: translateX(0%);
+}
+
+.product-image {
+  transition: all 0.3s ease-out;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  float: right;
+  width: 45%;
+  display: inline-block;
+}
+
+#productCardContainer img {
+  width: 100%;
+  height: 100%;
+}
+
+.productCardInfo {
+  background: rgba(66, 78, 102, 0.9);
+  font-family: "Bree Serif", serif;
+  transition: all 0.3s ease-out;
+  transform: translateX(-100%);
+  position: absolute;
+  line-height: 1.8;
+  text-align: left;
+  font-size: 105%;
+  cursor: no-drop;
+  color: #fff;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+}
+
+.productCardInfo h2 {
+  text-align: center;
+}
+.product-image:hover .productCardInfo {
+  transform: translateX(0);
+}
+
+.productCardInfo ul li {
+  transition: 0.3s ease;
+}
+.productCardInfo ul li:hover {
+  transform: translateX(50px) scale(1.3);
+}
+
+.product-image:hover img {
+  transition: all 0.3s ease-out;
+}
+.product-image:hover img {
+  transform: scale(1.2, 1.2);
+}
