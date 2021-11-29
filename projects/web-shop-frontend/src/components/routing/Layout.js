@@ -1,4 +1,5 @@
 import React from "react";
+import Navbar from "../navbar/Navbar";
 
 const MainLayoutRoot = {
   height: "100%",
@@ -12,15 +13,15 @@ const MainLayoutContent = {
   height: "100%",
   width: "100%",
   overflow: "auto",
-  marginTop: 60,
+  marginTop: 65,
   justifyContent: "center",
   alignItems: "center",
 };
 
-export default function LayoutAuthenticated(props) {
+export default function Layout(props) {
   return (
     <div style={MainLayoutRoot}>
-      {/* <AuthenticatedUsersNavbar /> */}
+      <Navbar />
       <div style={MainLayoutContent}>{props.children}</div>
     </div>
   );

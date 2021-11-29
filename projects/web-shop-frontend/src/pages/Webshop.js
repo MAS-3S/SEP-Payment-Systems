@@ -34,7 +34,7 @@ const products = [
   },
 ];
 
-export default function WebshopUnauthenticated(props) {
+export default function Webshop(props) {
   const [activeWebshop, setActiveWebshop] = useState(props.activeWebshop);
 
   useEffect(() => {
