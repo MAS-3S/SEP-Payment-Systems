@@ -1,5 +1,6 @@
 package com.example.webshopbackend.model;
 
+import com.example.webshopbackend.model.enums.Currency;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

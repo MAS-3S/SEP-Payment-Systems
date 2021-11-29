@@ -5,6 +5,7 @@ import com.example.webshopbackend.security.UserTokenState;
 import javax.persistence.Id;
 
 public class AuthenticatedUserDTO {
+
     @Id
     private String id;
     private String email;

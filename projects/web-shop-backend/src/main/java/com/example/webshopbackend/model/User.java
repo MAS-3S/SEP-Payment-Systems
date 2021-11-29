@@ -5,14 +5,10 @@ import lombok.Builder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name="users")
@@ -23,13 +19,18 @@ public class User implements UserDetails {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", updatable = false, nullable = false)
     private String id;
+    @Column(name = "password", nullable = false)
+    private String password;
     @Column(name = "full_name", nullable = false)
     private String fullName;
-    private String password;
+    @Column(name = "email", nullable = false)
     private String email;
+    @Column(name = "address", nullable = false)
     private String address;
+    @Column(name = "phone", nullable = false)
     private String phone;
     private Role role;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "user_authority",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),

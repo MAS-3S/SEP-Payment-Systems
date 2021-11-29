@@ -3,6 +3,7 @@ package com.example.webshopbackend.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Currency;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,9 @@ public class Transport {
 
     @Column(name = "price", nullable = false)
     private Double price;
+
+    @Column(name = "currency", nullable = false)
+    private Currency currency;
 
     //**
     @OneToOne(mappedBy = "transport")
