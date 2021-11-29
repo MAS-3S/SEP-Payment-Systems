@@ -6,7 +6,8 @@ import com.example.webshopbackend.repository.UserRepository;
 import com.example.webshopbackend.security.TokenUtils;
 import com.example.webshopbackend.security.UserTokenState;
 import com.example.webshopbackend.security.auth.JwtAuthenticationRequest;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,10 +24,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@Slf4j
+
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
+
+    protected final Log log = LogFactory.getLog(getClass());
 
     @Autowired
     private TokenUtils tokenUtils;
@@ -45,7 +48,7 @@ public class AuthenticationController {
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
                                                        HttpServletResponse response) {
         AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
-//        log.info("Signing up user with email: " + authenticationRequest.getEmail());
+        log.info("Signing up user with email: " + authenticationRequest.getEmail());
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
                         authenticationRequest.getPassword()));
@@ -58,7 +61,7 @@ public class AuthenticationController {
         String jwt = tokenUtils.generateToken(account.getEmail());
         String refresh = tokenUtils.refreshToken(jwt, account.getId());
         int expiresIn = tokenUtils.getExpiredIn();
-        authenticatedUserDTO = new AuthenticatedUserDTO(account.getId(), account.getEmail(), account.getRole(), new UserTokenState(jwt, expiresIn, refresh));
+        authenticatedUserDTO = new AuthenticatedUserDTO(account.getId(), account.getEmail(), account.getRole().toString(), new UserTokenState(jwt, expiresIn, refresh));
 
         return new ResponseEntity<>(authenticatedUserDTO, HttpStatus.OK);
     }
@@ -67,7 +70,7 @@ public class AuthenticationController {
     @PostMapping("/refreshToken")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) {
 
-//        log.info("Getting new access token");
+        log.info("Getting new access token");
         String authHeader = request.getHeader(AUTHORIZATION);
         if(authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
@@ -75,13 +78,13 @@ public class AuthenticationController {
                 String id = this.tokenUtils.getUsernameFromToken(refreshToken);
                 User user = userRepository.findById(id);
                 if (user == null) {
-//                    log.error("Using access token instead of refresh token");
+                    log.error("Using access token instead of refresh token");
                     return new ResponseEntity<>("Use refresh token for creating new access token!", HttpStatus.UNAUTHORIZED);
                 }
                 String accessToken = tokenUtils.generateToken(user.getEmail());
                 int expiresIn = tokenUtils.getExpiredIn();
 
-                AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO(user.getId(), user.getEmail(), user.getRole(), new UserTokenState(accessToken, expiresIn, refreshToken));
+                AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO(user.getId(), user.getEmail(), user.getRole().toString(), new UserTokenState(accessToken, expiresIn, refreshToken));
                 return new ResponseEntity<>(authenticatedUserDTO, HttpStatus.OK);
 
             } catch (Exception exception) {
@@ -89,7 +92,7 @@ public class AuthenticationController {
             }
 
         } else {
-//            log.error("Missing refresh token");
+            log.error("Missing refresh token");
             return new ResponseEntity<>("Missing refresh token", HttpStatus.BAD_REQUEST);
         }
 
