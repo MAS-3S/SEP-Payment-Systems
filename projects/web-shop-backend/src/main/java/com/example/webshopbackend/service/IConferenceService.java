@@ -5,5 +5,5 @@ import com.example.webshopbackend.model.Conference;
 import java.util.List;
 
 public interface IConferenceService {
-    public List<Conference> findAllByWebShopId(String id);
+    List<Conference> findAllByWebShopId(String id);
 }

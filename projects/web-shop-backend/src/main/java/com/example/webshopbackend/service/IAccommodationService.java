@@ -5,5 +5,5 @@ import com.example.webshopbackend.model.Accommodation;
 import java.util.List;
 
 public interface IAccommodationService {
-    public List<Accommodation> findAllByWebShopId(String id);
+    List<Accommodation> findAllByWebShopId(String id);
 }
