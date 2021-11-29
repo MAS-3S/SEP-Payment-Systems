@@ -1,8 +1,9 @@
 package com.example.webshopbackend.dto;
 
+import javax.persistence.Column;
 import java.util.Date;
 
-public class AccommodationDto {
+public class ConferenceDto {
 
     private String name;
     private String description;
@@ -11,13 +12,12 @@ public class AccommodationDto {
     private int availableBalance;
     private String currency;
     private String address;
-    private Date startDate;
-    private int days;
-    private int numberOfBeds;
-    private String transportName;
-    private Double transportPrice;
+    private Date startTime;
+    private Date endTime;
+    private Boolean isCourse;
+    private Boolean isSubscription;
 
-    public AccommodationDto() {
+    public ConferenceDto() {
     }
 
     public String getName() {
@@ -76,43 +76,35 @@ public class AccommodationDto {
         this.address = address;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public int getDays() {
-        return days;
+    public Date getEndTime() {
+        return endTime;
     }
 
-    public void setDays(int days) {
-        this.days = days;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
-    public int getNumberOfBeds() {
-        return numberOfBeds;
+    public Boolean getCourse() {
+        return isCourse;
     }
 
-    public void setNumberOfBeds(int numberOfBeds) {
-        this.numberOfBeds = numberOfBeds;
+    public void setCourse(Boolean course) {
+        isCourse = course;
     }
 
-    public String getTransportName() {
-        return transportName;
+    public Boolean getSubscription() {
+        return isSubscription;
     }
 
-    public void setTransportName(String transportName) {
-        this.transportName = transportName;
-    }
-
-    public Double getTransportPrice() {
-        return transportPrice;
-    }
-
-    public void setTransportPrice(Double transportPrice) {
-        this.transportPrice = transportPrice;
+    public void setSubscription(Boolean subscription) {
+        isSubscription = subscription;
     }
 }

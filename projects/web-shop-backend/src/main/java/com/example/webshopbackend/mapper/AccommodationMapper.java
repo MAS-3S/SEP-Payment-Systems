@@ -2,6 +2,7 @@ package com.example.webshopbackend.mapper;
 
 import com.example.webshopbackend.dto.AccommodationDto;
 import com.example.webshopbackend.model.Accommodation;
+import com.example.webshopbackend.model.enums.Currency;
 
 public class AccommodationMapper {
 
@@ -13,10 +14,15 @@ public class AccommodationMapper {
         dto.setImage(accommodation.getImage());
         dto.setPrice(accommodation.getPrice());
         dto.setAvailableBalance(accommodation.getAvailableBalance());
+        if(accommodation.getCurrency().equals(Currency.RSD)) {
+            dto.setCurrency("RSD");
+        } else if (accommodation.getCurrency().equals(Currency.EUR)) {
+            dto.setCurrency("EUR");
+        }
         dto.setAddress(accommodation.getAddress());
         dto.setStartDate(accommodation.getStartDate());
         dto.setDays(accommodation.getDays());
-        dto.setNumberOfBads(accommodation.getNumberOfBeds());
+        dto.setNumberOfBeds(accommodation.getNumberOfBeds());
         dto.setTransportName(accommodation.getTransport().getName());
         dto.setTransportPrice(accommodation.getTransport().getPrice());
 

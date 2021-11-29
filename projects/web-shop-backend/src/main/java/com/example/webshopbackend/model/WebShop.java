@@ -1,5 +1,6 @@
 package com.example.webshopbackend.model;
 
+import com.example.webshopbackend.model.enums.WebShopType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,11 +19,20 @@ public class WebShop {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "type", nullable = false)
+    private WebShopType type;
+
     @OneToMany(mappedBy = "webShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<User> users;
 
     @OneToMany(mappedBy = "webShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Product> products;
+
+    @OneToMany(mappedBy = "webShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Conference> conferences;
+
+    @OneToMany(mappedBy = "webShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Accommodation> accommodations;
 
     //**
     @OneToOne(mappedBy = "webShop")
@@ -69,5 +79,29 @@ public class WebShop {
 
     public void setShoppingCard(ShoppingCard shoppingCard) {
         this.shoppingCard = shoppingCard;
+    }
+
+    public WebShopType getType() {
+        return type;
+    }
+
+    public void setType(WebShopType type) {
+        this.type = type;
+    }
+
+    public List<Conference> getConferences() {
+        return conferences;
+    }
+
+    public void setConferences(List<Conference> conferences) {
+        this.conferences = conferences;
+    }
+
+    public List<Accommodation> getAccommodations() {
+        return accommodations;
+    }
+
+    public void setAccommodations(List<Accommodation> accommodations) {
+        this.accommodations = accommodations;
     }
 }
