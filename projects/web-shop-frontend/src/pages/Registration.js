@@ -89,7 +89,7 @@ export default function Registration() {
             handleChange,
             handleSubmit,
           }) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="myForm">
               <h1>Create Account</h1>
               <MyTextField
                 error={Boolean(touched.email && errors.email)}
@@ -207,7 +207,11 @@ export default function Registration() {
             <p>
               To keep connected with us please login with your personal info
             </p>
-            <Link to="/login" className="signIn">
+            <Link
+              style={{ textDecoration: "none", color: "white" }}
+              to="/login"
+              className="signIn"
+            >
               Sign In
             </Link>
           </div>

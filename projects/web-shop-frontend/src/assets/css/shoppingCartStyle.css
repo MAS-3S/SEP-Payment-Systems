@@ -1,0 +1,213 @@
+.titleShoppingCart {
+  margin-bottom: 5vh;
+}
+
+.shoppingCartCard {
+  border: transparent;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  position: absolute;
+  overflow: hidden;
+  width: 950px;
+  max-width: 950px;
+  height: 600px;
+  margin-top: 680px;
+}
+
+@media (max-width: 767px) {
+  .shoppingCartCard {
+    margin: 3vh auto;
+  }
+}
+
+.cart {
+  background-color: #fff;
+  padding: 4vh 5vh;
+  border-bottom-left-radius: 1rem;
+  border-top-left-radius: 1rem;
+}
+
+@media (max-width: 767px) {
+  .cart {
+    padding: 4vh;
+    border-bottom-left-radius: unset;
+    border-top-right-radius: 1rem;
+  }
+}
+
+.summaryShoppingCart {
+  background-color: #ddd;
+  padding: 4vh;
+  color: rgb(65, 65, 65);
+}
+
+@media (max-width: 767px) {
+  .summaryShoppingCart {
+    border-top-right-radius: unset;
+    border-bottom-left-radius: 1rem;
+  }
+}
+
+.summaryShoppingCart .col-2 {
+  padding: 0;
+}
+
+.summaryShoppingCart .col-10 {
+  padding: 0;
+}
+
+.row {
+  margin: 0;
+}
+
+.titleShoppingCart b {
+  font-size: 1.5rem;
+}
+
+.mainShoppingCart {
+  margin: 0;
+  padding: 2vh 0;
+  width: 100%;
+}
+
+.col-2,
+.col {
+  padding: 0 1vh;
+}
+
+.closeShoppingCart {
+  margin-left: auto;
+  font-size: 0.7rem;
+  width: 20px;
+}
+
+img {
+  width: 3.5rem;
+}
+
+.back-to-shop {
+  margin-top: 3.5rem;
+}
+
+.h5ShoppingCart {
+  margin-top: 4vh;
+}
+
+.hrShoppingCart {
+  margin-top: 1.25rem;
+}
+
+.formShoppingCart {
+  padding: 2vh 0;
+}
+
+.selectShoppingCart {
+  border: 1px solid rgba(0, 0, 0, 0.137);
+  padding: 1.5vh 1vh;
+  margin-bottom: 4vh;
+  outline: none;
+  width: 100%;
+  background-color: rgb(247, 247, 247);
+}
+
+.inputShoppingCart {
+  border: 1px solid rgba(0, 0, 0, 0.137);
+  padding: 1vh;
+  margin-bottom: 4vh;
+  outline: none;
+  width: 100%;
+  background-color: rgb(247, 247, 247);
+}
+
+.inputShoppingCart:focus::-webkit-input-placeholder {
+  color: transparent;
+}
+
+.btnShoppingCart {
+  background-color: #000;
+  border-color: #000;
+  color: white;
+  width: 100%;
+  font-size: 0.7rem;
+  margin-top: 4vh;
+  padding: 1vh;
+  border-radius: 0;
+}
+
+.btnShoppingCart:focus {
+  box-shadow: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+  -webkit-box-shadow: none;
+  -webkit-user-select: none;
+  transition: none;
+}
+
+.btnShoppingCart:hover {
+  color: white;
+}
+
+.aShoppingCart {
+  color: black;
+  padding: 0 1vh;
+}
+
+.aShoppingCart:hover {
+  color: black;
+  text-decoration: none;
+}
+
+#code {
+  background-image: linear-gradient(
+      to left,
+      rgba(255, 255, 255, 0.253),
+      rgba(255, 255, 255, 0.185)
+    ),
+    url("https://img.icons8.com/small/16/000000/long-arrow-right.png");
+  background-repeat: no-repeat;
+  background-position-x: 95%;
+  background-position-y: center;
+}
+
+.shoppingCartScroll {
+  position: relative;
+  top: 0;
+  height: 380px;
+  transition: all 0.6s ease-in-out;
+  overflow-y: auto;
+}
+
+.checkoutButton {
+  height: 45px;
+  position: relative;
+  border-radius: 10px;
+  border: 1px solid #424e66;
+  background: #424e66;
+  background: -webkit-linear-gradient(to right, #424e66, #576276);
+  background: linear-gradient(to right, #424e66, #576276);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 50px;
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in;
+  white-space: nowrap;
+  margin-top: 315px;
+  margin-left: 30px;
+}
+
+.checkoutButton:active {
+  transform: scale(0.95);
+}
+
+.checkoutButton:focus {
+  outline: none;
+}
+
+.checkoutButton.ghost {
+  background-color: transparent;
+  border-color: #ffffff;
+}
