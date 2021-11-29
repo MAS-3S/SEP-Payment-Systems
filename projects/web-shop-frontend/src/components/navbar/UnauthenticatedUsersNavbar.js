@@ -10,6 +10,14 @@ import StorefrontOutlinedIcon from "@material-ui/icons/StorefrontOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
 
+const webshops = [
+  {
+    id: 1,
+    name: "Gigatron",
+  },
+  { id: 2, name: "Tehnomanija" },
+];
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
@@ -32,11 +40,15 @@ const useStyles = makeStyles((theme) => ({
   buttonMargin: {
     marginLeft: "12px",
   },
+  toolbar: {
+    height: "60px",
+  },
 }));
 
 export default function UnauthenticatedUsersNavbar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [activeWebshop, setActiveWebshop] = useState(webshops[0]);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -48,11 +60,54 @@ export default function UnauthenticatedUsersNavbar() {
     setAnchorEl(null);
   };
 
+  const changeWebshop = (webshop) => {
+    setAnchorEl(null);
+    setActiveWebshop(webshop);
+  };
+
   const navigateToHome = () => {};
+
+  const webShopItems =
+    webshops.length > 1 ? (
+      webshops.map((webshop) => {
+        if (webshop.name !== activeWebshop.name) {
+          return (
+            <Link
+              to={{
+                pathname: `/webshop-unauthenticated/${webshop.name.toLowerCase()}`,
+              }}
+            >
+              <MenuItem
+                style={{
+                  width: 150,
+                  height: 40,
+                  justifyContent: "flex-start",
+                }}
+                onClick={() => changeWebshop(webshop)}
+              >
+                {webshop.name}
+              </MenuItem>
+            </Link>
+          );
+        }
+        return null;
+      })
+    ) : (
+      <MenuItem
+        style={{
+          width: 165,
+          height: 40,
+          justifyContent: "flex-start",
+        }}
+        disabled={true}
+      >
+        There is no more
+      </MenuItem>
+    );
 
   const renderMenu = (
     <Menu
-      style={{ marginTop: 48 }}
+      style={{ marginTop: 42 }}
       anchorEl={anchorEl}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
       keepMounted
@@ -60,15 +115,7 @@ export default function UnauthenticatedUsersNavbar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem
-        style={{
-          width: 150,
-          justifyContent: "flex-start",
-        }}
-        onClick={handleMenuClose}
-      >
-        WinWin
-      </MenuItem>
+      {webShopItems}
     </Menu>
   );
 
@@ -81,17 +128,20 @@ export default function UnauthenticatedUsersNavbar() {
           background: "#6c7588",
         }}
       >
-        <Toolbar>
-          <IconButton
-            onClick={navigateToHome}
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <StorefrontOutlinedIcon onClick={navigateToHome} />
-          </IconButton>
-
+        <Toolbar className={classes.toolbar}>
+          <Link to="/">
+            <IconButton
+              onClick={navigateToHome}
+              edge="start"
+              className={classes.menuButton}
+              aria-label="open drawer"
+            >
+              <StorefrontOutlinedIcon
+                onClick={navigateToHome}
+                style={{ color: "white" }}
+              />
+            </IconButton>
+          </Link>
           <IconButton
             onClick={handleProfileMenuOpen}
             edge="start"
@@ -101,7 +151,7 @@ export default function UnauthenticatedUsersNavbar() {
             style={{ width: 150, justifyContent: "flex-start" }}
           >
             <Typography className={classes.title} variant="h6">
-              Gigatron
+              {activeWebshop.name}
             </Typography>
             <ExpandMoreIcon
               style={{ marginLeft: 3 }}
