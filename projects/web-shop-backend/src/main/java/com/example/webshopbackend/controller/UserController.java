@@ -1,27 +1,86 @@
 package com.example.webshopbackend.controller;
 
+import com.example.webshopbackend.dto.UserRegistrationDTO;
 import com.example.webshopbackend.model.User;
-import com.example.webshopbackend.service.UserService;
+import com.example.webshopbackend.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "api/users")
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
-    @GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> findAllUsers() {
-        List<User> users = userService.findAll();
+    @PostMapping(value = "/register", consumes =  MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> registerCustomer(@Valid @RequestBody UserRegistrationDTO dto, HttpServletRequest request) throws Exception {
 
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        userService.registerNewCustomer(dto, getSiteURL(request));
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+
+    @GetMapping(value = "/verify")
+    public ResponseEntity<?> verifyCustomer(@RequestParam("code") String verificationCode) {
+
+        try {
+            boolean res = userService.verifyCustomer(verificationCode);
+            if (!res) {
+                return new ResponseEntity<>("User already verified or doesn't exists", HttpStatus.BAD_REQUEST);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
+    }
+
+
+
+    //za prikaz gresaka, izmeniti posle
+    @ResponseBody
+    @ControllerAdvice
+    public class GlobalControllerAdvice {
+
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+            Map<String, String> errors = new HashMap<>();
+            ex.getBindingResult().getAllErrors().forEach((error) -> {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+                errors.put(fieldName, errorMessage);
+            });
+            return errors;
+        }
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public @ResponseBody
+    Exception handleException(Exception e) {
+        return new Exception(e);
     }
 }
+

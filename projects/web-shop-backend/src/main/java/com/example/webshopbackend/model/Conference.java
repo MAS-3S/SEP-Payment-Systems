@@ -30,6 +30,10 @@ public class Conference extends Product {
     @Column(name = "is_subscription", nullable = false)
     private Boolean isSubscription;
 
+    //**
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private WebShop webShop;
+
     public Conference() {
     }
 
@@ -71,5 +75,15 @@ public class Conference extends Product {
 
     public void setSubscription(Boolean subscription) {
         isSubscription = subscription;
+    }
+
+    @Override
+    public WebShop getWebShop() {
+        return webShop;
+    }
+
+    @Override
+    public void setWebShop(WebShop webShop) {
+        this.webShop = webShop;
     }
 }
