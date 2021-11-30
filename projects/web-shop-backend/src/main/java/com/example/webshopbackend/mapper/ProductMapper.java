@@ -9,6 +9,7 @@ public class ProductMapper {
     public static ProductDto convertToDto(Product product) {
         ProductDto dto = new ProductDto();
 
+        dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setImage(product.getImage());

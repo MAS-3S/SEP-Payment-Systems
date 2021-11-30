@@ -9,6 +9,7 @@ public class ConferenceMapper {
     public static ConferenceDto convertToDto(Conference conference) {
         ConferenceDto dto = new ConferenceDto();
 
+        dto.setId(conference.getId());
         dto.setName(conference.getName());
         dto.setDescription(conference.getDescription());
         dto.setImage(conference.getImage());

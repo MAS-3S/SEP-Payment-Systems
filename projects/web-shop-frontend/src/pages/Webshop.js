@@ -1,38 +1,7 @@
 import React, { useEffect, useState } from "react";
+import AccommodationCard from "../components/cards/AccommodationCard";
+import ConferenceCard from "../components/cards/ConferenceCard";
 import ProductCard from "../components/cards/ProductCard";
-
-const products = [
-  {
-    id: 1,
-    name: "Gaming mouse 1",
-    description:
-      "For the majority of games and gamers, the DeathAdder V2 is a fantastic mouse. Its design is simple, with two perfectly placed, generously sized thumb buttons. It also has an excellent optical mouse sensor that will work on both hard and cloth pads, and it has the ultimate body shape for a claw or hybrid claw/palm grip. ",
-    price: 100,
-    availableBalance: 10,
-    image: "",
-    currency: "€",
-  },
-  {
-    id: 2,
-    name: "Gaming mouse 2",
-    description:
-      "For the majority of games and gamers, the DeathAdder V2 is a fantastic mouse. Its design is simple, with two perfectly placed, generously sized thumb buttons. It also has an excellent optical mouse sensor that will work on both hard and cloth pads, and it has the ultimate body shape for a claw or hybrid claw/palm grip. ",
-    price: 111,
-    availableBalance: 20,
-    image: "",
-    currency: "€",
-  },
-  {
-    id: 3,
-    name: "Gaming mouse 3",
-    description:
-      "For the majority of games and gamers, the DeathAdder V2 is a fantastic mouse. Its design is simple, with two perfectly placed, generously sized thumb buttons. It also has an excellent optical mouse sensor that will work on both hard and cloth pads, and it has the ultimate body shape for a claw or hybrid claw/palm grip. ",
-    price: 99,
-    availableBalance: 15,
-    image: "",
-    currency: "€",
-  },
-];
 
 export default function Webshop(props) {
   const [activeWebshop, setActiveWebshop] = useState(props.activeWebshop);
@@ -41,13 +10,33 @@ export default function Webshop(props) {
     setActiveWebshop(props.activeWebshop);
   }, [props.activeWebshop]);
 
-  const productsList = Array.apply(null, { length: products.length }).map(
-    (_, i) => <ProductCard key={i} product={products[i]} />
+  const productsList = Array.apply(null, { length: props.products.length }).map(
+    (_, i) => <ProductCard key={i} product={props.products[i]} />
   );
 
-  return activeWebshop.id === 1 ? (
-    <div>{productsList}</div>
-  ) : (
-    <div>WebshopUnauthenticated 2</div>
-  );
+  const conferencesList = Array.apply(null, {
+    length: props.conferences.length,
+  }).map((_, i) => (
+    <ConferenceCard key={i} conference={props.conferences[i]} />
+  ));
+
+  const accommodationsList = Array.apply(null, {
+    length: props.accommodations.length,
+  }).map((_, i) => (
+    <AccommodationCard key={i} accommodation={props.accommodations[i]} />
+  ));
+
+  const items = (() => {
+    if (activeWebshop.type === "PRODUCT") {
+      return <div>{productsList}</div>;
+    } else if (activeWebshop.type === "CONFERENCE") {
+      return <div>{conferencesList}</div>;
+    } else if (activeWebshop.type === "ACCOMMODATION") {
+      return <div>{accommodationsList}</div>;
+    } else {
+      return <div>WebshopUnauthenticated 2</div>;
+    }
+  })();
+
+  return <div>{items}</div>;
 }
