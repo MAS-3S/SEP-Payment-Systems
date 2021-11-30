@@ -68,7 +68,7 @@ export default function Login() {
             handleChange,
             handleSubmit,
           }) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="myForm">
               <h1>Sign in</h1>
               <MyTextField
                 error={Boolean(touched.email && errors.email)}
@@ -117,7 +117,11 @@ export default function Login() {
           <div className="loginOverlay-panel loginOverlay-right">
             <h1>Hello, Friend!</h1>
             <p>Enter your personal details and start journey with us</p>
-            <Link to="/registration" className="signUp">
+            <Link
+              style={{ textDecoration: "none", color: "white" }}
+              to="/registration"
+              className="signUp"
+            >
               Sign Up
             </Link>
           </div>

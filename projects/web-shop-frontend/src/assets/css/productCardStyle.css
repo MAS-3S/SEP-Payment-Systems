@@ -170,6 +170,7 @@
 
 .productCardInfo h2 {
   text-align: center;
+  margin-top: 20px;
 }
 .product-image:hover .productCardInfo {
   transform: translateX(0);

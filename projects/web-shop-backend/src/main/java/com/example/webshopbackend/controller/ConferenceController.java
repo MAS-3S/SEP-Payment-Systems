@@ -26,8 +26,8 @@ public class ConferenceController {
     @GetMapping(value="/webshop/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ConferenceDto>> findAllConferences(@PathVariable String id) {
         List<ConferenceDto> result = new ArrayList<>();
-        List<Conference> conferences = conferenceService.findAllByWebShopId("999c0c7c-aff3-41df-957d-d0677d43007b");
-
+        List<Conference> conferences = conferenceService.findAllByWebShopId(id);
+//        "999c0c7c-aff3-41df-957d-d0677d43007b"
         if(conferences.isEmpty()) {
             return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
         }

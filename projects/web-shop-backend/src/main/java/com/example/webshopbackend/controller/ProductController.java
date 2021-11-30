@@ -30,8 +30,8 @@ public class ProductController {
     @GetMapping(value="/webshop/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ProductDto>> findAllProducts(@PathVariable String id) {
         List<ProductDto> result = new ArrayList<>();
-        List<Product> products = productService.findAllByWebShopId("902a1e99-87e9-43b1-8927-9fbd4c2d9ca8");
-
+        List<Product> products = productService.findAllByWebShopId(id);
+//        "902a1e99-87e9-43b1-8927-9fbd4c2d9ca8"
         if(products.isEmpty()) {
             return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
         }

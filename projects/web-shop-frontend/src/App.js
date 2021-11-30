@@ -6,29 +6,31 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import LayoutAuthenticated from "./components/routing/LayoutAuthenticated";
-import LayoutAnonymous from "./components/routing/LayoutAnonymous";
+import Layout from "./components/routing/Layout";
 import { PrivateRoute } from "./components/routing/PrivateRoute";
 import { PublicRoute } from "./components/routing/PublicRoute";
 import NotFound from "./pages/NotFound";
 import LoginContainer from "./containers/LoginContainer";
 import RegistrationContainer from "./containers/RegistrationContainer";
 import LayoutPageNotFound from "./components/routing/LayoutPageNotFound";
-import WebshopUnauthenticatedContainer from "./containers/WebshopUnauthenticatedContainer";
+import WebshopContainer from "./containers/WebshopContainer";
+import ShoppingCartContainer from "./containers/ShoppingCartContainer";
+import { useEffect, useState } from "react";
+import WebShopService from "./services/WebShopService";
 
-const webshops = [
-  {
-    id: 1,
-    name: "Gigatron",
-  },
-  { id: 2, name: "Tehnomanija" },
-];
+// const webshops = [
+//   {
+//     id: 1,
+//     name: "Gigatron",
+//   },
+//   { id: 2, name: "Tehnomanija" },
+// ];
 
 const publicRoutes = [
   {
-    key: "webshop-unauthenticated/:webshop",
-    path: "/webshop-unauthenticated/:webshop",
-    component: WebshopUnauthenticatedContainer,
+    key: "webshop/:webshop",
+    path: "/webshop/:webshop",
+    component: WebshopContainer,
     exact: true,
   },
   {
@@ -47,49 +49,65 @@ const publicRoutes = [
 
 const privateRoutes = [
   {
-    key: "webshop-authenticated/:webshop",
-    path: "/webshop-authenticated/:webshop",
-    component: RegistrationContainer,
+    key: "webshop/:webshop",
+    path: "/webshop/:webshop",
+    component: WebshopContainer,
+    exact: false,
+  },
+  {
+    key: "shopping-cart/:webshop",
+    path: "/shopping-cart/:webshop",
+    component: ShoppingCartContainer,
     exact: false,
   },
 ];
 
 function App() {
+  const [activeWebshop, setActiveWebshop] = useState({ name: "" });
+
+  useEffect(() => {
+    async function fetchData() {
+      var webshops = await WebShopService.findAll();
+      setActiveWebshop(webshops[0]);
+    }
+    fetchData();
+  }, []);
+
   return (
     <Router>
       <Switch>
         <Redirect
           exact
-          from="/"
+          from="/webshop/"
           to={{
-            pathname: `/webshop-unauthenticated/${webshops[0].name.toLowerCase()}`,
+            pathname: `/webshop/${activeWebshop.name.toLowerCase()}`,
           }}
         />
-        <Route
+        <Redirect
           exact
-          path={[
-            "/webshop-unauthenticated/:webshop",
-            "/login",
-            "/registration",
-          ]}
-        >
-          <LayoutAnonymous>
+          from="/"
+          to={{
+            pathname: `/webshop/${activeWebshop.name.toLowerCase()}`,
+          }}
+        />
+        <Route exact path={["/webshop/:webshop", "/login", "/registration"]}>
+          <Layout>
             <Switch>
               {publicRoutes.map((publicRouteProps) => (
                 <PublicRoute {...publicRouteProps} />
               ))}
             </Switch>
-          </LayoutAnonymous>
+          </Layout>
         </Route>
 
-        <Route exact path={["/webshop-authenticated/:webshop"]}>
-          <LayoutAuthenticated>
+        <Route exact path={["/webshop/:webshop", "/shopping-cart/:webshop"]}>
+          <Layout>
             <Switch>
               {privateRoutes.map((privateRouteProps) => (
                 <PrivateRoute {...privateRouteProps} />
               ))}
             </Switch>
-          </LayoutAuthenticated>
+          </Layout>
         </Route>
 
         <Route path="*">
