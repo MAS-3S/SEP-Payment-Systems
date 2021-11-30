@@ -1,0 +1,18 @@
+server:
+  port: 9002
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:9001/eureka
+
+spring:
+  application:
+    name: api-gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: testModule
+          uri: lb://TEST-SERVICE
+          predicates:
+            - Path=/test/**
