@@ -36,7 +36,7 @@ public class WebShop {
 
     //**
     @OneToOne(mappedBy = "webShop")
-    private ShoppingCard shoppingCard;
+    private ShoppingCart shoppingCart;
 
     public WebShop() {
     }
@@ -73,12 +73,12 @@ public class WebShop {
         this.products = products;
     }
 
-    public ShoppingCard getShoppingCard() {
-        return shoppingCard;
+    public ShoppingCart getShoppingCard() {
+        return shoppingCart;
     }
 
-    public void setShoppingCard(ShoppingCard shoppingCard) {
-        this.shoppingCard = shoppingCard;
+    public void setShoppingCard(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 
     public WebShopType getType() {
