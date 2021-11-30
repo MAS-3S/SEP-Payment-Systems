@@ -1,7 +1,6 @@
 package com.example.webshopbackend.model;
 
 import com.example.webshopbackend.model.enums.Role;
-import lombok.Builder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
@@ -48,7 +47,7 @@ public class User implements UserDetails {
     private WebShop webShop;
 
     @OneToOne(mappedBy = "user")
-    private ShoppingCard shoppingCard;
+    private ShoppingCart shoppingCart;
 
     public User() {
     }

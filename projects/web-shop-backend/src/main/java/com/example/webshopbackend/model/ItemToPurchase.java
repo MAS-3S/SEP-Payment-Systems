@@ -23,7 +23,7 @@ public class ItemToPurchase {
 
     //**
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ShoppingCard shoppingCard;
+    private ShoppingCart shoppingCart;
 
     public ItemToPurchase() {
     }
@@ -52,11 +52,11 @@ public class ItemToPurchase {
         this.product = product;
     }
 
-    public ShoppingCard getShoppingCard() {
-        return shoppingCard;
+    public ShoppingCart getShoppingCard() {
+        return shoppingCart;
     }
 
-    public void setShoppingCard(ShoppingCard shoppingCard) {
-        this.shoppingCard = shoppingCard;
+    public void setShoppingCard(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 }
