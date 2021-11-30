@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -9,14 +9,7 @@ import Menu from "@material-ui/core/Menu";
 import StorefrontOutlinedIcon from "@material-ui/icons/StorefrontOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
-
-const webshops = [
-  {
-    id: 1,
-    name: "Gigatron",
-  },
-  { id: 2, name: "Tehnomanija" },
-];
+import WebShopService from "../../services/WebShopService";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -49,10 +42,20 @@ const useStyles = makeStyles((theme) => ({
 export default function Navbar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [activeWebshop, setActiveWebshop] = useState(webshops[0]);
+  const [webshops, setWebshops] = useState([]);
+  const [activeWebshop, setActiveWebshop] = useState({ name: "" });
   const [isUserLogged, setIsUserLogged] = useState(true);
 
   const isMenuOpen = Boolean(anchorEl);
+
+  useEffect(() => {
+    async function fetchData() {
+      var webshops = await WebShopService.findAll();
+      setWebshops(webshops);
+      setActiveWebshop(webshops[0]);
+    }
+    fetchData();
+  }, []);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -86,7 +89,7 @@ export default function Navbar() {
             >
               <MenuItem
                 style={{
-                  width: 150,
+                  width: 250,
                   height: 40,
                   justifyContent: "flex-start",
                 }}
@@ -208,7 +211,7 @@ export default function Navbar() {
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
-            style={{ width: 150, justifyContent: "flex-start" }}
+            style={{ width: 250, justifyContent: "flex-start" }}
           >
             <Typography className={classes.title} variant="h6">
               {activeWebshop.name}

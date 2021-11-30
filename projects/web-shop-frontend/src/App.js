@@ -15,14 +15,16 @@ import RegistrationContainer from "./containers/RegistrationContainer";
 import LayoutPageNotFound from "./components/routing/LayoutPageNotFound";
 import WebshopContainer from "./containers/WebshopContainer";
 import ShoppingCartContainer from "./containers/ShoppingCartContainer";
+import { useEffect, useState } from "react";
+import WebShopService from "./services/WebShopService";
 
-const webshops = [
-  {
-    id: 1,
-    name: "Gigatron",
-  },
-  { id: 2, name: "Tehnomanija" },
-];
+// const webshops = [
+//   {
+//     id: 1,
+//     name: "Gigatron",
+//   },
+//   { id: 2, name: "Tehnomanija" },
+// ];
 
 const publicRoutes = [
   {
@@ -61,14 +63,31 @@ const privateRoutes = [
 ];
 
 function App() {
+  const [activeWebshop, setActiveWebshop] = useState({ name: "" });
+
+  useEffect(() => {
+    async function fetchData() {
+      var webshops = await WebShopService.findAll();
+      setActiveWebshop(webshops[0]);
+    }
+    fetchData();
+  }, []);
+
   return (
     <Router>
       <Switch>
         <Redirect
           exact
+          from="/webshop/"
+          to={{
+            pathname: `/webshop/${activeWebshop.name.toLowerCase()}`,
+          }}
+        />
+        <Redirect
+          exact
           from="/"
           to={{
-            pathname: `/webshop/${webshops[0].name.toLowerCase()}`,
+            pathname: `/webshop/${activeWebshop.name.toLowerCase()}`,
           }}
         />
         <Route exact path={["/webshop/:webshop", "/login", "/registration"]}>

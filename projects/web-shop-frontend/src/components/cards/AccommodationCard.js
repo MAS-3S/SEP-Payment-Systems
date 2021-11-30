@@ -49,7 +49,7 @@ export default function AccommodationCard(props) {
             </li>
             <li>
               <strong>Start date: </strong>
-              {accommodation.startTime}
+              {accommodation.startDate}
             </li>
             <li>
               <strong>Days: </strong>

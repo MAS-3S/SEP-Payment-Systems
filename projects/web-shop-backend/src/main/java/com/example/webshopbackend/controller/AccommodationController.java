@@ -27,8 +27,8 @@ public class AccommodationController {
     @GetMapping(value="/webshop/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AccommodationDto>> findAllAccommodations(@PathVariable String id) {
         List<AccommodationDto> result = new ArrayList<>();
-        List<Accommodation> accommodations = accommodationService.findAllByWebShopId("4086f1d4-4002-4f1e-9bf8-ab0e82048584");
-
+        List<Accommodation> accommodations = accommodationService.findAllByWebShopId(id);
+//        "4086f1d4-4002-4f1e-9bf8-ab0e82048584"
         if(accommodations.isEmpty()) {
             return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
         }
