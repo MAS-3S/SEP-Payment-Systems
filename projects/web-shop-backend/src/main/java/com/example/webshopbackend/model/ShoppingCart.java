@@ -3,11 +3,12 @@ package com.example.webshopbackend.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="shopping_cards")
-public class ShoppingCard {
+@Table(name="shopping_carts")
+public class ShoppingCart {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -18,7 +19,10 @@ public class ShoppingCard {
     @Column(name = "total_price", nullable = false)
     private Double totalPrice;
 
-    @OneToMany(mappedBy = "shoppingCard", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(name = "timestamp", nullable = false)
+    private Date timestamp;
+
+    @OneToMany(mappedBy = "shoppingCart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ItemToPurchase> items;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -30,10 +34,10 @@ public class ShoppingCard {
     private User user;
 
     //**
-    @OneToOne(mappedBy = "shoppingCard")
+    @OneToOne(mappedBy = "shoppingCart")
     private Transaction transaction;
 
-    public ShoppingCard() {
+    public ShoppingCart() {
     }
 
     public String getId() {
@@ -50,6 +54,14 @@ public class ShoppingCard {
 
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     public List<ItemToPurchase> getItems() {

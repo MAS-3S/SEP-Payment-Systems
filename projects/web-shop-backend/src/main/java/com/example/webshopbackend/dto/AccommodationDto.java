@@ -17,6 +17,7 @@ public class AccommodationDto {
     private int numberOfBeds;
     private String transportName;
     private Double transportPrice;
+    private String transportCurrency;
 
     public AccommodationDto() {
     }
@@ -123,5 +124,13 @@ public class AccommodationDto {
 
     public void setTransportPrice(Double transportPrice) {
         this.transportPrice = transportPrice;
+    }
+
+    public String getTransportCurrency() {
+        return transportCurrency;
+    }
+
+    public void setTransportCurrency(String transportCurrency) {
+        this.transportCurrency = transportCurrency;
     }
 }

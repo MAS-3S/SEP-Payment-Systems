@@ -25,8 +25,8 @@ public class Transaction {
     private Date timestamp;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shopping_card_id", referencedColumnName = "id")
-    private ShoppingCard shoppingCard;
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
+    private ShoppingCart shoppingCart;
 
     public Transaction() {
     }
@@ -63,11 +63,11 @@ public class Transaction {
         this.timestamp = timestamp;
     }
 
-    public ShoppingCard getShoppingCard() {
-        return shoppingCard;
+    public ShoppingCart getShoppingCard() {
+        return shoppingCart;
     }
 
-    public void setShoppingCard(ShoppingCard shoppingCard) {
-        this.shoppingCard = shoppingCard;
+    public void setShoppingCard(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 }
