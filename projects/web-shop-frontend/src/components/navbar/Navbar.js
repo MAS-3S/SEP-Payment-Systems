@@ -10,6 +10,7 @@ import StorefrontOutlinedIcon from "@material-ui/icons/StorefrontOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
 import WebShopService from "../../services/WebShopService";
+import AuthService from "../../services/AuthService";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -74,6 +75,7 @@ export default function Navbar() {
 
   const handleLogOut = () => {
     setIsUserLogged(false);
+    AuthService.logout();
   };
 
   const webShopItems =
@@ -192,7 +194,11 @@ export default function Navbar() {
         }}
       >
         <Toolbar className={classes.toolbar}>
-          <Link to="/">
+          <Link
+            to={{
+              pathname: `/webshop/${activeWebshop.name.toLowerCase()}`,
+            }}
+          >
             <IconButton
               onClick={navigateToHome}
               edge="start"

@@ -18,14 +18,6 @@ import ShoppingCartContainer from "./containers/ShoppingCartContainer";
 import { useEffect, useState } from "react";
 import WebShopService from "./services/WebShopService";
 
-// const webshops = [
-//   {
-//     id: 1,
-//     name: "Gigatron",
-//   },
-//   { id: 2, name: "Tehnomanija" },
-// ];
-
 const publicRoutes = [
   {
     key: "webshop/:webshop",
