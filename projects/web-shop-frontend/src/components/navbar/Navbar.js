@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -9,14 +9,7 @@ import Menu from "@material-ui/core/Menu";
 import StorefrontOutlinedIcon from "@material-ui/icons/StorefrontOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
-
-const webshops = [
-  {
-    id: 1,
-    name: "Gigatron",
-  },
-  { id: 2, name: "Tehnomanija" },
-];
+import WebShopService from "../../services/WebShopService";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -36,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("md")]: {
       display: "flex",
     },
+    marginRight: -20,
   },
   buttonMargin: {
     marginLeft: "12px",
@@ -45,12 +39,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UnauthenticatedUsersNavbar() {
+export default function Navbar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [activeWebshop, setActiveWebshop] = useState(webshops[0]);
+  const [webshops, setWebshops] = useState([]);
+  const [activeWebshop, setActiveWebshop] = useState({ name: "" });
+  const [isUserLogged, setIsUserLogged] = useState(true);
 
   const isMenuOpen = Boolean(anchorEl);
+
+  useEffect(() => {
+    async function fetchData() {
+      var webshops = await WebShopService.findAll();
+      setWebshops(webshops);
+      setActiveWebshop(webshops[0]);
+    }
+    fetchData();
+  }, []);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -67,6 +72,10 @@ export default function UnauthenticatedUsersNavbar() {
 
   const navigateToHome = () => {};
 
+  const handleLogOut = () => {
+    setIsUserLogged(false);
+  };
+
   const webShopItems =
     webshops.length > 1 ? (
       webshops.map((webshop) => {
@@ -74,12 +83,13 @@ export default function UnauthenticatedUsersNavbar() {
           return (
             <Link
               to={{
-                pathname: `/webshop-unauthenticated/${webshop.name.toLowerCase()}`,
+                pathname: `/webshop/${webshop.name.toLowerCase()}`,
               }}
+              style={{ textDecoration: "none", color: "black" }}
             >
               <MenuItem
                 style={{
-                  width: 150,
+                  width: 250,
                   height: 40,
                   justifyContent: "flex-start",
                 }}
@@ -119,6 +129,59 @@ export default function UnauthenticatedUsersNavbar() {
     </Menu>
   );
 
+  const navbarLinks = (() => {
+    if (!isUserLogged) {
+      return (
+        <div className={classes.sectionDesktop}>
+          <Link
+            variant="contained"
+            color="primary"
+            to="/login"
+            className="myButton"
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Sign in
+          </Link>
+          <Link
+            variant="contained"
+            color="primary"
+            to="/registration"
+            className="myButton"
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Sign up
+          </Link>
+        </div>
+      );
+    } else {
+      return (
+        <div className={classes.sectionDesktop}>
+          <Link
+            variant="contained"
+            color="primary"
+            to={{
+              pathname: `/shopping-cart/${activeWebshop.name.toLowerCase()}`,
+            }}
+            className="myButton"
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Shopping cart
+          </Link>
+          <Link
+            variant="contained"
+            color="primary"
+            to="/login"
+            className="myButton"
+            onClick={handleLogOut}
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Log out
+          </Link>
+        </div>
+      );
+    }
+  })();
+
   return (
     <div className={classes.grow}>
       <AppBar
@@ -148,7 +211,7 @@ export default function UnauthenticatedUsersNavbar() {
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
-            style={{ width: 150, justifyContent: "flex-start" }}
+            style={{ width: 250, justifyContent: "flex-start" }}
           >
             <Typography className={classes.title} variant="h6">
               {activeWebshop.name}
@@ -160,24 +223,7 @@ export default function UnauthenticatedUsersNavbar() {
           </IconButton>
 
           <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <Link
-              variant="contained"
-              color="primary"
-              to="/login"
-              className="button"
-            >
-              Sign in
-            </Link>
-            <Link
-              variant="contained"
-              color="primary"
-              to="/registration"
-              className={"button"}
-            >
-              Sign up
-            </Link>
-          </div>
+          {navbarLinks}
         </Toolbar>
       </AppBar>
       {renderMenu}

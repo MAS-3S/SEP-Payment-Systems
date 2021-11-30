@@ -1,9 +1,8 @@
 package com.example.webshopbackend.dto;
 
-import java.util.Date;
-
 public class ProductDto {
 
+    private String id;
     private String name;
     private String description;
     private String image;
@@ -12,6 +11,14 @@ public class ProductDto {
     private String currency;
 
     public ProductDto() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

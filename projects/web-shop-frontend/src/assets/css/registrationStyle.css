@@ -6,17 +6,16 @@
   overflow: hidden;
   width: 768px;
   max-width: 100%;
-  min-height: 540px;
-  max-height: 540px;
-
+  min-height: 555px;
+  max-height: 555px;
   margin-top: 670px;
 }
 
 .form-registrationContainer {
   position: relative;
   top: 0;
-  min-height: 540px;
-  max-height: 540px;
+  min-height: 555px;
+  max-height: 555px;
   transition: all 0.6s ease-in-out;
   overflow-y: auto;
   padding-top: 25px;

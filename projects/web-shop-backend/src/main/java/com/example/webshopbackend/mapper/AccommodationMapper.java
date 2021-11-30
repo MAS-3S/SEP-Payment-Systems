@@ -9,6 +9,7 @@ public class AccommodationMapper {
     public static AccommodationDto convertToDto(Accommodation accommodation) {
         AccommodationDto dto = new AccommodationDto();
 
+        dto.setId(accommodation.getId());
         dto.setName(accommodation.getName());
         dto.setDescription(accommodation.getDescription());
         dto.setImage(accommodation.getImage());
