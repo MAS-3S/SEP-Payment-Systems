@@ -11,17 +11,19 @@ export default function ShoppingCart(props) {
   const [alertMessage, setAlertMessage] = React.useState("");
   const [alertType, setAlertType] = React.useState("");
   const [alertDuration, setAlertDuration] = useState(2000);
+  const [loggedUser, setLoggedUser] = useState(props.loggedUser);
   const [activeWebshop, setActiveWebshop] = useState(props.webshop);
-  const [shoppingCartItems, setShoppingCartItems] = useState(
-    props.shoppingCartItems
-  );
+  const [shoppingCartItems, setShoppingCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0.0);
 
   useEffect(() => {
+    setLoggedUser(props.loggedUser);
     setActiveWebshop(props.webshop);
-    setShoppingCartItems(props.shoppingCartItems);
+    if (JSON.parse(localStorage.getItem("shoppingCart")) !== null) {
+      setShoppingCartItems(JSON.parse(localStorage.getItem("shoppingCart")));
+    }
     calculateTotalPrice();
-  }, [props.webshop, props.shoppingCartItems]);
+  }, [props.webshop, props.loggedUser]);
 
   const calculateTotalPrice = () => {
     var totalPrice = 0.0;
@@ -111,6 +113,33 @@ export default function ShoppingCart(props) {
           </div>
         </div>
         <div className="col-md-4 summaryShoppingCart">
+          <div>
+            <h5 className="h5ShoppingCart">
+              <b>Delivery info</b>
+            </h5>
+          </div>
+          <hr className="hrShoppingCart" />
+          <div className="row">
+            <div className="col" style={{ paddingLeft: 0 }}>
+              NAME
+            </div>
+            <div className="col text-right">{loggedUser.fullName}</div>
+          </div>
+          <hr className="hrShoppingCart" />
+          <div className="row">
+            <div className="col" style={{ paddingLeft: 0 }}>
+              ADDRESS
+            </div>
+            <div className="row text-right">{loggedUser.address}</div>
+          </div>
+          <hr className="hrShoppingCart" />
+          <div className="row">
+            <div className="col" style={{ paddingLeft: 0 }}>
+              PHONE
+            </div>
+            <div className="col text-right">{loggedUser.phone}</div>
+          </div>
+          <hr className="hrShoppingCart" />
           <div>
             <h5 className="h5ShoppingCart">
               <b>Summary</b>

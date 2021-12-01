@@ -59,10 +59,10 @@ export default function AccommodationCard(props) {
               <strong>Transport: </strong>
               {accommodation.transportName}
             </li>
-            <li>
+            {/* <li>
               <strong>Transport price: </strong>
               {accommodation.transportPrice}
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

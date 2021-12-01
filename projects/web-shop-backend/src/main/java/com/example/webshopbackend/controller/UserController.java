@@ -1,6 +1,11 @@
 package com.example.webshopbackend.controller;
 
+import com.example.webshopbackend.dto.AccommodationDto;
+import com.example.webshopbackend.dto.UserDto;
 import com.example.webshopbackend.dto.UserRegistrationDTO;
+import com.example.webshopbackend.mapper.AccommodationMapper;
+import com.example.webshopbackend.mapper.UserMapper;
+import com.example.webshopbackend.model.Accommodation;
 import com.example.webshopbackend.model.User;
 import com.example.webshopbackend.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +30,18 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+
+    @GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDto> findById(@PathVariable String id) {
+        User user = userService.findById(id);
+
+        if(user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(UserMapper.convertToDto(user), HttpStatus.OK);
+    }
+
 
     @PostMapping(value = "/register", consumes =  MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> registerCustomer(@Valid @RequestBody UserRegistrationDTO dto, HttpServletRequest request) throws Exception {

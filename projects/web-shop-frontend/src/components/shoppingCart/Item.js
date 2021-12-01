@@ -3,16 +3,20 @@ import CloseIcon from "@material-ui/icons/Close";
 
 export default function Item(props) {
   const [item, setItem] = useState(props.item);
-  const [minusDisabled, setMinusDisabled] = useState("disabled");
+  const [minusDisabled, setMinusDisabled] = useState("");
   const [plusDisabled, setPlusDisabled] = useState("");
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(props.item.quantity);
 
   useEffect(() => {
     setItem(props.item);
+    setQuantity(props.item.quantity);
+    props.item.quantity === 1
+      ? setMinusDisabled("disabled")
+      : setMinusDisabled("");
     props.item.availableBalance === 1
       ? setPlusDisabled("disabled")
       : setPlusDisabled("");
-  }, [props.item]);
+  }, [props.item, props.item.quantity]);
 
   const handleRemoveItem = () => {
     var shoppingCart = [];
@@ -68,11 +72,7 @@ export default function Item(props) {
     <div className="row border-top">
       <div className="row mainShoppingCart align-items-center">
         <div className="col-2">
-          <img
-            alt=""
-            className="img-fluid"
-            src="https://i.imgur.com/ba3tvGm.jpg"
-          />
+          <img alt="" className="img-fluid" src={item.image} />
         </div>
         <div className="col">
           <div className="row text-muted">{item.name}</div>

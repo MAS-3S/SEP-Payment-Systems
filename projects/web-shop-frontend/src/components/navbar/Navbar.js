@@ -11,6 +11,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
 import WebShopService from "../../services/WebShopService";
 import AuthService from "../../services/AuthService";
+import { Badge } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -45,6 +46,8 @@ export default function Navbar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [webshops, setWebshops] = useState([]);
   const [activeWebshop, setActiveWebshop] = useState({ name: "" });
+  const [numberOfProductsInShoppingCart, setNumberOfProductsInShoppingCart] =
+    useState(0);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -53,6 +56,10 @@ export default function Navbar(props) {
       var webshops = await WebShopService.findAll();
       setWebshops(webshops);
       setActiveWebshop(webshops[0]);
+      setNumberOfProductsInShoppingCart(0);
+      // setNumberOfProductsInShoppingCart(
+      //   JSON.parse(localStorage.getItem("shoppingCart")).length
+      // );
     }
     fetchData();
   }, []);
@@ -166,6 +173,11 @@ export default function Navbar(props) {
             style={{ textDecoration: "none", color: "white" }}
           >
             Shopping cart
+            <Badge
+              badgeContent={numberOfProductsInShoppingCart}
+              color="secondary"
+              style={{ float: "right", marginTop: -12 }}
+            ></Badge>
           </Link>
           <Link
             variant="contained"

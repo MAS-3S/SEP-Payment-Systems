@@ -2,6 +2,7 @@ import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React, { useEffect, useState } from "react";
 import "../../assets/css/productCardStyle.css";
+import AuthService from "../../services/AuthService";
 
 export default function ProductCard(props) {
   const [product, setProduct] = useState(props.product);
@@ -15,14 +16,13 @@ export default function ProductCard(props) {
   }, [props.product]);
 
   const addToShoppingCart = () => {
-    // let logged = false;
-    // if (!logged) {
-    //   handleAlertClick(
-    //     "You must sign in to add product in shopping cart",
-    //     "error"
-    //   );
-    //   return;
-    // }
+    if (!AuthService.getCurrentUser()) {
+      handleAlertClick(
+        "You must sign in to add product in shopping cart",
+        "error"
+      );
+      return;
+    }
     var shoppingCart = [];
     shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
     for (let i = 0; i < shoppingCart.length; i++) {
