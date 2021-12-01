@@ -1,13 +1,14 @@
 insert into authority(id, name) values ('9fe91052-ac34-44cb-88a2-6915cfae2d20', 'ROLE_CUSTOMER');
 insert into authority(id, name) values ('af1d6537-273c-4451-9b59-efe06f826e6e', 'ROLE_ADMIN');
 
-insert into users (id, password, full_name, email, address, phone, role, registered) values ('1ee82676-4f9c-11ec-81d3-0242ac130003', '$2y$12$/YLs9Irv4CFIwl4J/JJukuounpOzs0FDtvG.rxaF5f4ZD2sr.VRQe', 'Stefan Aradjanin', 'sa@mail.com', 'Cara Dusana 15', '0602236975', 0, true);
-insert into users (id, password, full_name, email, address, phone, role, registered) values ('27037478-4f9c-11ec-81d3-0242ac130003', '$2y$12$/YLs9Irv4CFIwl4J/JJukuounpOzs0FDtvG.rxaF5f4ZD2sr.VRQe', 'Stefan Savic', 'sa@mail.com', 'Zmaj Jovina 20', '0606974458', 0, true);
-insert into users (id, password, full_name, email, address, phone, role, registered) values ('346f24f4-4f9c-11ec-81d3-0242ac130003', '$2y$12$/YLs9Irv4CFIwl4J/JJukuounpOzs0FDtvG.rxaF5f4ZD2sr.VRQe', 'Stefan Beljic', 'sa@mail.com', 'Josifa Runjanina 3', '0605498554', 1, true);
+-- 11aaAA@@
+insert into users (id, password, full_name, email, address, phone, role, registered) values ('1ee82676-4f9c-11ec-81d3-0242ac130003', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Stefan Aradjanin', 'sa@mail.com', 'Cara Dusana 15', '0602236975', 1, true);
+insert into users (id, password, full_name, email, address, phone, role, registered) values ('27037478-4f9c-11ec-81d3-0242ac130003', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Stefan Savic', 'ss@mail.com', 'Zmaj Jovina 20', '0606974458', 1, true);
+insert into users (id, password, full_name, email, address, phone, role, registered) values ('346f24f4-4f9c-11ec-81d3-0242ac130003', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Stefan Beljic', 'sb@mail.com', 'Josifa Runjanina 3', '0605498554', 1, true);
 
 insert into user_authority(user_id, authority_id) values ('1ee82676-4f9c-11ec-81d3-0242ac130003', '9fe91052-ac34-44cb-88a2-6915cfae2d20');
 insert into user_authority(user_id, authority_id) values ('27037478-4f9c-11ec-81d3-0242ac130003', '9fe91052-ac34-44cb-88a2-6915cfae2d20');
-insert into user_authority(user_id, authority_id) values ('346f24f4-4f9c-11ec-81d3-0242ac130003', 'af1d6537-273c-4451-9b59-efe06f826e6e');
+insert into user_authority(user_id, authority_id) values ('346f24f4-4f9c-11ec-81d3-0242ac130003', '9fe91052-ac34-44cb-88a2-6915cfae2d20');
 
 insert into web_shops (id, name, type) values ('902a1e99-87e9-43b1-8927-9fbd4c2d9ca8', 'Products Shop', 0);
 insert into web_shops (id, name, type) values ('999c0c7c-aff3-41df-957d-d0677d43007b', 'Conferences Shop', 1);

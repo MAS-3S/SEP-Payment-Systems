@@ -18,14 +18,6 @@ import ShoppingCartContainer from "./containers/ShoppingCartContainer";
 import { useEffect, useState } from "react";
 import WebShopService from "./services/WebShopService";
 
-// const webshops = [
-//   {
-//     id: 1,
-//     name: "Gigatron",
-//   },
-//   { id: 2, name: "Tehnomanija" },
-// ];
-
 const publicRoutes = [
   {
     key: "webshop/:webshop",
@@ -48,12 +40,6 @@ const publicRoutes = [
 ];
 
 const privateRoutes = [
-  {
-    key: "webshop/:webshop",
-    path: "/webshop/:webshop",
-    component: WebshopContainer,
-    exact: false,
-  },
   {
     key: "shopping-cart/:webshop",
     path: "/shopping-cart/:webshop",
@@ -100,7 +86,7 @@ function App() {
           </Layout>
         </Route>
 
-        <Route exact path={["/webshop/:webshop", "/shopping-cart/:webshop"]}>
+        <Route exact path={["/shopping-cart/:webshop"]}>
           <Layout>
             <Switch>
               {privateRoutes.map((privateRouteProps) => (

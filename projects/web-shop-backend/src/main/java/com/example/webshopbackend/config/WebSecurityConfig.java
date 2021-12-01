@@ -55,7 +55,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
 
                 .authorizeRequests().antMatchers("/auth/**").permitAll().antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/api/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/webshops").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/products/webshop/{id}").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/conferences/webshop/{id}").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/accommodations/webshop/{id}").permitAll()
 
                 .anyRequest().authenticated().and()
 

@@ -1,8 +1,11 @@
 package com.example.webshopbackend.dto;
 
 import com.example.webshopbackend.security.UserTokenState;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.Id;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 
 public class AuthenticatedUserDTO {
 
@@ -11,6 +14,8 @@ public class AuthenticatedUserDTO {
     private String email;
     private String role;
     private UserTokenState userTokenState;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime tokenExpiresDate;
 
     public AuthenticatedUserDTO() {
     }
@@ -20,6 +25,7 @@ public class AuthenticatedUserDTO {
         this.email = email;
         this.role = role;
         this.userTokenState = userTokenState;
+        this.tokenExpiresDate = LocalDateTime.now().plus(this.userTokenState.getExpiresIn(), ChronoField.MILLI_OF_DAY.getBaseUnit());
     }
 
     public String getId() {
@@ -52,5 +58,13 @@ public class AuthenticatedUserDTO {
 
     public void setUserTokenState(UserTokenState userTokenState) {
         this.userTokenState = userTokenState;
+    }
+
+    public LocalDateTime getTokenExpiresDate() {
+        return tokenExpiresDate;
+    }
+
+    public void setTokenExpiresDate(LocalDateTime tokenExpiresDate) {
+        this.tokenExpiresDate = tokenExpiresDate;
     }
 }

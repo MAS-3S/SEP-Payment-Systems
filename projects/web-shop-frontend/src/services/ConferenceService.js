@@ -1,10 +1,9 @@
-import { API_URL } from "../util/Constants";
+import api from "./API";
 
 class ConferenceService {
-  findAllByWebShop(id) {
-    return fetch(API_URL + "api/conferences/webshop/" + id)
-      .then((response) => (response.ok ? response : Promise.reject(response)))
-      .then((response) => response.json());
+  async findAllByWebShop(id) {
+    const response = await api.get("api/conferences/webshop/" + id);
+    return response.data;
   }
 }
 
