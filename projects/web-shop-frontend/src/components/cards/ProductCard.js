@@ -14,14 +14,38 @@ export default function ProductCard(props) {
     setProduct(props.product);
   }, [props.product]);
 
-  const handleAlertClick = () => {
-    let logged = false;
-    if (!logged) {
-      setAlertMessage("You must sign in to add product in shopping cart");
-      setAlertType("error");
-      setAlertDuration(2300);
-      setOpen(true);
+  const addToShoppingCart = () => {
+    // let logged = false;
+    // if (!logged) {
+    //   handleAlertClick(
+    //     "You must sign in to add product in shopping cart",
+    //     "error"
+    //   );
+    //   return;
+    // }
+    var shoppingCart = [];
+    shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
+    for (let i = 0; i < shoppingCart.length; i++) {
+      if (shoppingCart[i].id === props.product.id) {
+        handleAlertClick("Product is already in shopping cart", "error");
+        return;
+      }
     }
+    handleAlertClick(
+      "Product is successfully added in shopping cart",
+      "success"
+    );
+    var product = props.product;
+    product.quantity = 1;
+    shoppingCart.push(product);
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+  };
+
+  const handleAlertClick = (message, type) => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setAlertDuration(2300);
+    setOpen(true);
   };
 
   const handleAlertClose = (event, reason) => {
@@ -51,7 +75,7 @@ export default function ProductCard(props) {
         <h1>{product.name}</h1>
         <p className="productCardInformation">{product.description}</p>
         <div className="productCardControl">
-          <button className="productCardBtn" onClick={handleAlertClick}>
+          <button className="productCardBtn" onClick={addToShoppingCart}>
             <span className="productCardPrice">
               {product.price} {product.currency}
             </span>

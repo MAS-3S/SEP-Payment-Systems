@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ShoppingCart from "../pages/ShoppingCart";
 
 export default function ShoppingCartContainer(props) {
-  return <ShoppingCart webshop={props.match.params.webshop} />;
+  const [shoppingCartItems, setShoppingCartItems] = useState([]);
+
+  useEffect(() => {
+    setShoppingCartItems(JSON.parse(localStorage.getItem("shoppingCart")));
+  }, []);
+
+  return (
+    <ShoppingCart
+      webshop={props.match.params.webshop}
+      shoppingCartItems={shoppingCartItems}
+    />
+  );
 }
