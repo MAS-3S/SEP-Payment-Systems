@@ -1,6 +1,7 @@
 package com.example.webshopbackend.dto;
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class ConferenceDto {
@@ -13,7 +14,9 @@ public class ConferenceDto {
     private int availableBalance;
     private String currency;
     private String address;
+    @JsonFormat(pattern = "HH:mm")
     private Date startTime;
+    @JsonFormat(pattern = "HH:mm")
     private Date endTime;
     private Boolean isCourse;
     private Boolean isSubscription;
