@@ -37,7 +37,6 @@
   transform: translate(25px, -15px);
   font-family: "Bree Serif", serif;
   display: inline-block;
-  background: #ffe6e6;
   border-radius: 5px;
   font-size: 14px;
   padding: 5px;
@@ -66,8 +65,9 @@
 
 .productCardControl {
   position: absolute;
+  width: 350px;
   bottom: 5%;
-  left: 25.5%;
+  left: 5%;
 }
 .productCardBtn {
   transform: translateY(0px);

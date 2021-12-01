@@ -45,8 +45,7 @@ public class AuthenticationController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
-                                                       HttpServletResponse response) {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) {
         AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO();
         log.info("Signing up user with email: " + authenticationRequest.getEmail());
         Authentication authentication = authenticationManager
@@ -58,6 +57,9 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         User account = (User) authentication.getPrincipal();
+        if (!account.isRegistered()) {
+            return new ResponseEntity<>("Verify profile before using application", HttpStatus.UNAUTHORIZED);
+        }
         String jwt = tokenUtils.generateToken(account.getEmail());
         String refresh = tokenUtils.refreshToken(jwt, account.getId());
         int expiresIn = tokenUtils.getExpiredIn();

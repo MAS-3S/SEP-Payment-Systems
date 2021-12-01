@@ -23,7 +23,7 @@ public class TokenUtils {
     @Value("60000")
     private int EXPIRES_IN;
 
-    @Value("3600000")
+    @Value("600000")
     private int REFRESH_EXPIRES_IN;
 
     @Value("Authorization")
