@@ -40,12 +40,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Navbar() {
+export default function Navbar(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [webshops, setWebshops] = useState([]);
   const [activeWebshop, setActiveWebshop] = useState({ name: "" });
-  const [isUserLogged, setIsUserLogged] = useState(true);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -74,7 +73,6 @@ export default function Navbar() {
   const navigateToHome = () => {};
 
   const handleLogOut = () => {
-    setIsUserLogged(false);
     AuthService.logout();
   };
 
@@ -132,7 +130,7 @@ export default function Navbar() {
   );
 
   const navbarLinks = (() => {
-    if (!isUserLogged) {
+    if (!AuthService.getCurrentUser()) {
       return (
         <div className={classes.sectionDesktop}>
           <Link

@@ -1,6 +1,6 @@
 import axios from "axios";
 import TokenService from "./TokenService";
-import { API_URL } from "../util/Constants";
+import { API_URL, LOGIN_URL } from "../util/Constants";
 
 const instance = axios.create({
   baseURL: API_URL,
@@ -29,19 +29,52 @@ instance.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config;
-
     if (originalConfig.url !== "auth/login" && err.response) {
       // Access Token was expired
-      if (err.response.status === 401 && !originalConfig._retry) {
-        originalConfig._retry = true;
+      const token = TokenService.getLocalAccessToken();
+      const tokenExpiresDate = TokenService.getTokenExpiresDate();
+      const isAccessTokenExpired =
+        TokenService.checkIfAccessTokenIsExpired(tokenExpiresDate);
 
+      if (
+        err.response.data === "Use refresh token for creating new access token!"
+      ) {
+        TokenService.removeUser();
+        window.location.href = LOGIN_URL;
+        return Promise.reject(err);
+      }
+
+      if (err.response.status === 401 && !originalConfig._retry && !token) {
+        return Promise.reject(err);
+      }
+
+      if (
+        err.response.status === 401 &&
+        !originalConfig._retry &&
+        token &&
+        !isAccessTokenExpired
+      ) {
+        return Promise.reject(err);
+      }
+
+      if (
+        err.response.status === 401 &&
+        !originalConfig._retry &&
+        token &&
+        isAccessTokenExpired
+      ) {
+        originalConfig._retry = true;
+        TokenService.updateLocalAccessToken(
+          TokenService.getLocalRefreshToken()
+        );
         try {
           const rs = await instance.post("auth/refreshToken", {
             refreshToken: TokenService.getLocalRefreshToken(),
           });
 
-          const { accessToken } = rs.data;
-          TokenService.updateLocalAccessToken(accessToken);
+          TokenService.updateLocalAccessToken(
+            rs.data.userTokenState.accessToken
+          );
 
           return instance(originalConfig);
         } catch (_error) {

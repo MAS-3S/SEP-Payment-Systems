@@ -8,7 +8,7 @@ insert into users (id, password, full_name, email, address, phone, role, registe
 
 insert into user_authority(user_id, authority_id) values ('1ee82676-4f9c-11ec-81d3-0242ac130003', '9fe91052-ac34-44cb-88a2-6915cfae2d20');
 insert into user_authority(user_id, authority_id) values ('27037478-4f9c-11ec-81d3-0242ac130003', '9fe91052-ac34-44cb-88a2-6915cfae2d20');
-insert into user_authority(user_id, authority_id) values ('346f24f4-4f9c-11ec-81d3-0242ac130003', 'af1d6537-273c-4451-9b59-efe06f826e6e');
+insert into user_authority(user_id, authority_id) values ('346f24f4-4f9c-11ec-81d3-0242ac130003', '9fe91052-ac34-44cb-88a2-6915cfae2d20');
 
 insert into web_shops (id, name, type) values ('902a1e99-87e9-43b1-8927-9fbd4c2d9ca8', 'Products Shop', 0);
 insert into web_shops (id, name, type) values ('999c0c7c-aff3-41df-957d-d0677d43007b', 'Conferences Shop', 1);

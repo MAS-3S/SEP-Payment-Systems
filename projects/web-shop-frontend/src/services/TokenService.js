@@ -1,17 +1,22 @@
 class TokenService {
   getLocalRefreshToken() {
     const user = JSON.parse(localStorage.getItem("user"));
-    return user?.refreshToken;
+    return user?.userTokenState.refreshToken;
   }
 
   getLocalAccessToken() {
     const user = JSON.parse(localStorage.getItem("user"));
-    return user?.accessToken;
+    return user?.userTokenState.accessToken;
+  }
+
+  getTokenExpiresDate() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user?.tokenExpiresDate;
   }
 
   updateLocalAccessToken(token) {
     let user = JSON.parse(localStorage.getItem("user"));
-    user.accessToken = token;
+    user.userTokenState.accessToken = token;
     localStorage.setItem("user", JSON.stringify(user));
   }
 
@@ -25,6 +30,14 @@ class TokenService {
 
   removeUser() {
     localStorage.removeItem("user");
+  }
+
+  checkIfAccessTokenIsExpired(expiresIn) {
+    const expiresInDate = new Date(expiresIn);
+    if (expiresInDate < new Date()) {
+      return true;
+    }
+    return false;
   }
 }
 

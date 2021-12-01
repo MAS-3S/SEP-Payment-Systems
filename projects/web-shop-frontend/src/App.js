@@ -41,12 +41,6 @@ const publicRoutes = [
 
 const privateRoutes = [
   {
-    key: "webshop/:webshop",
-    path: "/webshop/:webshop",
-    component: WebshopContainer,
-    exact: false,
-  },
-  {
     key: "shopping-cart/:webshop",
     path: "/shopping-cart/:webshop",
     component: ShoppingCartContainer,
@@ -92,7 +86,7 @@ function App() {
           </Layout>
         </Route>
 
-        <Route exact path={["/webshop/:webshop", "/shopping-cart/:webshop"]}>
+        <Route exact path={["/shopping-cart/:webshop"]}>
           <Layout>
             <Switch>
               {privateRoutes.map((privateRouteProps) => (
