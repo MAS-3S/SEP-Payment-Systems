@@ -5,26 +5,38 @@ import ProductCard from "../components/cards/ProductCard";
 
 export default function Webshop(props) {
   const [activeWebshop, setActiveWebshop] = useState(props.activeWebshop);
+  const [productsList, setProductsList] = useState([]);
+  const [conferencesList, setConferencesList] = useState([]);
+  const [accommodationsList, setAccommodationsList] = useState([]);
 
   useEffect(() => {
     setActiveWebshop(props.activeWebshop);
   }, [props.activeWebshop]);
 
-  const productsList = Array.apply(null, { length: props.products.length }).map(
-    (_, i) => <ProductCard key={i} product={props.products[i]} />
-  );
+  useEffect(() => {
+    const products = Array.apply(null, { length: props.products.length }).map(
+      (_, i) => <ProductCard key={i} product={props.products[i]} />
+    );
+    setProductsList(products);
+  }, [props.products]);
 
-  const conferencesList = Array.apply(null, {
-    length: props.conferences.length,
-  }).map((_, i) => (
-    <ConferenceCard key={i} conference={props.conferences[i]} />
-  ));
+  useEffect(() => {
+    const conferences = Array.apply(null, {
+      length: props.conferences.length,
+    }).map((_, i) => (
+      <ConferenceCard key={i} conference={props.conferences[i]} />
+    ));
+    setConferencesList(conferences);
+  }, [props.conferences]);
 
-  const accommodationsList = Array.apply(null, {
-    length: props.accommodations.length,
-  }).map((_, i) => (
-    <AccommodationCard key={i} accommodation={props.accommodations[i]} />
-  ));
+  useEffect(() => {
+    const accommodations = Array.apply(null, {
+      length: props.accommodations.length,
+    }).map((_, i) => (
+      <AccommodationCard key={i} accommodation={props.accommodations[i]} />
+    ));
+    setAccommodationsList(accommodations);
+  }, [props.accommodations]);
 
   const items = (() => {
     if (activeWebshop.type === "PRODUCT") {
@@ -34,7 +46,7 @@ export default function Webshop(props) {
     } else if (activeWebshop.type === "ACCOMMODATION") {
       return <div>{accommodationsList}</div>;
     } else {
-      return <div>WebshopUnauthenticated 2</div>;
+      return <div></div>;
     }
   })();
 

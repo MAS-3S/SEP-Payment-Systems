@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../assets/css/loginStyle.css";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { TextField } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 
 const MyTextField = withStyles({
   root: {
@@ -42,10 +44,36 @@ const SignInSchema = Yup.object().shape({
     ),
 });
 
-export default function Login() {
-  const handleLogin = (username, password) => {
-    console.log(username, password);
+export default function Login(props) {
+  const [open, setOpen] = useState(false);
+
+  const handleLogin = (email, password) => {
+    props.handleLogin(email, password);
   };
+
+  useEffect(() => {
+    setOpen(props.shouldOpenSnackbar);
+  }, [props.shouldOpenSnackbar]);
+
+  const handleAlertClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const snackbar = (
+    <Snackbar
+      open={open}
+      autoHideDuration={2300}
+      onClose={handleAlertClose}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    >
+      <Alert onClose={handleAlertClose} severity="error">
+        You have entered an invalid username or password
+      </Alert>
+    </Snackbar>
+  );
 
   return (
     <div className="loginContainer">
@@ -127,6 +155,7 @@ export default function Login() {
           </div>
         </div>
       </div>
+      {snackbar}
     </div>
   );
 }
