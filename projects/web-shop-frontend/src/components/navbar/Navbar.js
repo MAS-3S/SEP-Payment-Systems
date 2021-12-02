@@ -74,6 +74,12 @@ export default function Navbar(props) {
 
   const changeWebshop = (webshop) => {
     setAnchorEl(null);
+    // var shoppingCartItems = JSON.parse(localStorage.getItem("shoppingCart"));
+    // if (shoppingCartItems.length !== 0) {
+    //   console.log("NE");
+    // } else {
+    //   setActiveWebshop(webshop);
+    // }
     setActiveWebshop(webshop);
   };
 
@@ -96,7 +102,7 @@ export default function Navbar(props) {
             >
               <MenuItem
                 style={{
-                  width: 250,
+                  width: 260,
                   height: 40,
                   justifyContent: "flex-start",
                 }}
@@ -227,7 +233,7 @@ export default function Navbar(props) {
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
-            style={{ width: 250, justifyContent: "flex-start" }}
+            style={{ width: 260, justifyContent: "flex-start" }}
           >
             <Typography className={classes.title} variant="h6">
               {activeWebshop.name}

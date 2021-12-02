@@ -19,8 +19,8 @@ public class ShoppingCart {
     @Column(name = "total_price", nullable = false)
     private Double totalPrice;
 
-    @Column(name = "timestamp", nullable = false)
-    private Date timestamp;
+    @Column(name = "create_date", nullable = false)
+    private Date createDate;
 
     @OneToMany(mappedBy = "shoppingCart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ItemToPurchase> items;
@@ -56,12 +56,12 @@ public class ShoppingCart {
         this.totalPrice = totalPrice;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
+    public Date getCreateDate() {
+        return createDate;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public List<ItemToPurchase> getItems() {

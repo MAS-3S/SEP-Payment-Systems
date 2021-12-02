@@ -52,11 +52,11 @@ public class ItemToPurchase {
         this.product = product;
     }
 
-    public ShoppingCart getShoppingCard() {
+    public ShoppingCart getShoppingCart() {
         return shoppingCart;
     }
 
-    public void setShoppingCard(ShoppingCart shoppingCart) {
+    public void setShoppingCart(ShoppingCart shoppingCart) {
         this.shoppingCart = shoppingCart;
     }
 }

@@ -9,7 +9,6 @@ export const PrivateRoute = ({ component: Component, roles, ...rest }) => {
       {...rest}
       render={(props) => {
         const user = AuthService.getCurrentUser();
-        console.log(user);
         if (user == null) {
           return (
             <Redirect

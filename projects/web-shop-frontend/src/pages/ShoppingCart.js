@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Item from "../components/shoppingCart/Item";
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
+import AuthService from "../services/AuthService";
 
 export default function ShoppingCart(props) {
   const [open, setOpen] = React.useState(false);
@@ -43,6 +44,24 @@ export default function ShoppingCart(props) {
       setShoppingCartItems(JSON.parse(localStorage.getItem("shoppingCart")));
       calculateTotalPrice();
     }
+  };
+
+  const handleCheckoutClick = () => {
+    var itemsToPurchase = [];
+    var shoppingCartItems = JSON.parse(localStorage.getItem("shoppingCart"));
+    for (let i = 0; i < shoppingCartItems.length; i++) {
+      itemsToPurchase.push({
+        productId: shoppingCartItems[i].id,
+        quantity: shoppingCartItems[i].quantity,
+      });
+    }
+    var shoppingCart = {
+      userId: AuthService.getCurrentUser().id,
+      webShopId: JSON.parse(sessionStorage.getItem("activeWebShop")).id,
+      totalPrice: totalPrice,
+      itemsToPurchase: itemsToPurchase,
+    };
+    props.saveShoppingCart(shoppingCart);
   };
 
   const items = Array.apply(null, {
@@ -164,10 +183,11 @@ export default function ShoppingCart(props) {
             variant="contained"
             color="primary"
             to={{
-              pathname: `/webshop/${activeWebshop}`,
+              pathname: `/shopping-cart/${activeWebshop}`,
             }}
             className="checkoutButton"
             style={{ textDecoration: "none", color: "white" }}
+            onClick={handleCheckoutClick}
           >
             CHECKOUT
           </Link>
