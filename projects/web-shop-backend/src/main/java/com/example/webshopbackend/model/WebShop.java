@@ -35,8 +35,11 @@ public class WebShop {
     private List<Accommodation> accommodations;
 
     //**
-    @OneToOne(mappedBy = "webShop")
-    private ShoppingCart shoppingCart;
+//    @OneToOne(mappedBy = "webShop")
+//    private ShoppingCart shoppingCart;
+
+    @OneToMany(mappedBy = "webShop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ShoppingCart> shoppingCarts;
 
     public WebShop() {
     }
@@ -73,14 +76,6 @@ public class WebShop {
         this.products = products;
     }
 
-    public ShoppingCart getShoppingCard() {
-        return shoppingCart;
-    }
-
-    public void setShoppingCard(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
     public WebShopType getType() {
         return type;
     }
@@ -103,5 +98,13 @@ public class WebShop {
 
     public void setAccommodations(List<Accommodation> accommodations) {
         this.accommodations = accommodations;
+    }
+
+    public List<ShoppingCart> getShoppingCarts() {
+        return shoppingCarts;
+    }
+
+    public void setShoppingCarts(List<ShoppingCart> shoppingCarts) {
+        this.shoppingCarts = shoppingCarts;
     }
 }

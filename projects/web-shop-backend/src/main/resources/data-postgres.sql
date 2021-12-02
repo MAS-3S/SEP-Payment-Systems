@@ -1,18 +1,24 @@
-insert into authority(id, name) values ('9fe91052-ac34-44cb-88a2-6915cfae2d20', 'ROLE_CUSTOMER');
+insert into web_shops (id, name, type) values ('902a1e99-87e9-43b1-8927-9fbd4c2d9ca8', 'Products Shop', 0);
+insert into web_shops (id, name, type) values ('999c0c7c-aff3-41df-957d-d0677d43007b', 'Conferences Shop', 1);
+insert into web_shops (id, name, type) values ('4086f1d4-4002-4f1e-9bf8-ab0e82048584', 'Accommodations Shop', 2);
+
 insert into authority(id, name) values ('af1d6537-273c-4451-9b59-efe06f826e6e', 'ROLE_ADMIN');
+insert into authority(id, name) values ('9fe91052-ac34-44cb-88a2-6915cfae2d20', 'ROLE_CUSTOMER');
 
 -- 11aaAA@@
-insert into users (id, password, full_name, email, address, phone, role, registered) values ('1ee82676-4f9c-11ec-81d3-0242ac130003', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Stefan Aradjanin', 'sa@mail.com', 'Cara Dusana 15', '0602236975', 0, true);
+insert into users (id, password, full_name, email, address, phone, role, registered, web_shop_id) values ('45ebf110-23ff-4d94-aa47-c3a0f389ea3a', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Products Admin', 'pa@mail.com', 'Cara Dusana 15', '0602236975', 0, true, '902a1e99-87e9-43b1-8927-9fbd4c2d9ca8');
+insert into users (id, password, full_name, email, address, phone, role, registered, web_shop_id) values ('23891da2-0f5f-4f01-9e1a-01c1acc04094', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Conferences Admin', 'ca@mail.com', 'Zmaj Jovina 20', '0606974458', 0, true, '999c0c7c-aff3-41df-957d-d0677d43007b');
+insert into users (id, password, full_name, email, address, phone, role, registered, web_shop_id) values ('9f17eef5-af8e-40c5-8a6b-dad9da9374b5', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Accommodations Admin', 'aa@mail.com', 'Josifa Runjanina 3', '0605498554', 0, true, '4086f1d4-4002-4f1e-9bf8-ab0e82048584');
+insert into users (id, password, full_name, email, address, phone, role, registered) values ('1ee82676-4f9c-11ec-81d3-0242ac130003', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Stefan Aradjanin', 'sa@mail.com', 'Cara Dusana 15', '0602236975', 1, true);
 insert into users (id, password, full_name, email, address, phone, role, registered) values ('27037478-4f9c-11ec-81d3-0242ac130003', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Stefan Savic', 'ss@mail.com', 'Zmaj Jovina 20', '0606974458', 1, true);
 insert into users (id, password, full_name, email, address, phone, role, registered) values ('346f24f4-4f9c-11ec-81d3-0242ac130003', '$2y$10$qtwLWVTQMKSjFvIviXg9teAdxqIyR.QgAgNKwDPm7iQBepQcp9Ade', 'Stefan Beljic', 'sb@mail.com', 'Josifa Runjanina 3', '0605498554', 1, true);
 
+insert into user_authority(user_id, authority_id) values ('45ebf110-23ff-4d94-aa47-c3a0f389ea3a', 'af1d6537-273c-4451-9b59-efe06f826e6e');
+insert into user_authority(user_id, authority_id) values ('23891da2-0f5f-4f01-9e1a-01c1acc04094', 'af1d6537-273c-4451-9b59-efe06f826e6e');
+insert into user_authority(user_id, authority_id) values ('9f17eef5-af8e-40c5-8a6b-dad9da9374b5', 'af1d6537-273c-4451-9b59-efe06f826e6e');
 insert into user_authority(user_id, authority_id) values ('1ee82676-4f9c-11ec-81d3-0242ac130003', '9fe91052-ac34-44cb-88a2-6915cfae2d20');
 insert into user_authority(user_id, authority_id) values ('27037478-4f9c-11ec-81d3-0242ac130003', '9fe91052-ac34-44cb-88a2-6915cfae2d20');
 insert into user_authority(user_id, authority_id) values ('346f24f4-4f9c-11ec-81d3-0242ac130003', '9fe91052-ac34-44cb-88a2-6915cfae2d20');
-
-insert into web_shops (id, name, type) values ('902a1e99-87e9-43b1-8927-9fbd4c2d9ca8', 'Products Shop', 0);
-insert into web_shops (id, name, type) values ('999c0c7c-aff3-41df-957d-d0677d43007b', 'Conferences Shop', 1);
-insert into web_shops (id, name, type) values ('4086f1d4-4002-4f1e-9bf8-ab0e82048584', 'Accommodation Shop', 2);
 
 insert into products (id, name, description, price, available_balance, image, currency, web_shop_id) values ('05ba8c89-607c-4632-9941-908b0c00e7e2', 'Gaming dask', 'The best gaming dask', 700.0, 10, 'dask.jpg', 1, '902a1e99-87e9-43b1-8927-9fbd4c2d9ca8');
 insert into products (id, name, description, price, available_balance, image, currency, web_shop_id) values ('36e49319-e965-434d-960c-2687c61abae1', 'Gaming chair', 'The best gaming chair', 200.0, 12, 'chair.jpg', 1, '902a1e99-87e9-43b1-8927-9fbd4c2d9ca8');
@@ -32,9 +38,9 @@ insert into transports (id, name, price, currency) values ('1995073e-a59b-4735-a
 insert into accommodations (id, address, start_date, days, number_of_beds, transport_id, web_shop_id) values ('8b9df238-e395-41a8-88a5-7fec8e106a5b', 'Ustanicka 15, Beograd', '2021-11-30', 3, 2, 'b885766b-430d-44c3-98ef-08d922a8275f', '4086f1d4-4002-4f1e-9bf8-ab0e82048584');
 insert into accommodations (id, address, start_date, days, number_of_beds, transport_id, web_shop_id) values ('59c3c356-9ba6-4b5e-b78e-093cd87cf670', 'Cara Lazara 22, Novi Sad', '2021-12-20', 2, 1, 'af5e134d-79fd-46b8-b366-81efd3808a81', '4086f1d4-4002-4f1e-9bf8-ab0e82048584');
 
-insert into shopping_carts (id, timestamp, total_price, user_id, web_shop_id) values ('6c0f1553-baaf-4d0e-9434-8d7dc3b352fa', '2021-11-30 08:00:00', 1400.0, '1ee82676-4f9c-11ec-81d3-0242ac130003', '902a1e99-87e9-43b1-8927-9fbd4c2d9ca8');
+insert into shopping_carts (id, create_date, total_price, user_id, web_shop_id) values ('6c0f1553-baaf-4d0e-9434-8d7dc3b352fa', '2021-11-30 08:00:00', 1400.0, '1ee82676-4f9c-11ec-81d3-0242ac130003', '902a1e99-87e9-43b1-8927-9fbd4c2d9ca8');
 
 insert into items_to_purchase (id, quantity, product_id, shopping_cart_id) values ('099ff31b-0c67-4e19-aa78-1396de7faeca', 2, '05ba8c89-607c-4632-9941-908b0c00e7e2', '6c0f1553-baaf-4d0e-9434-8d7dc3b352fa');
 
-insert into transactions (id, timestamp, amount, order_id, shopping_cart_id) values ('a06e51b7-cbcf-4223-be6f-4381becdfeec', '2021-11-30 08:00:00', 1400.0, '6c0f1553-baaf-4d0e-9434-8d7dc3b352fa', '6c0f1553-baaf-4d0e-9434-8d7dc3b352fa');
+insert into transactions (id, timestamp, amount, status, shopping_cart_id) values ('a06e51b7-cbcf-4223-be6f-4381becdfeec', '2021-11-30 08:00:00', 1400.0, 1, '6c0f1553-baaf-4d0e-9434-8d7dc3b352fa');
 

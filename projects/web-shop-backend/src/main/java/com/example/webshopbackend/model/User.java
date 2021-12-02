@@ -41,13 +41,15 @@ public class User implements UserDetails {
     @Column(name = "registered")
     private boolean isRegistered;
 
-
     //**
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private WebShop webShop;
 
-    @OneToOne(mappedBy = "user")
-    private ShoppingCart shoppingCart;
+//    @OneToOne(mappedBy = "user")
+//    private ShoppingCart shoppingCart;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ShoppingCart> shoppingCarts;
 
     public User() {
     }
@@ -157,5 +159,21 @@ public class User implements UserDetails {
 
     public void setRegistered(boolean registered) {
         isRegistered = registered;
+    }
+
+    public WebShop getWebShop() {
+        return webShop;
+    }
+
+    public void setWebShop(WebShop webShop) {
+        this.webShop = webShop;
+    }
+
+    public List<ShoppingCart> getShoppingCarts() {
+        return shoppingCarts;
+    }
+
+    public void setShoppingCarts(List<ShoppingCart> shoppingCarts) {
+        this.shoppingCarts = shoppingCarts;
     }
 }

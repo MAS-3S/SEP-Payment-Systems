@@ -2,6 +2,7 @@ import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React, { useEffect, useState } from "react";
 import "../../assets/css/productCardStyle.css";
+import TokenService from "../../services/TokenService";
 
 export default function ProductCard(props) {
   const [product, setProduct] = useState(props.product);
@@ -14,14 +15,50 @@ export default function ProductCard(props) {
     setProduct(props.product);
   }, [props.product]);
 
-  const handleAlertClick = () => {
-    let logged = false;
-    if (!logged) {
-      setAlertMessage("You must sign in to add product in shopping cart");
-      setAlertType("error");
-      setAlertDuration(2300);
-      setOpen(true);
+  const addToShoppingCart = () => {
+    if (!TokenService.getUser()) {
+      handleAlertClick(
+        "You must sign in to add product in shopping cart",
+        "error"
+      );
+      return;
     }
+    var shoppingCart = [];
+    shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"));
+    if (shoppingCart.length > 0) {
+      if (
+        shoppingCart[0].webShopId !==
+        JSON.parse(sessionStorage.getItem("activeWebShop")).id
+      ) {
+        handleAlertClick(
+          "You already have products from another web shop in your shopping card!",
+          "error"
+        );
+        return;
+      }
+    }
+    for (let i = 0; i < shoppingCart.length; i++) {
+      if (shoppingCart[i].id === props.product.id) {
+        handleAlertClick("Product is already in shopping cart", "error");
+        return;
+      }
+    }
+    handleAlertClick(
+      "Product is successfully added in shopping cart",
+      "success"
+    );
+    var product = props.product;
+    product.quantity = 1;
+    product.webShopId = JSON.parse(sessionStorage.getItem("activeWebShop")).id;
+    shoppingCart.push(product);
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+  };
+
+  const handleAlertClick = (message, type) => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setAlertDuration(2300);
+    setOpen(true);
   };
 
   const handleAlertClose = (event, reason) => {
@@ -51,7 +88,7 @@ export default function ProductCard(props) {
         <h1>{product.name}</h1>
         <p className="productCardInformation">{product.description}</p>
         <div className="productCardControl">
-          <button className="productCardBtn" onClick={handleAlertClick}>
+          <button className="productCardBtn" onClick={addToShoppingCart}>
             <span className="productCardPrice">
               {product.price} {product.currency}
             </span>

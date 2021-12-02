@@ -16,6 +16,7 @@ class AuthService {
 
   logout() {
     TokenService.removeUser();
+    localStorage.removeItem("shoppingCart");
   }
 
   register(email, fullName, address, phone, password) {
