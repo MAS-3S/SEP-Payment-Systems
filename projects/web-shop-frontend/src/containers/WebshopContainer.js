@@ -34,6 +34,8 @@ export default function WebshopContainer(props) {
             )
           ];
         setActiveWebshop(webShop);
+        sessionStorage.removeItem("activeWebShop");
+        sessionStorage.setItem("activeWebShop", JSON.stringify(webShop));
         if (webShop.type === "PRODUCT") {
           setProducts(await ProductService.findAllByWebShop(webShop.id));
         } else if (webShop.type === "CONFERENCE") {

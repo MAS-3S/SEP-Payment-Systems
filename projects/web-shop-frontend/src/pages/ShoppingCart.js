@@ -1,15 +1,110 @@
 import React, { useEffect, useState } from "react";
 import "../assets/css/shoppingCartStyle.css";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import CloseIcon from "@material-ui/icons/Close";
 import { Link } from "react-router-dom";
+import Item from "../components/shoppingCart/Item";
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
+import TokenService from "../services/TokenService";
 
 export default function ShoppingCart(props) {
+  const [open, setOpen] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState("");
+  const [alertType, setAlertType] = React.useState("");
+  const [alertDuration, setAlertDuration] = useState(2000);
+  const [loggedUser, setLoggedUser] = useState(props.loggedUser);
   const [activeWebshop, setActiveWebshop] = useState(props.webshop);
+  const [shoppingCartItems, setShoppingCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0.0);
 
   useEffect(() => {
+    setLoggedUser(props.loggedUser);
     setActiveWebshop(props.webshop);
-  }, [props.webshop]);
+    if (JSON.parse(localStorage.getItem("shoppingCart")) !== null) {
+      setShoppingCartItems(JSON.parse(localStorage.getItem("shoppingCart")));
+    }
+    calculateTotalPrice();
+  }, [props.webshop, props.loggedUser]);
+
+  const calculateTotalPrice = () => {
+    var totalPrice = 0.0;
+    var shoppingCartItems = JSON.parse(localStorage.getItem("shoppingCart"));
+    for (let i = 0; i < shoppingCartItems.length; i++) {
+      totalPrice += shoppingCartItems[i].price * shoppingCartItems[i].quantity;
+    }
+    setTotalPrice(totalPrice);
+  };
+
+  const handleRemovedItem = (removed) => {
+    if (removed) {
+      handleAlertClick(
+        "Item is successfully removed from shopping cart",
+        "success"
+      );
+      setShoppingCartItems(JSON.parse(localStorage.getItem("shoppingCart")));
+      calculateTotalPrice();
+    }
+  };
+
+  const handleCheckoutClick = () => {
+    var itemsToPurchase = [];
+    var shoppingCartItems = JSON.parse(localStorage.getItem("shoppingCart"));
+    if (shoppingCartItems.length === 0) {
+      handleAlertClick("Shopping cart is empty!", "error");
+      return;
+    }
+    for (let i = 0; i < shoppingCartItems.length; i++) {
+      itemsToPurchase.push({
+        productId: shoppingCartItems[i].id,
+        quantity: shoppingCartItems[i].quantity,
+      });
+    }
+    var shoppingCart = {
+      userId: TokenService.getUser().id,
+      webShopId: JSON.parse(sessionStorage.getItem("activeWebShop")).id,
+      totalPrice: totalPrice,
+      itemsToPurchase: itemsToPurchase,
+    };
+    props.saveShoppingCart(shoppingCart);
+  };
+
+  const items = Array.apply(null, {
+    length: shoppingCartItems.length,
+  }).map((_, i) => (
+    <Item
+      key={i}
+      item={shoppingCartItems[i]}
+      removed={handleRemovedItem}
+      changedQuantity={calculateTotalPrice}
+    />
+  ));
+
+  const handleAlertClick = (message, type) => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setAlertDuration(2500);
+    setOpen(true);
+  };
+
+  const handleAlertClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const snackbar = (
+    <Snackbar
+      open={open}
+      autoHideDuration={alertDuration}
+      onClose={handleAlertClose}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    >
+      <Alert onClose={handleAlertClose} severity={alertType}>
+        {alertMessage}
+      </Alert>
+    </Snackbar>
+  );
 
   return (
     <div className="shoppingCartCard">
@@ -23,150 +118,11 @@ export default function ShoppingCart(props) {
                 </h4>
               </div>
               <div className="col align-self-center text-right text-muted">
-                3 items
+                {shoppingCartItems.length} items
               </div>
             </div>
           </div>
-          <div className="shoppingCartScroll">
-            <div className="row border-top">
-              <div className="row mainShoppingCart align-items-center">
-                <div className="col-2">
-                  <img
-                    alt=""
-                    className="img-fluid"
-                    src="https://i.imgur.com/ba3tvGm.jpg"
-                  />
-                </div>
-                <div className="col">
-                  <div className="row text-muted">Shirt</div>
-                  <div className="row">Cotton T-shirt</div>
-                </div>
-                <div className="col">
-                  <div class="input-group" style={{ marginTop: -8 }}>
-                    <span
-                      class="input-group-prepend"
-                      style={{ height: 38, width: 38, marginTop: 8 }}
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-outline-secondary btn-number"
-                        disabled="disabled"
-                        data-type="minus"
-                        data-field="quant[1]"
-                      >
-                        <span class="fa fa-minus"></span>
-                      </button>
-                    </span>
-                    <input
-                      type="text"
-                      name="quant[1]"
-                      class="form-control input-number"
-                      value="1"
-                      min="1"
-                      max="100"
-                      style={{
-                        textAlign: "center",
-                      }}
-                    />
-                    <span
-                      class="input-group-append"
-                      style={{ height: 38, width: 38, marginTop: 8 }}
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-outline-secondary btn-number"
-                        data-type="plus"
-                        data-field="quant[1]"
-                      >
-                        <span class="fa fa-plus"></span>
-                      </button>
-                    </span>
-                  </div>
-                </div>
-                <div className="col" style={{ marginLeft: 20 }}>
-                  &euro; 44.00{" "}
-                  <span className="close">
-                    <CloseIcon
-                      style={{
-                        widht: 15,
-                        height: 15,
-                        marginTop: -3,
-                      }}
-                    />
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="row border-top border-bottom">
-              <div className="row mainShoppingCart align-items-center">
-                <div className="col-2">
-                  <img
-                    alt=""
-                    className="img-fluid"
-                    src="https://i.imgur.com/pHQ3xT3.jpg"
-                  />
-                </div>
-                <div className="col">
-                  <div className="row text-muted">Shirt</div>
-                  <div className="row">Cotton T-shirt</div>
-                </div>
-                <div className="col">
-                  <div class="input-group" style={{ marginTop: -8 }}>
-                    <span
-                      class="input-group-prepend"
-                      style={{ height: 38, width: 38, marginTop: 8 }}
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-outline-secondary btn-number"
-                        disabled="disabled"
-                        data-type="minus"
-                        data-field="quant[1]"
-                      >
-                        <span class="fa fa-minus"></span>
-                      </button>
-                    </span>
-                    <input
-                      type="text"
-                      name="quant[1]"
-                      class="form-control input-number"
-                      value="1"
-                      min="1"
-                      max="100"
-                      style={{
-                        textAlign: "center",
-                      }}
-                    />
-                    <span
-                      class="input-group-append"
-                      style={{ height: 38, width: 38, marginTop: 8 }}
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-outline-secondary btn-number"
-                        data-type="plus"
-                        data-field="quant[1]"
-                      >
-                        <span class="fa fa-plus"></span>
-                      </button>
-                    </span>
-                  </div>
-                </div>
-                <div className="col" style={{ marginLeft: 20 }}>
-                  &euro; 44.00{" "}
-                  <span className="close">
-                    <CloseIcon
-                      style={{
-                        widht: 15,
-                        height: 15,
-                        marginTop: -3,
-                      }}
-                    />
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div className="shoppingCartScroll">{items}</div>
           <div className="back-to-shop">
             <Link
               to={{
@@ -182,6 +138,33 @@ export default function ShoppingCart(props) {
         <div className="col-md-4 summaryShoppingCart">
           <div>
             <h5 className="h5ShoppingCart">
+              <b>Delivery info</b>
+            </h5>
+          </div>
+          <hr className="hrShoppingCart" />
+          <div className="row">
+            <div className="col" style={{ paddingLeft: 0 }}>
+              NAME
+            </div>
+            <div className="col text-right">{loggedUser.fullName}</div>
+          </div>
+          <hr className="hrShoppingCart" />
+          <div className="row">
+            <div className="col" style={{ paddingLeft: 0 }}>
+              ADDRESS
+            </div>
+            <div className="row text-right">{loggedUser.address}</div>
+          </div>
+          <hr className="hrShoppingCart" />
+          <div className="row">
+            <div className="col" style={{ paddingLeft: 0 }}>
+              PHONE
+            </div>
+            <div className="col text-right">{loggedUser.phone}</div>
+          </div>
+          <hr className="hrShoppingCart" />
+          <div>
+            <h5 className="h5ShoppingCart">
               <b>Summary</b>
             </h5>
           </div>
@@ -190,29 +173,31 @@ export default function ShoppingCart(props) {
             <div className="col" style={{ paddingLeft: 0 }}>
               ITEMS
             </div>
-            <div className="col text-right">3</div>
+            <div className="col text-right">{shoppingCartItems.length}</div>
           </div>
           <hr className="hrShoppingCart" />
           <div className="row">
             <div className="col" style={{ paddingLeft: 0 }}>
               TOTAL PRICE
             </div>
-            <div className="col text-right">&euro; 137.00</div>
+            <div className="col text-right">&euro; {totalPrice}</div>
           </div>
           <Link
             type="button"
             variant="contained"
             color="primary"
             to={{
-              pathname: `/webshop/${activeWebshop}`,
+              pathname: `/shopping-cart/${activeWebshop}`,
             }}
             className="checkoutButton"
             style={{ textDecoration: "none", color: "white" }}
+            onClick={handleCheckoutClick}
           >
             CHECKOUT
           </Link>
         </div>
       </div>
+      {snackbar}
     </div>
   );
 }

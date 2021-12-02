@@ -1,5 +1,7 @@
 package com.example.webshopbackend.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class AccommodationDto {
@@ -12,6 +14,7 @@ public class AccommodationDto {
     private int availableBalance;
     private String currency;
     private String address;
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private Date startDate;
     private int days;
     private int numberOfBeds;

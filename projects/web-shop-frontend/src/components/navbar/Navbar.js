@@ -11,6 +11,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
 import WebShopService from "../../services/WebShopService";
 import AuthService from "../../services/AuthService";
+import { Badge } from "@material-ui/core";
 import TokenService from "../../services/TokenService";
 import SubscribeService from "../../services/SubscribeService";
 
@@ -47,6 +48,8 @@ export default function Navbar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [webshops, setWebshops] = useState([]);
   const [activeWebshop, setActiveWebshop] = useState({ name: "" });
+  const [numberOfProductsInShoppingCart, setNumberOfProductsInShoppingCart] =
+    useState(0);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -55,6 +58,10 @@ export default function Navbar(props) {
       var webshops = await WebShopService.findAll();
       setWebshops(webshops);
       setActiveWebshop(webshops[0]);
+      setNumberOfProductsInShoppingCart(0);
+      // setNumberOfProductsInShoppingCart(
+      //   JSON.parse(localStorage.getItem("shoppingCart")).length
+      // );
     }
     fetchData();
   }, []);
@@ -94,14 +101,14 @@ export default function Navbar(props) {
                 pathname: `/webshop/${webshop.name.toLowerCase()}`,
               }}
               style={{ textDecoration: "none", color: "black" }}
+              onClick={() => changeWebshop(webshop)}
             >
               <MenuItem
                 style={{
-                  width: 250,
+                  width: 260,
                   height: 40,
                   justifyContent: "flex-start",
                 }}
-                onClick={() => changeWebshop(webshop)}
               >
                 {webshop.name}
               </MenuItem>
@@ -161,58 +168,61 @@ export default function Navbar(props) {
           </Link>
         </div>
       );
+    } else if (TokenService.getUserRole() === "Customer") {
+      return (
+        <div className={classes.sectionDesktop}>
+          <Link
+            variant="contained"
+            color="primary"
+            to={{
+              pathname: `/shopping-cart/${activeWebshop.name.toLowerCase()}`,
+            }}
+            className="myButton"
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Shopping cart
+            <Badge
+              badgeContent={numberOfProductsInShoppingCart}
+              color="secondary"
+              style={{ float: "right", marginTop: -12 }}
+            ></Badge>
+          </Link>
+          <Link
+            variant="contained"
+            color="primary"
+            to="/login"
+            className="myButton"
+            onClick={handleLogOut}
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Log out
+          </Link>
+        </div>
+      );
     } else {
-      if (TokenService.getUserRole() === "Customer") {
-        return (
-          <div className={classes.sectionDesktop}>
-            <Link
-              variant="contained"
-              color="primary"
-              to={{
-                pathname: `/shopping-cart/${activeWebshop.name.toLowerCase()}`,
-              }}
-              className="myButton"
-              style={{ textDecoration: "none", color: "white" }}
-            >
-              Shopping cart
-            </Link>
-            <Link
-              variant="contained"
-              color="primary"
-              to="/login"
-              className="myButton"
-              onClick={handleLogOut}
-              style={{ textDecoration: "none", color: "white" }}
-            >
-              Log out
-            </Link>
-          </div>
-        );
-      } else {
-        return (
-          <div className={classes.sectionDesktop}>
-            <button
-              variant="contained"
-              color="primary"
-              className="myButton"
-              style={{ textDecoration: "none", color: "white", marginTop: 15 }}
-              onClick={handleSubscribe}
-            >
-              Payments
-            </button>
-            <Link
-              variant="contained"
-              color="primary"
-              to="/login"
-              className="myButton"
-              onClick={handleLogOut}
-              style={{ textDecoration: "none", color: "white" }}
-            >
-              Log out
-            </Link>
-          </div>
-        );
-      }
+      return (
+        <div className={classes.sectionDesktop}>
+          <button
+            variant="contained"
+            color="primary"
+            className="myButton"
+            style={{ textDecoration: "none", color: "white", marginTop: 15 }}
+            onClick={handleSubscribe}
+          >
+            Payments
+          </button>
+          <Link
+            variant="contained"
+            color="primary"
+            to="/login"
+            className="myButton"
+            onClick={handleLogOut}
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Log out
+          </Link>
+        </div>
+      );
     }
   })();
 
@@ -249,7 +259,7 @@ export default function Navbar(props) {
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
-            style={{ width: 250, justifyContent: "flex-start" }}
+            style={{ width: 260, justifyContent: "flex-start" }}
           >
             <Typography className={classes.title} variant="h6">
               {activeWebshop.name}

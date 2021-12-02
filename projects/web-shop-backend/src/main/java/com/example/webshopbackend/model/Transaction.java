@@ -1,5 +1,6 @@
 package com.example.webshopbackend.model;
 
+import com.example.webshopbackend.model.enums.TransactionStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,11 +19,11 @@ public class Transaction {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
-    @Column(name = "order_id", nullable = false)
-    private String orderId;
-
     @Column(name = "timestamp", nullable = false)
     private Date timestamp;
+
+    @Column(name = "status", nullable = false)
+    private TransactionStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
@@ -47,14 +48,6 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
     public Date getTimestamp() {
         return timestamp;
     }
@@ -63,11 +56,19 @@ public class Transaction {
         this.timestamp = timestamp;
     }
 
-    public ShoppingCart getShoppingCard() {
+    public TransactionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TransactionStatus status) {
+        this.status = status;
+    }
+
+    public ShoppingCart getShoppingCart() {
         return shoppingCart;
     }
 
-    public void setShoppingCard(ShoppingCart shoppingCart) {
+    public void setShoppingCart(ShoppingCart shoppingCart) {
         this.shoppingCart = shoppingCart;
     }
 }

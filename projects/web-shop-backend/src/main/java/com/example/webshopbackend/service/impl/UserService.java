@@ -33,6 +33,10 @@ public class UserService implements IUserService {
         this.emailService = emailService;
     }
 
+    @Override
+    public User findById(String id) {
+        return userRepository.findById(id);
+    }
 
     @Override
     public void registerNewCustomer(UserRegistrationDTO dto, String siteUrl) throws Exception {
@@ -87,4 +91,5 @@ public class UserService implements IUserService {
             return true;
         }
     }
+
 }

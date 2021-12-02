@@ -17,8 +17,11 @@ public class ItemToPurchase {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "product_id", referencedColumnName = "id")
+//    private Product product;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Product product;
 
     //**
@@ -52,11 +55,11 @@ public class ItemToPurchase {
         this.product = product;
     }
 
-    public ShoppingCart getShoppingCard() {
+    public ShoppingCart getShoppingCart() {
         return shoppingCart;
     }
 
-    public void setShoppingCard(ShoppingCart shoppingCart) {
+    public void setShoppingCart(ShoppingCart shoppingCart) {
         this.shoppingCart = shoppingCart;
     }
 }

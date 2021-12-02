@@ -1,6 +1,6 @@
 import axios from "axios";
 import TokenService from "./TokenService";
-import { LOGIN_URL } from "../util/Constants";
+import { LOGIN_URL, WEBSHOP_URL } from "../util/Constants";
 
 const instance = axios.create({
   headers: {
@@ -67,7 +67,7 @@ instance.interceptors.response.use(
           TokenService.getLocalRefreshToken()
         );
         try {
-          const rs = await instance.post("auth/refreshToken", {
+          const rs = await instance.post(WEBSHOP_URL + "auth/refreshToken", {
             refreshToken: TokenService.getLocalRefreshToken(),
           });
 

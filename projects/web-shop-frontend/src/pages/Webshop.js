@@ -11,6 +11,9 @@ export default function Webshop(props) {
 
   useEffect(() => {
     setActiveWebshop(props.activeWebshop);
+    if (!localStorage.getItem("shoppingCart")) {
+      localStorage.setItem("shoppingCart", JSON.stringify([]));
+    }
   }, [props.activeWebshop]);
 
   useEffect(() => {

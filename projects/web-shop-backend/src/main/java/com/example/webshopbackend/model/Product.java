@@ -4,6 +4,8 @@ import com.example.webshopbackend.model.enums.Currency;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
+
 import static javax.persistence.InheritanceType.JOINED;
 
 @Entity
@@ -39,8 +41,11 @@ public class Product {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private WebShop webShop;
 
-    @OneToOne(mappedBy = "product")
-    private ItemToPurchase itemToPurchase;
+//    @OneToOne(mappedBy = "product")
+//    private ItemToPurchase itemToPurchase;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ItemToPurchase> itemsToPurchase;
 
     public Product() {
     }
@@ -109,11 +114,11 @@ public class Product {
         this.webShop = webShop;
     }
 
-    public ItemToPurchase getItemToPurchase() {
-        return itemToPurchase;
+    public List<ItemToPurchase> getItemsToPurchase() {
+        return itemsToPurchase;
     }
 
-    public void setItemToPurchase(ItemToPurchase itemToPurchase) {
-        this.itemToPurchase = itemToPurchase;
+    public void setItemsToPurchase(List<ItemToPurchase> itemsToPurchase) {
+        this.itemsToPurchase = itemsToPurchase;
     }
 }
