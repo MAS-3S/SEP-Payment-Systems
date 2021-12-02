@@ -5,6 +5,8 @@ public class PaymentMethodTypeForMerchantDTO {
     private String id;
     private String name;
     private boolean isSubscribed;
+    private String image;
+    private String description;
 
     public PaymentMethodTypeForMerchantDTO() {
     }
@@ -31,5 +33,21 @@ public class PaymentMethodTypeForMerchantDTO {
 
     public void setSubscribed(boolean subscribed) {
         isSubscribed = subscribed;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

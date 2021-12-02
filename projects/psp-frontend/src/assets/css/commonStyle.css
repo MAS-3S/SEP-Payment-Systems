@@ -1,0 +1,90 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #f6f5f7;
+  font-family: "Montserrat", sans-serif;
+}
+
+h1 {
+  font-weight: bold;
+  margin: 0;
+  font-size: xx-large;
+}
+
+h2 {
+  text-align: center;
+  font-size: xx-large;
+}
+
+p {
+  font-size: 14px;
+  font-weight: 100;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  margin: 20px 0 30px;
+}
+
+span {
+  font-size: 12px;
+}
+
+a {
+  color: #333;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 15px 0;
+}
+
+.myButton {
+  width: 150px;
+  height: 45px;
+  margin-right: 10px;
+  border-radius: 10px;
+  border: 1px solid #424e66;
+  background: #424e66;
+  background: -webkit-linear-gradient(to right, #424e66, #576276);
+  background: linear-gradient(to right, #424e66, #576276);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 15px 0px;
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in;
+  white-space: nowrap;
+}
+
+.myButton:active {
+  transform: scale(0.95);
+}
+
+.myButton:focus {
+  outline: none;
+}
+
+.myButton.ghost {
+  background-color: transparent;
+  border-color: #ffffff;
+}
+
+.myForm {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  text-align: center;
+}
+
+input {
+  background-color: #eee;
+  border: none;
+  padding: 12px 15px;
+  margin: 8px 0;
+  width: 100%;
+}
