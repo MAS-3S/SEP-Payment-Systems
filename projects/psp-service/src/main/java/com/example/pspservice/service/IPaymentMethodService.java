@@ -12,7 +12,7 @@ public interface IPaymentMethodService {
 
     List<PaymentMethodTypeForMerchantDTO> findMerchantsPaymentMethods(String merchantId) throws Exception;
 
-    String redirectMerchantToSubscribePage(String merchantId);
+    String redirectMerchantToSubscribePage(String merchantId) throws Exception;
 
     void changeSubscriptionToPaymentMethod(SubscribeToPaymentMethodDTO dto) throws Exception;
 

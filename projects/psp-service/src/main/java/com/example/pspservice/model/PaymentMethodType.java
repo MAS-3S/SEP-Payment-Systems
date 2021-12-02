@@ -18,9 +18,14 @@ public class PaymentMethodType {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String image;
+
+    @Column(nullable = false)
+    private String description;
+
     @OneToMany(mappedBy = "paymentMethodType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Payment> paymentList;
-
 
     public PaymentMethodType() {
     }
@@ -48,4 +53,21 @@ public class PaymentMethodType {
     public void setPaymentList(List<Payment> paymentList) {
         this.paymentList = paymentList;
     }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
+
