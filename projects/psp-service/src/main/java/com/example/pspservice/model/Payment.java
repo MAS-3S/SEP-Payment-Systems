@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transactions")
-public class Transaction {
+@Table(name = "payments")
+public class Payment {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -26,9 +26,9 @@ public class Transaction {
     private LocalDateTime merchantTimeStamp;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private SubscriptionType subscriptionType;
+    private PaymentMethodType paymentMethodType;
 
-    public Transaction() {
+    public Payment() {
     }
 
     public String getId() {
@@ -71,11 +71,11 @@ public class Transaction {
         this.merchantTimeStamp = merchantTimeStamp;
     }
 
-    public SubscriptionType getSubscriptionType() {
-        return subscriptionType;
+    public PaymentMethodType getPaymentMethodType() {
+        return paymentMethodType;
     }
 
-    public void setSubscriptionType(SubscriptionType subscriptionType) {
-        this.subscriptionType = subscriptionType;
+    public void setPaymentMethodType(PaymentMethodType paymentMethodType) {
+        this.paymentMethodType = paymentMethodType;
     }
 }

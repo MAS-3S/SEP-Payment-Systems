@@ -23,7 +23,7 @@ public class Merchant {
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    List<SubscriptionType> subscriptionTypes;
+    List<PaymentMethodType> paymentMethodTypes;
 
 
     private String returnUrl;
@@ -63,11 +63,20 @@ public class Merchant {
         this.returnUrl = returnUrl;
     }
 
-    public List<SubscriptionType> getSubscriptionTypeList() {
-        return subscriptionTypes;
+    public List<PaymentMethodType> getPaymentMethodTypes() {
+        return paymentMethodTypes;
     }
 
-    public void setSubscriptionTypeList(List<SubscriptionType> subscriptionTypeList) {
-        this.subscriptionTypes = subscriptionTypeList;
+    public void setPaymentMethodTypes(List<PaymentMethodType> paymentMethodTypeList) {
+        this.paymentMethodTypes = paymentMethodTypeList;
     }
+
+    public void addToPaymentMethod(PaymentMethodType paymentMethodType) {
+        this.paymentMethodTypes.add(paymentMethodType);
+    }
+
+    public void deleteFromPaymentMethod(PaymentMethodType paymentMethodType) {
+        this.paymentMethodTypes.remove(paymentMethodType);
+    }
+
 }
