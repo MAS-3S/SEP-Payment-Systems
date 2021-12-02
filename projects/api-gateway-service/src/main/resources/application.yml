@@ -12,7 +12,18 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: testModule
-          uri: lb://TEST-SERVICE
+        - id: pspPaymentMethods
+          uri: lb://PSP-SERVICE
           predicates:
-            - Path=/test/**
+            - Path=/api/psp/paymentMethods/{merchantId}
+            - Method=GET
+        - id: pspPaymentMethodsSubscribeUrl
+          uri: lb://PSP-SERVICE
+          predicates:
+            - Path=/api/psp/paymentMethods/subscribeUrl
+            - Method=POST
+        - id: pspPaymentMethodsSubscribe
+          uri: lb://PSP-SERVICE
+          predicates:
+            - Path=/api/psp/paymentMethods/changeSubscription
+            - Method=POST
