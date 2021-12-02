@@ -1,9 +1,10 @@
 import api from "./API";
 import TokenService from "./TokenService";
+import { WEBSHOP_URL } from "../util/Constants";
 
 class AuthService {
   async login(email, password) {
-    const response = await api.post("/auth/login", {
+    const response = await api.post(WEBSHOP_URL + "auth/login", {
       email,
       password,
     });
@@ -18,17 +19,13 @@ class AuthService {
   }
 
   register(email, fullName, address, phone, password) {
-    return api.post("/api/users/register", {
+    return api.post(WEBSHOP_URL + "api/users/register", {
       email,
       fullName,
       address,
       phone,
       password,
     });
-  }
-
-  getCurrentUser() {
-    return TokenService.getUser();
   }
 }
 

@@ -1,9 +1,8 @@
 import axios from "axios";
 import TokenService from "./TokenService";
-import { API_URL, LOGIN_URL } from "../util/Constants";
+import { LOGIN_URL } from "../util/Constants";
 
 const instance = axios.create({
-  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
