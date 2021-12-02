@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "subscription_types")
-public class SubscriptionType {
+@Table(name = "payment_method_types")
+public class PaymentMethodType {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -18,11 +18,11 @@ public class SubscriptionType {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "subscriptionType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Transaction> transactionList;
+    @OneToMany(mappedBy = "paymentMethodType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Payment> paymentList;
 
 
-    public SubscriptionType() {
+    public PaymentMethodType() {
     }
 
     public String getId() {
@@ -41,11 +41,11 @@ public class SubscriptionType {
         this.name = name;
     }
 
-    public List<Transaction> getTransactionList() {
-        return transactionList;
+    public List<Payment> getPaymentList() {
+        return paymentList;
     }
 
-    public void setTransactionList(List<Transaction> transactionList) {
-        this.transactionList = transactionList;
+    public void setPaymentList(List<Payment> paymentList) {
+        this.paymentList = paymentList;
     }
 }

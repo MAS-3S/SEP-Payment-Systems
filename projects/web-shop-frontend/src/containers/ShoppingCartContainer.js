@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ShoppingCart from "../pages/ShoppingCart";
-import AuthService from "../services/AuthService";
 import PaymentService from "../services/PaymentService";
+import TokenService from "../services/TokenService";
 import UserService from "../services/UserService";
 
 export default function ShoppingCartContainer(props) {
@@ -11,9 +11,7 @@ export default function ShoppingCartContainer(props) {
   useEffect(() => {
     setShoppingCartItems(JSON.parse(localStorage.getItem("shoppingCart")));
     async function fetchData() {
-      var loggedUser = await UserService.findById(
-        AuthService.getCurrentUser().id
-      );
+      var loggedUser = await UserService.findById(TokenService.getUser().id);
       setLoggedUser(loggedUser);
     }
     fetchData();

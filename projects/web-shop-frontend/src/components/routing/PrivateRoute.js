@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import AuthService from "../../services/AuthService";
+import TokenService from "../../services/TokenService";
 
 export const PrivateRoute = ({ component: Component, roles, ...rest }) => {
   if (!Component) return null;
@@ -8,7 +8,7 @@ export const PrivateRoute = ({ component: Component, roles, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
-        const user = AuthService.getCurrentUser();
+        const user = TokenService.getUser();
         if (user == null) {
           return (
             <Redirect

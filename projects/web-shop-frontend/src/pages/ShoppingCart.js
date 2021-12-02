@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Item from "../components/shoppingCart/Item";
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import AuthService from "../services/AuthService";
+import TokenService from "../services/TokenService";
 
 export default function ShoppingCart(props) {
   const [open, setOpen] = React.useState(false);
@@ -49,6 +49,10 @@ export default function ShoppingCart(props) {
   const handleCheckoutClick = () => {
     var itemsToPurchase = [];
     var shoppingCartItems = JSON.parse(localStorage.getItem("shoppingCart"));
+    if (shoppingCartItems.length === 0) {
+      handleAlertClick("Shopping cart is empty!", "error");
+      return;
+    }
     for (let i = 0; i < shoppingCartItems.length; i++) {
       itemsToPurchase.push({
         productId: shoppingCartItems[i].id,
@@ -56,7 +60,7 @@ export default function ShoppingCart(props) {
       });
     }
     var shoppingCart = {
-      userId: AuthService.getCurrentUser().id,
+      userId: TokenService.getUser().id,
       webShopId: JSON.parse(sessionStorage.getItem("activeWebShop")).id,
       totalPrice: totalPrice,
       itemsToPurchase: itemsToPurchase,

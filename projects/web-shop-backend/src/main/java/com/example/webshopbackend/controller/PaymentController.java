@@ -19,6 +19,11 @@ public class PaymentController {
 
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody PaymentDto dto) {
+
+        if(dto.getItemsToPurchase().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         try {
             shoppingCartService.save(dto);
         } catch (Exception e) {

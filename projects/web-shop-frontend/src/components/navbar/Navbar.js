@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import WebShopService from "../../services/WebShopService";
 import AuthService from "../../services/AuthService";
 import { Badge } from "@material-ui/core";
+import TokenService from "../../services/TokenService";
+import SubscribeService from "../../services/SubscribeService";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -74,12 +76,6 @@ export default function Navbar(props) {
 
   const changeWebshop = (webshop) => {
     setAnchorEl(null);
-    // var shoppingCartItems = JSON.parse(localStorage.getItem("shoppingCart"));
-    // if (shoppingCartItems.length !== 0) {
-    //   console.log("NE");
-    // } else {
-    //   setActiveWebshop(webshop);
-    // }
     setActiveWebshop(webshop);
   };
 
@@ -87,6 +83,12 @@ export default function Navbar(props) {
 
   const handleLogOut = () => {
     AuthService.logout();
+  };
+
+  const handleSubscribe = () => {
+    SubscribeService.findSubscribeUrl(activeWebshop.id).then((response) => {
+      window.location.href = response;
+    });
   };
 
   const webShopItems =
@@ -99,6 +101,7 @@ export default function Navbar(props) {
                 pathname: `/webshop/${webshop.name.toLowerCase()}`,
               }}
               style={{ textDecoration: "none", color: "black" }}
+              onClick={() => changeWebshop(webshop)}
             >
               <MenuItem
                 style={{
@@ -106,7 +109,6 @@ export default function Navbar(props) {
                   height: 40,
                   justifyContent: "flex-start",
                 }}
-                onClick={() => changeWebshop(webshop)}
               >
                 {webshop.name}
               </MenuItem>
@@ -143,7 +145,7 @@ export default function Navbar(props) {
   );
 
   const navbarLinks = (() => {
-    if (!AuthService.getCurrentUser()) {
+    if (!TokenService.getUser()) {
       return (
         <div className={classes.sectionDesktop}>
           <Link
@@ -166,7 +168,7 @@ export default function Navbar(props) {
           </Link>
         </div>
       );
-    } else {
+    } else if (TokenService.getUserRole() === "Customer") {
       return (
         <div className={classes.sectionDesktop}>
           <Link
@@ -185,6 +187,30 @@ export default function Navbar(props) {
               style={{ float: "right", marginTop: -12 }}
             ></Badge>
           </Link>
+          <Link
+            variant="contained"
+            color="primary"
+            to="/login"
+            className="myButton"
+            onClick={handleLogOut}
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Log out
+          </Link>
+        </div>
+      );
+    } else {
+      return (
+        <div className={classes.sectionDesktop}>
+          <button
+            variant="contained"
+            color="primary"
+            className="myButton"
+            style={{ textDecoration: "none", color: "white", marginTop: 15 }}
+            onClick={handleSubscribe}
+          >
+            Payments
+          </button>
           <Link
             variant="contained"
             color="primary"
