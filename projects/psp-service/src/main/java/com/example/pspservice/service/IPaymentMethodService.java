@@ -2,6 +2,7 @@ package com.example.pspservice.service;
 
 import com.example.pspservice.dto.PaymentMethodTypeDTO;
 import com.example.pspservice.dto.PaymentMethodTypeForMerchantDTO;
+import com.example.pspservice.dto.RequestPaymentDTO;
 import com.example.pspservice.dto.SubscribeToPaymentMethodDTO;
 import com.example.pspservice.model.PaymentMethodType;
 
@@ -15,7 +16,7 @@ public interface IPaymentMethodService {
 
     String redirectMerchantToSubscribePage(String merchantId) throws Exception;
 
-    String redirectMerchantToPaymentPage(String merchantId) throws Exception;
+    String redirectMerchantToPaymentPage(RequestPaymentDTO dto) throws Exception;
 
     void changeSubscriptionToPaymentMethod(SubscribeToPaymentMethodDTO dto) throws Exception;
 

@@ -168,7 +168,7 @@ export default function Navbar(props) {
           </Link>
         </div>
       );
-    } else if (TokenService.getUserRole() === "Customer") {
+    } else if (TokenService.getUserRole() === "CUSTOMER") {
       return (
         <div className={classes.sectionDesktop}>
           <Link

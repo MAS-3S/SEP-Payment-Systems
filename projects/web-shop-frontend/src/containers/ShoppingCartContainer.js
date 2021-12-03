@@ -23,6 +23,7 @@ export default function ShoppingCartContainer(props) {
         .then((response) => {
           localStorage.removeItem("shoppingCart");
           localStorage.setItem("shoppingCart", JSON.stringify([]));
+          window.location.href = response;
         })
         .catch((error) => {
           alert(error);

@@ -18,18 +18,18 @@ public class PaymentController {
     private IShoppingCartService shoppingCartService;
 
     @PostMapping("")
-    public ResponseEntity<?> save(@RequestBody PaymentDto dto) {
+    public ResponseEntity<String> save(@RequestBody PaymentDto dto) {
 
         if(dto.getItemsToPurchase().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
+        String url = "";
         try {
-            shoppingCartService.save(dto);
+            url = shoppingCartService.save(dto);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(url, HttpStatus.OK);
     }
 }

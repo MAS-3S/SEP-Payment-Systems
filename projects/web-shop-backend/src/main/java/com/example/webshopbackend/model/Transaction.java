@@ -4,6 +4,7 @@ import com.example.webshopbackend.model.enums.TransactionStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -20,7 +21,7 @@ public class Transaction {
     private Double amount;
 
     @Column(name = "timestamp", nullable = false)
-    private Date timestamp;
+    private LocalDateTime timestamp;
 
     @Column(name = "status", nullable = false)
     private TransactionStatus status;
@@ -48,11 +49,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 

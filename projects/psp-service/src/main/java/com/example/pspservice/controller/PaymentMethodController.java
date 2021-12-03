@@ -1,9 +1,6 @@
 package com.example.pspservice.controller;
 
-import com.example.pspservice.dto.PaymentMethodTypeDTO;
-import com.example.pspservice.dto.PaymentMethodTypeForMerchantDTO;
-import com.example.pspservice.dto.SubscribeToPaymentMethodDTO;
-import com.example.pspservice.dto.SubscribeUrlDTO;
+import com.example.pspservice.dto.*;
 import com.example.pspservice.mapper.PaymentMethodTypeMapper;
 import com.example.pspservice.service.IPaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +40,8 @@ public class PaymentMethodController {
     }
 
     @PostMapping(value = "/paymentUrl", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> sendMerchantToPaymentPage(@RequestBody SubscribeUrlDTO dto) throws Exception {
-        return new ResponseEntity<>(paymentMethodService.redirectMerchantToPaymentPage(dto.getMerchantId()), HttpStatus.OK);
+    public ResponseEntity<?> sendMerchantToPaymentPage(@RequestBody RequestPaymentDTO dto) throws Exception {
+        return new ResponseEntity<>(paymentMethodService.redirectMerchantToPaymentPage(dto), HttpStatus.OK);
     }
 
     @PostMapping(value = "/changeSubscription", consumes = MediaType.APPLICATION_JSON_VALUE)
