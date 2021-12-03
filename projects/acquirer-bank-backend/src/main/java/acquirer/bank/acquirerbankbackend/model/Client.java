@@ -1,4 +1,4 @@
-package com.example.acquirerservice.model;
+package acquirer.bank.acquirerbankbackend.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "clients")
+@Table(name="clients")
 public class Client {
 
     @Id
@@ -15,13 +15,16 @@ public class Client {
     @Column(name = "id", updatable = false, nullable = false)
     private String id;
 
-    @Column(nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CreditCard> cards;
 
     public Client() {
@@ -49,6 +52,14 @@ public class Client {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public List<CreditCard> getCards() {

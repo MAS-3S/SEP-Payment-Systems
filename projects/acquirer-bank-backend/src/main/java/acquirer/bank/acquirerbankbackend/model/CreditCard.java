@@ -1,12 +1,12 @@
-package com.example.acquirerservice.model;
+package acquirer.bank.acquirerbankbackend.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "credit_cards")
+@Table(name="credit_cards")
 public class CreditCard {
 
     @Id
@@ -15,29 +15,32 @@ public class CreditCard {
     @Column(name = "id", updatable = false, nullable = false)
     private String id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Client client;
-
-    @Column(nullable = false, unique = true)
+    @Column(name = "pan", nullable = false)
     private String pan;
 
-    @Column(nullable = false)
+    @Column(name = "ccv", nullable = false)
     private String ccv;
 
-    @Column(nullable = false)
-    private LocalDateTime expirationDate;
+    @Column(name = "expiration_date", nullable = false)
+    private LocalDate expirationDate;
 
-    @Column(nullable = false)
+    @Column(name = "account_number", nullable = false)
+    private String accountNumber;
+
+    @Column(name = "available_amount", nullable = false)
     private Double availableAmount;
 
-    @Column(nullable = false)
+    @Column(name = "reserved_amount", nullable = false)
     private Double reservedAmount;
 
-    @Column(nullable = false)
+    @Column(name = "merchant_id", nullable = false)
     private String merchantId;
 
-    @Column(nullable = false)
+    @Column(name = "merchant_password", nullable = false)
     private String merchantPassword;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Client client;
 
     public CreditCard() {
     }
@@ -48,14 +51,6 @@ public class CreditCard {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 
     public String getPan() {
@@ -74,12 +69,20 @@ public class CreditCard {
         this.ccv = ccv;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public Double getAvailableAmount() {
@@ -112,5 +115,13 @@ public class CreditCard {
 
     public void setMerchantPassword(String merchantPassword) {
         this.merchantPassword = merchantPassword;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 }
