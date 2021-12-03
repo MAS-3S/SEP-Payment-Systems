@@ -1,10 +1,10 @@
-package com.example.acquirerservice;
+package acquirer.bank.acquirerbankbackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AcquirerServiceApplicationTests {
+class AcquirerBankBackendApplicationTests {
 
 	@Test
 	void contextLoads() {
