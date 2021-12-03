@@ -4,7 +4,7 @@ import acquirer.bank.acquirerbankbackend.model.enums.TransactionStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="transactions")
@@ -20,7 +20,7 @@ public class Transaction {
     private Double amount;
 
     @Column(name = "timestamp", nullable = false)
-    private LocalDate timestamp;
+    private LocalDateTime timestamp;
 
     @Column(name = "order_id", nullable = false)
     private String orderId;
@@ -62,11 +62,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public LocalDate getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDate timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
