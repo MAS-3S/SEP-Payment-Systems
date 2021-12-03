@@ -1,7 +1,9 @@
 package com.example.pspservice.service.impl;
 
+import com.example.pspservice.dto.PaymentMethodTypeDTO;
 import com.example.pspservice.dto.PaymentMethodTypeForMerchantDTO;
 import com.example.pspservice.dto.SubscribeToPaymentMethodDTO;
+import com.example.pspservice.mapper.PaymentMethodTypeMapper;
 import com.example.pspservice.model.Merchant;
 import com.example.pspservice.model.PaymentMethodType;
 import com.example.pspservice.repository.MerchantRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Assert;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
@@ -28,14 +31,20 @@ public class PaymentMethodService implements IPaymentMethodService {
 
     protected final Log log = LogFactory.getLog(getClass());
 
+    //izmeni posle u https
+    private static final String HTTP_PREFIX = "http://";
+
     @Value("${pspfront.port}")
     private String pspFrontPort;
     @Value("${pspfront.host}")
     private String pspFrontHost;
     @Value("${pspfront.subscribe.route}")
     private String pspFrontSubscribeUrl;
-    //izmeni posle u https
-    private static final String HTTP_PREFIX = "http://";
+    @Value("${pspfront.payment.route}")
+    private String pspFrontPaymentUrl;
+
+
+
 
     private final PaymentMethodTypeRepository paymentMethodTypeRepository;
     private final MerchantRepository merchantRepository;
@@ -53,7 +62,7 @@ public class PaymentMethodService implements IPaymentMethodService {
     }
 
     @Override
-    public List<PaymentMethodTypeForMerchantDTO> findMerchantsPaymentMethods(String merchantId) throws Exception {
+    public List<PaymentMethodTypeForMerchantDTO> findMerchantsPaymentMethodsForSubscription(String merchantId) throws Exception {
         if (merchantId == null) {
             throw new Exception("Merchant id is null!");
         }
@@ -86,18 +95,31 @@ public class PaymentMethodService implements IPaymentMethodService {
         log.info("Redirecting merchant to subscribe page from PSP");
         Merchant merchant = merchantRepository.findByMerchantId(merchantId);
         if (merchant == null) {
+            log.error("Failed to get url from psp subscribe page");
             throw new EntityNotFoundException("Merchant with id: " + merchantId + " doesn't exists.");
         }
         return HTTP_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontSubscribeUrl + merchant.getId();
     }
 
     @Override
+    public String redirectMerchantToPaymentPage(String merchantId) throws Exception {
+        log.info("Redirecting merchant to payment page from PSP");
+        Merchant merchant = merchantRepository.findByMerchantId(merchantId);
+        if (merchant == null) {
+            log.error("Failed to get url from psp payment page");
+            throw new EntityNotFoundException("Merchant with id: " + merchantId + " doesn't exists.");
+        }
+
+        return HTTP_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontPaymentUrl + merchant.getId();
+    }
+
+    @Override
     public void changeSubscriptionToPaymentMethod(SubscribeToPaymentMethodDTO dto) throws Exception {
         if (!paymentMethodTypeRepository.findById(dto.getPaymentId()).isPresent()) {
-            log.info("Failed to subscribe to payment method because payment method doesn't exists");
+            log.error("Failed to subscribe to payment method because payment method doesn't exists");
             throw new Exception("Payment doesn't exists");
         } else if (merchantRepository.findById(dto.getMerchantId()).orElse(null) == null) {
-            log.info("Failed to subscribe to payment method because merchant doesn't exists");
+            log.error("Failed to subscribe to payment method because merchant doesn't exists");
             throw new Exception("Merchant doesn't exists");
         }
 
@@ -115,6 +137,22 @@ public class PaymentMethodService implements IPaymentMethodService {
             merchant.deleteFromPaymentMethod(paymentMethodType);
             merchantRepository.save(merchant);
         }
+    }
+
+    @Override
+    public List<PaymentMethodTypeDTO> findMerchantsPaymentMethodsForPayment(String merchantId) throws Exception {
+        if (merchantId == null) {
+            throw new Exception("Merchant id is null!");
+        }
+
+        Merchant merchant = merchantRepository.findById(merchantId).orElse(null);
+
+        if (merchant == null) {
+            log.error("Merchant with id " + merchantId + " doen't exists");
+            throw  new Exception("Merchant does not exists!");
+        }
+
+        return PaymentMethodTypeMapper.mapEntitiesToDTOs(merchant.getPaymentMethodTypes());
     }
 
     private static String decodeBase64(String image) {

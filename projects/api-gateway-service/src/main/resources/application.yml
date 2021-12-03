@@ -24,15 +24,25 @@ spring:
         - id: pspPaymentMethods
           uri: lb://PSP-SERVICE
           predicates:
-            - Path=/api/psp/paymentMethods/{merchantId}
+            - Path=/api/psp/paymentMethods/{merchantId} #to get all subscribed payment
             - Method=GET
         - id: pspPaymentMethodsSubscribeUrl
           uri: lb://PSP-SERVICE
           predicates:
-            - Path=/api/psp/paymentMethods/subscribeUrl
+            - Path=/api/psp/paymentMethods/subscribeUrl #to get URL for all subscribed payment types
             - Method=POST
         - id: pspPaymentMethodsSubscribe
           uri: lb://PSP-SERVICE
           predicates:
-            - Path=/api/psp/paymentMethods/changeSubscription
+            - Path=/api/psp/paymentMethods/changeSubscription #to change subscription
             - Method=POST
+        - id: pspPaymentMethodsPayment
+          uri: lb://PSP-SERVICE
+          predicates:
+            - Path=/api/psp/paymentMethods/paymentUrl #to get all merchant's payment types
+            - Method=POST
+        - id: pspPaymentMethodsPaymentUrl
+          uri: lb://PSP-SERVICE
+          predicates:
+            - Path=/api/psp/paymentMethods/payment/{merchantId} #to get URL for all merchant's payment types
+            - Method=GET

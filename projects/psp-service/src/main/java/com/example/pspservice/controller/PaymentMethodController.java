@@ -6,7 +6,6 @@ import com.example.pspservice.dto.SubscribeToPaymentMethodDTO;
 import com.example.pspservice.dto.SubscribeUrlDTO;
 import com.example.pspservice.mapper.PaymentMethodTypeMapper;
 import com.example.pspservice.service.IPaymentMethodService;
-import com.netflix.eventbus.spi.Subscribe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,13 +28,23 @@ public class PaymentMethodController {
     }
 
     @GetMapping(value = "/{merchantId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PaymentMethodTypeForMerchantDTO>> getMerchantsPaymentMethods(@PathVariable String merchantId) throws Exception {
-        return new ResponseEntity<>(paymentMethodService.findMerchantsPaymentMethods(merchantId), HttpStatus.OK);
+    public ResponseEntity<List<PaymentMethodTypeForMerchantDTO>> getMerchantsPaymentMethodsForSubscription(@PathVariable String merchantId) throws Exception {
+        return new ResponseEntity<>(paymentMethodService.findMerchantsPaymentMethodsForSubscription(merchantId), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/payment/{merchantId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PaymentMethodTypeDTO>> getMerchantsPaymentMethodsForPayment(@PathVariable String merchantId) throws Exception {
+        return new ResponseEntity<>(paymentMethodService.findMerchantsPaymentMethodsForPayment(merchantId), HttpStatus.OK);
     }
 
     @PostMapping(value = "/subscribeUrl", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendMerchantToSubscribePage(@RequestBody SubscribeUrlDTO dto) throws Exception {
         return new ResponseEntity<>(paymentMethodService.redirectMerchantToSubscribePage(dto.getMerchantId()), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/paymentUrl", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> sendMerchantToPaymentPage(@RequestBody SubscribeUrlDTO dto) throws Exception {
+        return new ResponseEntity<>(paymentMethodService.redirectMerchantToPaymentPage(dto.getMerchantId()), HttpStatus.OK);
     }
 
     @PostMapping(value = "/changeSubscription", consumes = MediaType.APPLICATION_JSON_VALUE)
