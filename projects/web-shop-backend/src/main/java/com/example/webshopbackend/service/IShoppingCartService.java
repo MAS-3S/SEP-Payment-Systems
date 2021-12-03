@@ -4,5 +4,5 @@ import com.example.webshopbackend.dto.PaymentDto;
 import com.example.webshopbackend.model.ShoppingCart;
 
 public interface IShoppingCartService {
-    ShoppingCart save(PaymentDto paymentDto) throws Exception;
+    String save(PaymentDto paymentDto) throws Exception;
 }

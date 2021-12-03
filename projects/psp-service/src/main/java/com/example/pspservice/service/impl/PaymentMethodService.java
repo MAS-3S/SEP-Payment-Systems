@@ -2,12 +2,15 @@ package com.example.pspservice.service.impl;
 
 import com.example.pspservice.dto.PaymentMethodTypeDTO;
 import com.example.pspservice.dto.PaymentMethodTypeForMerchantDTO;
+import com.example.pspservice.dto.RequestPaymentDTO;
 import com.example.pspservice.dto.SubscribeToPaymentMethodDTO;
 import com.example.pspservice.mapper.PaymentMethodTypeMapper;
 import com.example.pspservice.model.Merchant;
+import com.example.pspservice.model.Payment;
 import com.example.pspservice.model.PaymentMethodType;
 import com.example.pspservice.repository.MerchantRepository;
 import com.example.pspservice.repository.PaymentMethodTypeRepository;
+import com.example.pspservice.repository.PaymentRepository;
 import com.example.pspservice.service.IPaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.Assert;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
@@ -43,16 +45,15 @@ public class PaymentMethodService implements IPaymentMethodService {
     @Value("${pspfront.payment.route}")
     private String pspFrontPaymentUrl;
 
-
-
-
     private final PaymentMethodTypeRepository paymentMethodTypeRepository;
     private final MerchantRepository merchantRepository;
+    private final PaymentRepository paymentRepository;
 
     @Autowired
-    public PaymentMethodService(PaymentMethodTypeRepository paymentMethodTypeRepository, MerchantRepository merchantRepository) {
+    public PaymentMethodService(PaymentMethodTypeRepository paymentMethodTypeRepository, MerchantRepository merchantRepository, PaymentRepository paymentRepository) {
         this.paymentMethodTypeRepository = paymentMethodTypeRepository;
         this.merchantRepository = merchantRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     @Override
@@ -102,13 +103,19 @@ public class PaymentMethodService implements IPaymentMethodService {
     }
 
     @Override
-    public String redirectMerchantToPaymentPage(String merchantId) throws Exception {
+    public String redirectMerchantToPaymentPage(RequestPaymentDTO dto) throws Exception {
         log.info("Redirecting merchant to payment page from PSP");
-        Merchant merchant = merchantRepository.findByMerchantId(merchantId);
+        Merchant merchant = merchantRepository.findByMerchantId(dto.getMerchantId());
         if (merchant == null) {
             log.error("Failed to get url from psp payment page");
-            throw new EntityNotFoundException("Merchant with id: " + merchantId + " doesn't exists.");
+            throw new EntityNotFoundException("Merchant with id: " + dto.getMerchantId() + " doesn't exists.");
         }
+        Payment payment = new Payment();
+        payment.setAmount(dto.getAmount());
+        payment.setMerchantOrderId(dto.getTransactionId());
+        payment.setMerchantTimeStamp(dto.getTimestamp());
+        payment.setReturnUrl("");
+        paymentRepository.save(payment);
 
         return HTTP_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontPaymentUrl + merchant.getId();
     }
@@ -152,7 +159,17 @@ public class PaymentMethodService implements IPaymentMethodService {
             throw  new Exception("Merchant does not exists!");
         }
 
-        return PaymentMethodTypeMapper.mapEntitiesToDTOs(merchant.getPaymentMethodTypes());
+        List<PaymentMethodTypeDTO> returnPaymentsDTO = new ArrayList<>();
+        for (PaymentMethodType p : merchant.getPaymentMethodTypes()) {
+            PaymentMethodTypeDTO dto = new PaymentMethodTypeDTO();
+            dto.setId(p.getId());
+            dto.setName(p.getName());
+            dto.setImage(decodeBase64(p.getImage()));
+            dto.setDescription(p.getDescription());
+            returnPaymentsDTO.add(dto);
+        }
+
+        return returnPaymentsDTO;
     }
 
     private static String decodeBase64(String image) {

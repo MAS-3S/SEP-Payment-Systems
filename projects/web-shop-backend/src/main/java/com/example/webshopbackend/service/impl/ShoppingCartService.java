@@ -2,6 +2,7 @@ package com.example.webshopbackend.service.impl;
 
 import com.example.webshopbackend.dto.ItemToPurchaseDto;
 import com.example.webshopbackend.dto.PaymentDto;
+import com.example.webshopbackend.dto.RequestPaymentDTO;
 import com.example.webshopbackend.mapper.PaymentMapper;
 import com.example.webshopbackend.model.*;
 import com.example.webshopbackend.model.enums.TransactionStatus;
@@ -10,12 +11,28 @@ import com.example.webshopbackend.service.IShoppingCartService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Service
 public class ShoppingCartService implements IShoppingCartService {
 
     protected final Log log = LogFactory.getLog(getClass());
+    //izmeni posle u https
+    private static final String HTTP_PREFIX = "http://";
+
+    @Value("${pspback.port}")
+    private String pspBackPort;
+    @Value("${pspback.host}")
+    private String pspBackHost;
+    @Value("${pspback.paymentUrl.route}")
+    private String pspBackPaymentUrl;
 
     private final ShoppingCartRepository shoppingCartRepository;
     private final UserRepository userRepository;
@@ -35,7 +52,8 @@ public class ShoppingCartService implements IShoppingCartService {
     }
 
     @Override
-    public ShoppingCart save(PaymentDto paymentDto) throws Exception {
+    @Transactional
+    public String save(PaymentDto paymentDto) throws Exception {
         log.info("Accepted shopping card data.");
         User user = userRepository.findById(paymentDto.getUserId());
         WebShop webShop = webShopRepository.findById(paymentDto.getWebShopId()).orElse(null);
@@ -78,6 +96,21 @@ public class ShoppingCartService implements IShoppingCartService {
         transactionRepository.save(transaction);
         log.info("Transaction " + transaction.getId() + " is saved.");
 
-        return shoppingCart;
+        return getPspPaymentUrl(transaction, paymentDto.getWebShopId());
+    }
+
+    private String getPspPaymentUrl(Transaction transaction, String merchantId) throws URISyntaxException {
+        RestTemplate restTemplate = new RestTemplate();
+        final String url = HTTP_PREFIX + this.pspBackHost + ":" + this.pspBackPort + this.pspBackPaymentUrl;
+        URI uri = new URI(url);
+
+        RequestPaymentDTO requestPaymentDto = new RequestPaymentDTO();
+        requestPaymentDto.setMerchantId(merchantId);
+        requestPaymentDto.setTransactionId(transaction.getId());
+        requestPaymentDto.setAmount(transaction.getAmount());
+        requestPaymentDto.setTimestamp(transaction.getTimestamp());
+
+        ResponseEntity<String> result = restTemplate.postForEntity(uri, requestPaymentDto, String.class);
+        return result.getBody();
     }
 }

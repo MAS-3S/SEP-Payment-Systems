@@ -59,7 +59,7 @@ public class UserService implements IUserService {
         user.setAddress(dto.getAddress());
         user.setFullName(dto.getFullName());
         user.setPhone(dto.getPhone());
-        user.setRole(Role.Customer);
+        user.setRole(Role.CUSTOMER);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         String randomCodeForVerification = RandomString.make(64);
         user.setVerificationCode(randomCodeForVerification);

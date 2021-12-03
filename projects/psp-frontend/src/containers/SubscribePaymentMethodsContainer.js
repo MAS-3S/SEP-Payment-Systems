@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
+import SubscribePaymentMethods from "../pages/SubscribePaymentMethods";
 import PaymentMethodService from "../services/PaymentMethodService";
-import PaymentMethods from "../pages/PaymentMethods";
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
-export default function PaymentMethodsContainer(props) {
+export default function SubscribePaymentMethodsContainer(props) {
   const [sholudRedirect, setSholudRedirect] = useState(false);
   const [paymentsMethods, setPaymentsMethods] = useState([]);
   const [merchantId, setMerchantId] = useState("");
@@ -19,7 +19,7 @@ export default function PaymentMethodsContainer(props) {
       // ako postoji webshopId proveri da li je okej, ako nije redirektuj na not found
       let payments = [];
       payments =
-        await PaymentMethodService.getMerchantsPaymentMethodsForPayment(
+        await PaymentMethodService.getMerchantsPaymentMethodsForSubscription(
           props.match.params.webshopId
         );
       if (payments.length === 0) {
@@ -42,7 +42,7 @@ export default function PaymentMethodsContainer(props) {
     ).then((response) => {
       async function fetchData() {
         setPaymentsMethods(
-          await PaymentMethodService.getMerchantsPaymentMethodsForPayment(
+          await PaymentMethodService.getMerchantsPaymentMethodsForSubscription(
             merchantId
           )
         );
@@ -88,7 +88,7 @@ export default function PaymentMethodsContainer(props) {
   ) : (
     <div>
       {snackbar}
-      <PaymentMethods
+      <SubscribePaymentMethods
         paymentsMethods={paymentsMethods}
         merchantId={merchantId}
         handleChangeMerchantSubscription={handleChangeMerchantSubscription}
