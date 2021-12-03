@@ -18,9 +18,9 @@ public class UserMapper {
         dto.setEmail(user.getEmail());
         dto.setAddress(user.getAddress());
         dto.setPhone(user.getPhone());
-        if(user.getRole().equals(Role.Admin)) {
+        if(user.getRole().equals(Role.ADMIN)) {
             dto.setRole("ADMIN");
-        } else if(user.getRole().equals(Role.Customer)) {
+        } else if(user.getRole().equals(Role.CUSTOMER)) {
             dto.setRole("CUSTOMER");
         }
 
