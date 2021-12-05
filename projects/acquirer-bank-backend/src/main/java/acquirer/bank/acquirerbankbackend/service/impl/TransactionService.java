@@ -1,8 +1,6 @@
 package acquirer.bank.acquirerbankbackend.service.impl;
 
-import acquirer.bank.acquirerbankbackend.dto.CreditCardRequest;
-import acquirer.bank.acquirerbankbackend.dto.TransactionRequest;
-import acquirer.bank.acquirerbankbackend.dto.TransactionResponse;
+import acquirer.bank.acquirerbankbackend.dto.*;
 import acquirer.bank.acquirerbankbackend.model.CreditCard;
 import acquirer.bank.acquirerbankbackend.model.Transaction;
 import acquirer.bank.acquirerbankbackend.model.enums.TransactionStatus;
@@ -13,8 +11,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 @Service
@@ -22,14 +24,21 @@ public class TransactionService implements ITransactionService {
 
     protected final Log log = LogFactory.getLog(getClass());
 
-    private final TransactionRepository transactionRepository;
-    private final CreditCardRepository creditCardRepository;
+    private static final String HTTP_PREFIX = "http://";
     @Value("${server.ipaddress}")
     private String serverAddress;
     @Value("${server.port}")
     private String serverPort;
+    @Value("${pcc.ipaddress}")
+    private String pccAddress;
+    @Value("${pcc.port}")
+    private String pccPort;
     @Value("${acquirer.bank.pan}")
     private String acquirerBankPan;
+
+    private final TransactionRepository transactionRepository;
+    private final CreditCardRepository creditCardRepository;
+
 
     @Autowired
     public TransactionService(TransactionRepository transactionRepository, CreditCardRepository creditCardRepository) {
@@ -73,7 +82,7 @@ public class TransactionService implements ITransactionService {
         log.info("Transaction is successfully saved!");
 
         transactionResponse.setPaymentId(transaction.getId());
-        transactionResponse.setPaymentUrl("http://" + serverAddress + ":" + serverPort + "/transaction/" + transaction.getId());
+        transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + serverPort + "/transaction/" + transaction.getId());
         transactionResponse.setSuccess(true);
         transactionResponse.setMessage("Transaction is successfully checked!");
 
@@ -120,10 +129,41 @@ public class TransactionService implements ITransactionService {
                 return transactionResponse;
             }
 
-            log.info("");
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - transaction.getAmount());
             customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + transaction.getAmount());
             log.info("Amount " + transaction.getAmount() + " transfer from available to reserved amount");
+        } else { // Different bank
+            log.info("Payment is not from the same bank");
+            PccRequest pccRequest = new PccRequest();
+            pccRequest.setAcquirerOrderId(transactionId);
+            pccRequest.setAcquirerTimestamp(transaction.getTimestamp());
+            pccRequest.setAmount(transaction.getAmount());
+            pccRequest.setPan(creditCardRequest.getPan());
+            pccRequest.setCcv(creditCardRequest.getCcv());
+            pccRequest.setExpirationDate(creditCardRequest.getExpirationDate());
+            pccRequest.setCardholderName(creditCardRequest.getCardholderName());
+
+            PccResponse pccResponse = new PccResponse();
+            try {
+                sendRequestToPcc(pccRequest);
+            } catch (Exception e) {
+                log.error("Pcc redirection error!");
+            }
+
+            if(!pccResponse.isSuccess()) {
+                boolean failed = pccResponse.getAcquirerOrderId() != null;
+                if (failed) {
+                    transaction.setStatus(TransactionStatus.FAILED);
+                    transactionRepository.save(transaction);
+                    log.info("Transaction failed!");
+                }
+
+                transactionResponse.setPaymentUrl(failed ? transaction.getFailedUrl() : null);
+                transactionResponse.setSuccess(false);
+                transactionResponse.setMessage(pccResponse.getMessage());
+                return transactionResponse;
+            }
+
         }
 
         transaction.setStatus(TransactionStatus.SUBMITTED);
@@ -137,5 +177,13 @@ public class TransactionService implements ITransactionService {
         return transactionResponse;
     }
 
+    private PccResponse sendRequestToPcc(PccRequest pccRequest) throws URISyntaxException {
+        RestTemplate restTemplate = new RestTemplate();
+        final String url = HTTP_PREFIX + this.pccAddress + ":" + this.pccPort + "/api/pcc/forward";
+        URI uri = new URI(url);
+
+        ResponseEntity<PccResponse> result = restTemplate.postForEntity(uri, pccRequest, PccResponse.class);
+        return result.getBody();
+    }
 
 }

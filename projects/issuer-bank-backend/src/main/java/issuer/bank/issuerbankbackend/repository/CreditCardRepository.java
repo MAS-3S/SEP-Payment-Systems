@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CreditCardRepository extends JpaRepository<CreditCard, String> {
+    CreditCard findByPanAndCcv(String pan, String ccv);
 }
