@@ -24,9 +24,6 @@ public class CreditCard {
     @Column(name = "expiration_date", nullable = false)
     private LocalDate expirationDate;
 
-    @Column(name = "account_number", nullable = false)
-    private String accountNumber;
-
     @Column(name = "available_amount", nullable = false)
     private Double availableAmount;
 
@@ -76,15 +73,7 @@ public class CreditCard {
     public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
+    
     public Double getAvailableAmount() {
         return availableAmount;
     }
