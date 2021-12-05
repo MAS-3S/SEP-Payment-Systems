@@ -1,0 +1,1 @@
+insert into transactions (id, acquirer_order_id, acquirer_timestamp, amount, pan, ccv, expiration_date, cardholder_name, success, message) values ('0b40a745-25bb-4868-8629-f0f1bd21bbf3', 'acquirer_order_id', '2021-11-30 08:00:00', 1400.0, 'pan', 'ccv', 'expiration_date', 'cardholder_name', true, 'message');
