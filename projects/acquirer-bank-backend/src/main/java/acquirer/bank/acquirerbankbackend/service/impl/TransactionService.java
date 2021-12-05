@@ -22,14 +22,17 @@ public class TransactionService implements ITransactionService {
 
     protected final Log log = LogFactory.getLog(getClass());
 
-    private final TransactionRepository transactionRepository;
-    private final CreditCardRepository creditCardRepository;
+    private static final String HTTP_PREFIX = "http://";
     @Value("${server.ipaddress}")
     private String serverAddress;
     @Value("${server.port}")
     private String serverPort;
     @Value("${acquirer.bank.pan}")
     private String acquirerBankPan;
+
+    private final TransactionRepository transactionRepository;
+    private final CreditCardRepository creditCardRepository;
+
 
     @Autowired
     public TransactionService(TransactionRepository transactionRepository, CreditCardRepository creditCardRepository) {
@@ -73,7 +76,7 @@ public class TransactionService implements ITransactionService {
         log.info("Transaction is successfully saved!");
 
         transactionResponse.setPaymentId(transaction.getId());
-        transactionResponse.setPaymentUrl("http://" + serverAddress + ":" + serverPort + "/transaction/" + transaction.getId());
+        transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + serverPort + "/transaction/" + transaction.getId());
         transactionResponse.setSuccess(true);
         transactionResponse.setMessage("Transaction is successfully checked!");
 
@@ -120,7 +123,6 @@ public class TransactionService implements ITransactionService {
                 return transactionResponse;
             }
 
-            log.info("");
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - transaction.getAmount());
             customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + transaction.getAmount());
             log.info("Amount " + transaction.getAmount() + " transfer from available to reserved amount");
