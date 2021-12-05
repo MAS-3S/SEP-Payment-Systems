@@ -73,7 +73,7 @@ public class CreditCard {
     public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
-    
+
     public Double getAvailableAmount() {
         return availableAmount;
     }
