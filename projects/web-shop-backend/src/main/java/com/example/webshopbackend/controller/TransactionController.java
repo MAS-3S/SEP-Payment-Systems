@@ -34,10 +34,8 @@ public class TransactionController {
 
     @GetMapping(value="/{id}/shoppingCart", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ShoppingCartDto> getShoppingCartForTransaction(@PathVariable String id) {
-        ShoppingCartDto dto = new ShoppingCartDto();
-
         ShoppingCart shoppingCart = transactionService.getShoppingCartForTransaction(id);
-        ShoppingCartMapper.convertToDto(shoppingCart);
+        ShoppingCartDto dto = ShoppingCartMapper.convertToDto(shoppingCart);
 
         List<ItemToPurchaseDto> itemsToPurchase = new ArrayList<>();
         for(ItemToPurchase item : shoppingCart.getItems()) {
