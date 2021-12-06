@@ -1,6 +1,6 @@
 package com.example.bankservice.model;
 
-public enum OrderStatusForMerchant {
+public enum TransactionStatus {
     IN_PROGRESS,
     DONE,
     CANCELED,

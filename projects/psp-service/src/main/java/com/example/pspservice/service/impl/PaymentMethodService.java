@@ -217,6 +217,9 @@ public class PaymentMethodService implements IPaymentMethodService {
             createTransactionDTO.setMerchantId(merchant.getMerchantId());
             createTransactionDTO.setAmount(payment.getAmount());
             createTransactionDTO.setTime(payment.getMerchantTimeStamp());
+            createTransactionDTO.setSuccessUrl(merchant.getSuccessUrl());
+            createTransactionDTO.setFailedUrl(merchant.getFailedUrl());
+            createTransactionDTO.setErrorUrl(merchant.getErrorUrl());
             httpResponse = restTemplate.postForObject("http://" + paymentMethodType.getServiceName() + "/createTransaction", createTransactionDTO, TransactionResponseDTO.class);
             log.info("Successfully redirected to " + paymentMethodType.getServiceName());
         } catch (Exception e) {

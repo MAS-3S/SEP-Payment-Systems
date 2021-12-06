@@ -20,7 +20,7 @@ public class Transaction {
     private String orderId;
 
     @Column(nullable = false)
-    private OrderStatusForMerchant status;
+    private TransactionStatus status;
 
     @Column(nullable = false)
     private String bankTransactionId;
@@ -56,11 +56,11 @@ public class Transaction {
         this.orderId = orderId;
     }
 
-    public OrderStatusForMerchant getStatus() {
+    public TransactionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(OrderStatusForMerchant status) {
+    public void setStatus(TransactionStatus status) {
         this.status = status;
     }
 

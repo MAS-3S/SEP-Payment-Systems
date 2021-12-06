@@ -25,8 +25,14 @@ public class Merchant {
     @ManyToMany(cascade = CascadeType.ALL)
     List<PaymentMethodType> paymentMethodTypes;
 
+    @Column(unique = true)
+    private String successUrl;
 
-    private String returnUrl;
+    @Column(unique = true)
+    private String failedUrl;
+
+    @Column(unique = true)
+    private String errorUrl;
 
     public Merchant() {
     }
@@ -55,12 +61,28 @@ public class Merchant {
         this.name = name;
     }
 
-    public String getReturnUrl() {
-        return returnUrl;
+    public String getSuccessUrl() {
+        return successUrl;
     }
 
-    public void setReturnUrl(String returnUrl) {
-        this.returnUrl = returnUrl;
+    public void setSuccessUrl(String successUrl) {
+        this.successUrl = successUrl;
+    }
+
+    public String getFailedUrl() {
+        return failedUrl;
+    }
+
+    public void setFailedUrl(String failedUrl) {
+        this.failedUrl = failedUrl;
+    }
+
+    public String getErrorUrl() {
+        return errorUrl;
+    }
+
+    public void setErrorUrl(String errorUrl) {
+        this.errorUrl = errorUrl;
     }
 
     public List<PaymentMethodType> getPaymentMethodTypes() {
