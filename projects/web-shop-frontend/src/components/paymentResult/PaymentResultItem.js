@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 export default function PaymentResultItem(props) {
-  const [item, setItem] = useState(props.item);
+  const [item, setItem] = useState(props.item.productDto);
   const [quantity, setQuantity] = useState(props.item.quantity);
 
   useEffect(() => {
-    setItem(props.item);
+    setItem(props.item.productDto);
     setQuantity(props.item.quantity);
-  }, [props.item, props.item.quantity]);
+  }, [props.item]);
 
   return (
     <div className="row border-top">

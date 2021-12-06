@@ -5,20 +5,14 @@ import { Link } from "react-router-dom";
 import PaymentResultItem from "../components/paymentResult/PaymentResultItem";
 
 export default function PaymentResult(props) {
-  const [loggedUser, setLoggedUser] = useState(props.loggedUser);
-  const [shoppingCartItems, setShoppingCartItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0.0);
+  const [transaction, setTransaction] = useState(props.transaction);
   const [color, setColor] = useState(props.color);
   const [title, setTitle] = useState(props.title);
   const [titleColor, setTitleColor] = useState(props.titleColor);
 
   useEffect(() => {
-    setLoggedUser(props.loggedUser);
-    if (JSON.parse(localStorage.getItem("shoppingCart")) !== null) {
-      setShoppingCartItems(JSON.parse(localStorage.getItem("shoppingCart")));
-    }
-    calculateTotalPrice();
-  }, [props.webshop, props.loggedUser]);
+    setTransaction(props.transaction);
+  }, [props.transaction]);
 
   useEffect(() => {
     setColor(props.color);
@@ -32,23 +26,10 @@ export default function PaymentResult(props) {
     setTitleColor(props.titleColor);
   }, [props.titleColor]);
 
-  const calculateTotalPrice = () => {
-    var totalPrice = 0.0;
-    var shoppingCartItems = JSON.parse(localStorage.getItem("shoppingCart"));
-    for (let i = 0; i < shoppingCartItems.length; i++) {
-      totalPrice += shoppingCartItems[i].price * shoppingCartItems[i].quantity;
-    }
-    setTotalPrice(totalPrice);
-  };
-
   const items = Array.apply(null, {
-    length: shoppingCartItems.length,
+    length: transaction.itemsToPurchase.length,
   }).map((_, i) => (
-    <PaymentResultItem
-      key={i}
-      item={shoppingCartItems[i]}
-      changedQuantity={calculateTotalPrice}
-    />
+    <PaymentResultItem key={i} item={transaction.itemsToPurchase[i]} />
   ));
 
   return (
@@ -68,7 +49,7 @@ export default function PaymentResult(props) {
           <div className="back-to-shop">
             <Link
               to={{
-                pathname: `/`,
+                pathname: `/webshop/${transaction.webShop.name}`,
               }}
               style={{ textDecoration: "none", color: "black" }}
             >
@@ -91,21 +72,21 @@ export default function PaymentResult(props) {
             <div className="col" style={{ paddingLeft: 0 }}>
               NAME
             </div>
-            <div className="col text-right">{loggedUser.fullName}</div>
+            <div className="col text-right">{transaction.user.fullName}</div>
           </div>
           <hr className="hrShoppingCart" />
           <div className="row">
             <div className="col" style={{ paddingLeft: 0 }}>
               ADDRESS
             </div>
-            <div className="row text-right">{loggedUser.address}</div>
+            <div className="row text-right">{transaction.user.address}</div>
           </div>
           <hr className="hrShoppingCart" />
           <div className="row">
             <div className="col" style={{ paddingLeft: 0 }}>
               PHONE
             </div>
-            <div className="col text-right">{loggedUser.phone}</div>
+            <div className="col text-right">{transaction.user.phone}</div>
           </div>
           <hr className="hrShoppingCart" />
           <div>
@@ -118,14 +99,18 @@ export default function PaymentResult(props) {
             <div className="col" style={{ paddingLeft: 0 }}>
               ITEMS
             </div>
-            <div className="col text-right">{shoppingCartItems.length}</div>
+            <div className="col text-right">
+              {transaction.itemsToPurchase.length}
+            </div>
           </div>
           <hr className="hrShoppingCart" />
           <div className="row">
             <div className="col" style={{ paddingLeft: 0 }}>
               TOTAL PRICE
             </div>
-            <div className="col text-right">&euro; {totalPrice}</div>
+            <div className="col text-right">
+              &euro; {transaction.totalPrice}
+            </div>
           </div>
         </div>
       </div>
