@@ -24,6 +24,9 @@ public class PaymentMethodType {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false, name = "service_name")
+    private String serviceName;
+
     @OneToMany(mappedBy = "paymentMethodType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Payment> paymentList;
 
@@ -68,6 +71,14 @@ public class PaymentMethodType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 }
 

@@ -46,3 +46,8 @@ spring:
           predicates:
             - Path=/api/psp/paymentMethods/payment/{merchantId} #to get URL for all merchant's payment types
             - Method=GET
+        - id: pspChoosepaymentMethod
+          uri: lb://PSP-SERVICE
+          predicates:
+            - Path=/api/psp/paymentMethods/choosePaymentMethod #to change subscription
+            - Method=POST

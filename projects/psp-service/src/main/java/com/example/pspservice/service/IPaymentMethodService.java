@@ -1,9 +1,6 @@
 package com.example.pspservice.service;
 
-import com.example.pspservice.dto.PaymentMethodTypeDTO;
-import com.example.pspservice.dto.PaymentMethodTypeForMerchantDTO;
-import com.example.pspservice.dto.RequestPaymentDTO;
-import com.example.pspservice.dto.SubscribeToPaymentMethodDTO;
+import com.example.pspservice.dto.*;
 import com.example.pspservice.model.PaymentMethodType;
 
 import java.util.List;
@@ -21,6 +18,8 @@ public interface IPaymentMethodService {
     void changeSubscriptionToPaymentMethod(SubscribeToPaymentMethodDTO dto) throws Exception;
 
     List<PaymentMethodTypeDTO> findMerchantsPaymentMethodsForPayment(String merchantId) throws Exception;
+
+    String choosePaymentMethod(ChoosePaymentMethodDTO dto) throws Exception;
 
 
 }

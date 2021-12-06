@@ -35,6 +35,8 @@ public class TransactionService implements ITransactionService {
     private String pccPort;
     @Value("${acquirer.bank.pan}")
     private String acquirerBankPan;
+    @Value("${acquirer.front.port}")
+    private String acquirerBankFrontPort;
 
     private final TransactionRepository transactionRepository;
     private final CreditCardRepository creditCardRepository;
@@ -82,7 +84,7 @@ public class TransactionService implements ITransactionService {
         log.info("Transaction is successfully saved!");
 
         transactionResponse.setPaymentId(transaction.getId());
-        transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + serverPort + "/transaction/" + transaction.getId());
+        transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/transaction/transaction/" + transaction.getId());
         transactionResponse.setSuccess(true);
         transactionResponse.setMessage("Transaction is successfully checked!");
 
