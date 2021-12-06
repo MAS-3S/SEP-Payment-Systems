@@ -1,28 +1,31 @@
 import React, { useEffect, useState } from "react";
 import PaymentResult from "../pages/PaymentResult";
-import TokenService from "../services/TokenService";
-import UserService from "../services/UserService";
+import TransactionService from "../services/TransactionService";
 
 export default function ErrorPaymentResultContainer(props) {
-  const [shoppingCartItems, setShoppingCartItems] = useState([]);
-  const [loggedUser, setLoggedUser] = useState({});
+  const [transaction, setTransaction] = useState({
+    itemsToPurchase: [],
+    totalPrice: 0,
+    user: {},
+    webShop: {},
+  });
 
   useEffect(() => {
-    setShoppingCartItems(JSON.parse(localStorage.getItem("shoppingCart"))); // pogoditi endpoint transakcije po id
     async function fetchData() {
-      var loggedUser = await UserService.findById(TokenService.getUser().id);
-      setLoggedUser(loggedUser);
+      const result = await TransactionService.getShoppingCartForTransaction(
+        props.match.params.orderId
+      );
+      setTransaction(result);
     }
     fetchData();
-  }, []);
+  }, [props.match.params.orderId]);
 
   return (
     <PaymentResult
-      title="Unsuccessful purchase - error"
+      transaction={transaction}
+      title="Unsuccessful purchase"
       titleColor="#dc5050"
       color="#f6d0d0"
-      shoppingCartItems={shoppingCartItems}
-      loggedUser={loggedUser}
     />
   );
 }
