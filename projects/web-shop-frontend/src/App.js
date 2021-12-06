@@ -17,6 +17,9 @@ import WebshopContainer from "./containers/WebshopContainer";
 import ShoppingCartContainer from "./containers/ShoppingCartContainer";
 import { useEffect, useState } from "react";
 import WebShopService from "./services/WebShopService";
+import SuccessPaymentResultContainer from "./containers/SuccessPaymentResultContainer";
+import ErrorPaymentResultContainer from "./containers/ErrorPaymentResultContainer";
+import FailedPaymentResultContainer from "./containers/FailedPaymentResultContainer";
 
 const publicRoutes = [
   {
@@ -44,6 +47,24 @@ const privateRoutes = [
     key: "shopping-cart/:webshop",
     path: "/shopping-cart/:webshop",
     component: ShoppingCartContainer,
+    exact: false,
+  },
+  {
+    key: "success-transaction/:orderId",
+    path: "/success-transaction/:orderId",
+    component: SuccessPaymentResultContainer,
+    exact: false,
+  },
+  {
+    key: "error-transaction/:orderId",
+    path: "/error-transaction/:orderId",
+    component: ErrorPaymentResultContainer,
+    exact: false,
+  },
+  {
+    key: "failed-transaction/:orderId",
+    path: "/failed-transaction/:orderId",
+    component: FailedPaymentResultContainer,
     exact: false,
   },
 ];
@@ -86,7 +107,15 @@ function App() {
           </Layout>
         </Route>
 
-        <Route exact path={["/shopping-cart/:webshop"]}>
+        <Route
+          exact
+          path={[
+            "/shopping-cart/:webshop",
+            "/success-transaction/:orderId",
+            "/error-transaction/:orderId",
+            "/failed-transaction/:orderId",
+          ]}
+        >
           <Layout>
             <Switch>
               {privateRoutes.map((privateRouteProps) => (
