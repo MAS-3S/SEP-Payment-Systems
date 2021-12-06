@@ -3,6 +3,7 @@ package com.example.webshopbackend.dto;
 public class ItemToPurchaseDto {
 
     String productId;
+    ProductDto productDto;
     int quantity;
 
     public ItemToPurchaseDto() {
@@ -14,6 +15,14 @@ public class ItemToPurchaseDto {
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    public ProductDto getProductDto() {
+        return productDto;
+    }
+
+    public void setProductDto(ProductDto productDto) {
+        this.productDto = productDto;
     }
 
     public int getQuantity() {

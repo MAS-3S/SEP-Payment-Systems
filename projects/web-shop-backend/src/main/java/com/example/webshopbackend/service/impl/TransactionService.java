@@ -1,5 +1,6 @@
 package com.example.webshopbackend.service.impl;
 
+import com.example.webshopbackend.model.ShoppingCart;
 import com.example.webshopbackend.model.Transaction;
 import com.example.webshopbackend.repository.TransactionRepository;
 import com.example.webshopbackend.service.ITransactionService;
@@ -20,4 +21,9 @@ public class TransactionService implements ITransactionService {
         this.transactionRepository = transactionRepository;
     }
 
+    @Override
+    public ShoppingCart getShoppingCartForTransaction(String transactionId) {
+        Transaction transaction = transactionRepository.getById(transactionId);
+        return transaction.getShoppingCart();
+    }
 }
