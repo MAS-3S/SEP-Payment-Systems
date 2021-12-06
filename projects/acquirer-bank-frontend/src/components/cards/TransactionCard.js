@@ -56,13 +56,11 @@ export default function TransactionCard(props) {
     cardNumber,
     cvc
   ) => {
-    console.log(
-      cardHolder,
-      expirationDateMM,
-      expirationDateYY,
-      cardNumber.replace(/ /g, "").replace(/-/g, ""),
-      cvc
+    var pan = cardNumber.replace(/ /g, "").replace(/-/g, "");
+    var expirationDate = new Date(
+      "20" + expirationDateYY + "-" + expirationDateMM
     );
+    props.handleExecuteTransaction(pan, cvc, expirationDate, cardHolder);
   };
 
   return (

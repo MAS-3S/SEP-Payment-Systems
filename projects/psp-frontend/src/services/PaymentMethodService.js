@@ -28,6 +28,20 @@ class PaymentMethodService {
     );
     return response.data;
   }
+
+  async chosePaymentMethod(paymentMethodId, merchantId, paymentId) {
+    const body = {
+      paymentMethodId: paymentMethodId,
+      merchantId: merchantId,
+      paymentId: paymentId,
+    };
+
+    const response = await axios.post(
+      GATEWAY_URL + "api/psp/paymentMethods/choosePaymentMethod",
+      body
+    );
+    return response.data;
+  }
 }
 
 export default new PaymentMethodService();

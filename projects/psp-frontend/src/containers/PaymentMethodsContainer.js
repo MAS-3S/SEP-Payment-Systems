@@ -9,6 +9,7 @@ export default function PaymentMethodsContainer(props) {
   const [sholudRedirect, setSholudRedirect] = useState(false);
   const [paymentsMethods, setPaymentsMethods] = useState([]);
   const [merchantId, setMerchantId] = useState("");
+  const [paymentId, setPaymentId] = useState("");
   const [open, setOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState("");
   const [alertType, setAlertType] = React.useState("");
@@ -28,9 +29,10 @@ export default function PaymentMethodsContainer(props) {
       }
       setPaymentsMethods(payments);
       setMerchantId(props.match.params.webshopId);
+      setPaymentId(props.match.params.paymentId);
     }
     fetchData();
-  }, [props.match.params.webshopId]);
+  }, [props.match.params.webshopId, props.match.params.paymentId]);
 
   const handleChangeMerchantSubscription = async (
     paymentsMethod,
@@ -55,6 +57,27 @@ export default function PaymentMethodsContainer(props) {
         setAlertMessage("Successfully unsubscribed");
       } else {
         setAlertMessage("Successfully subscribed");
+      }
+    });
+  };
+
+  const handleChosePaymentMethod = (
+    paymentsMethodId,
+    merchantId,
+    paymentId
+  ) => {
+    PaymentMethodService.chosePaymentMethod(
+      paymentsMethodId,
+      merchantId,
+      paymentId
+    ).then((response) => {
+      if (response !== null) {
+        window.location.href = response;
+      } else {
+        setAlertType("error");
+        setAlertDuration(2000);
+        setOpen(true);
+        setAlertMessage("Error with choosing payment method!");
       }
     });
   };
@@ -91,7 +114,9 @@ export default function PaymentMethodsContainer(props) {
       <PaymentMethods
         paymentsMethods={paymentsMethods}
         merchantId={merchantId}
+        paymentId={paymentId}
         handleChangeMerchantSubscription={handleChangeMerchantSubscription}
+        handleChosePaymentMethod={handleChosePaymentMethod}
       />
     </div>
   );
