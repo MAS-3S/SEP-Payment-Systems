@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -37,6 +39,10 @@ public class TransactionService implements ITransactionService {
     private String acquirerBankPan;
     @Value("${acquirer.front.port}")
     private String acquirerBankFrontPort;
+    @Value("${api.gateway.port}")
+    private String apiGatewayPort;
+    @Value("${api.gateway.host}")
+    private String apiGatewayHost;
 
     private final TransactionRepository transactionRepository;
     private final CreditCardRepository creditCardRepository;
@@ -49,6 +55,7 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
+    @Transactional
     public TransactionResponse checkTransactionAndReturnUrl(TransactionRequest transactionRequest) {
         log.info("Check transaction started.");
         TransactionResponse transactionResponse = new TransactionResponse();
@@ -84,7 +91,7 @@ public class TransactionService implements ITransactionService {
         log.info("Transaction is successfully saved!");
 
         transactionResponse.setPaymentId(transaction.getId());
-        transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/transaction/transaction/" + transaction.getId());
+        transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/transaction/" + transaction.getId());
         transactionResponse.setSuccess(true);
         transactionResponse.setMessage("Transaction is successfully checked!");
 
@@ -92,7 +99,8 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public TransactionResponse executeTransaction(String transactionId, CreditCardRequest creditCardRequest) {
+    @Transactional
+    public TransactionResponse executeTransaction(String transactionId, CreditCardRequest creditCardRequest) throws URISyntaxException {
         log.info("Execute transaction started.");
         TransactionResponse transactionResponse = new TransactionResponse();
 
@@ -104,10 +112,11 @@ public class TransactionService implements ITransactionService {
         }
 
         Transaction transaction = transactionRepository.getById(transactionId);
-        if(transaction.getStatus().equals(TransactionStatus.OPEN)) {
+        if(transaction.getStatus().equals(TransactionStatus.EXECUTED)) {
             log.info("Transaction has already executed!");
             transactionResponse.setSuccess(false);
             transactionResponse.setMessage("Transaction has already executed!");
+            sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
             return transactionResponse;
         }
 
@@ -117,6 +126,7 @@ public class TransactionService implements ITransactionService {
                 log.error("Customer credit card not found or expired!");
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage("Customer credit card not found or expired!");
+                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
                 return transactionResponse;
             }
 
@@ -128,6 +138,7 @@ public class TransactionService implements ITransactionService {
                 transactionResponse.setPaymentUrl(transaction.getFailedUrl());
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage("Payment failed! No enough available money on customer credit card");
+                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
                 return transactionResponse;
             }
 
@@ -163,6 +174,7 @@ public class TransactionService implements ITransactionService {
                 transactionResponse.setPaymentUrl(failed ? transaction.getFailedUrl() : null);
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage(pccResponse.getMessage());
+                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
                 return transactionResponse;
             }
 
@@ -176,6 +188,7 @@ public class TransactionService implements ITransactionService {
         transactionResponse.setPaymentUrl(transaction.getSuccessUrl());
         transactionResponse.setSuccess(true);
         transactionResponse.setMessage("Payment is successful!");
+        sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), true);
         return transactionResponse;
     }
 
@@ -186,6 +199,17 @@ public class TransactionService implements ITransactionService {
 
         ResponseEntity<PccResponse> result = restTemplate.postForEntity(uri, pccRequest, PccResponse.class);
         return result.getBody();
+    }
+
+
+    private void sendRequestToPsp(LocalDateTime acquirerTimeStamp, String merchantOrderId, String paymentId, String acquirerOrderId, boolean success) throws URISyntaxException {
+        PspResponse pspResponse = new PspResponse(acquirerOrderId, paymentId, merchantOrderId, acquirerTimeStamp, success);
+        RestTemplate restTemplate = new RestTemplate();
+        final String url = HTTP_PREFIX + this.apiGatewayHost + ":" + this.apiGatewayPort + "/bank-service/checkTransaction";
+        URI uri = new URI(url);
+
+        ResponseEntity<?> result = restTemplate.postForEntity(uri, pspResponse, PspResponse.class);
+
     }
 
 }

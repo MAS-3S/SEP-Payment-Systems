@@ -51,3 +51,8 @@ spring:
           predicates:
             - Path=/api/psp/paymentMethods/choosePaymentMethod #to change subscription
             - Method=POST
+        - id: bankServicecheckTransaction
+          uri: lb://BANK-SERVICE
+          predicates:
+            - Path=/bank-service/checkTransaction #check executed transaction from acquirer bank
+            - Method=POST

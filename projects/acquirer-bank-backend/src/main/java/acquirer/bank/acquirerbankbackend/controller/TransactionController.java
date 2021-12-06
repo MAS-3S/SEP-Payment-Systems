@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URISyntaxException;
+
 @RestController
 @RequestMapping(value = "api/transactions")
 public class TransactionController {
@@ -25,7 +27,7 @@ public class TransactionController {
     }
 
     @PostMapping(value = "/execute/{transactionId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public TransactionResponse executeTransaction(@PathVariable String transactionId, @RequestBody CreditCardRequest creditCardRequest) {
+    public TransactionResponse executeTransaction(@PathVariable String transactionId, @RequestBody CreditCardRequest creditCardRequest) throws URISyntaxException {
         return transactionService.executeTransaction(transactionId, creditCardRequest);
     }
 }

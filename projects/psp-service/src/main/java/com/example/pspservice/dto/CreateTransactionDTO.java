@@ -8,6 +8,9 @@ public class CreateTransactionDTO {
     String merchantOrderId;
     Double amount;
     LocalDateTime time;
+    String successUrl;
+    String failedUrl;
+    String errorUrl;
 
 
     public CreateTransactionDTO() {
@@ -43,5 +46,29 @@ public class CreateTransactionDTO {
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public String getSuccessUrl() {
+        return successUrl;
+    }
+
+    public void setSuccessUrl(String successUrl) {
+        this.successUrl = successUrl;
+    }
+
+    public String getFailedUrl() {
+        return failedUrl;
+    }
+
+    public void setFailedUrl(String failedUrl) {
+        this.failedUrl = failedUrl;
+    }
+
+    public String getErrorUrl() {
+        return errorUrl;
+    }
+
+    public void setErrorUrl(String errorUrl) {
+        this.errorUrl = errorUrl;
     }
 }

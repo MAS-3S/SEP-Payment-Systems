@@ -1,10 +1,11 @@
 package com.example.bankservice.service.impl;
 
 import com.example.bankservice.dto.CreateTransactionDTO;
+import com.example.bankservice.dto.PspResponseDTO;
 import com.example.bankservice.dto.TransactionRequestDTO;
 import com.example.bankservice.dto.TransactionResponseDTO;
 import com.example.bankservice.model.Merchant;
-import com.example.bankservice.model.OrderStatusForMerchant;
+import com.example.bankservice.model.TransactionStatus;
 import com.example.bankservice.model.Transaction;
 import com.example.bankservice.repository.MerchantRepository;
 import com.example.bankservice.repository.TransactionRepository;
@@ -74,9 +75,9 @@ public class TransactionService implements ITransactionService {
         transactionRequestDTO.setMerchantPassword(merchant.getBankMerchantPassword());
         transactionRequestDTO.setMerchantOrderId(createTransactionDTO.getMerchantOrderId());
         transactionRequestDTO.setMerchantTimestamp(LocalDateTime.now());
-        transactionRequestDTO.setSuccessUrl(HTTP_PREFIX + this.frontHost + ":" + this.frontPort + "/successTransaction/" + createTransactionDTO.getMerchantOrderId());
-        transactionRequestDTO.setFailedUrl(HTTP_PREFIX + this.frontHost + ":" + this.frontPort + "/failTransaction/" + createTransactionDTO.getMerchantOrderId());
-        transactionRequestDTO.setErrorUrl(HTTP_PREFIX + this.frontHost + ":" + this.frontPort + "/errorTransaction/" + createTransactionDTO.getMerchantOrderId());
+        transactionRequestDTO.setSuccessUrl(createTransactionDTO.getSuccessUrlWithOrderId());
+        transactionRequestDTO.setFailedUrl(createTransactionDTO.getFailedUrlWithOrderId());
+        transactionRequestDTO.setErrorUrl(createTransactionDTO.getErrorUrlWithOrderId());
 
         HttpEntity<TransactionRequestDTO> transactionRequestEntity = new HttpEntity<>(transactionRequestDTO);
         ResponseEntity<TransactionResponseDTO> transactionResponseEntity;
@@ -86,30 +87,51 @@ public class TransactionService implements ITransactionService {
             transactionResponseEntity = restTemplate.postForEntity(getAcquirerUrl() + "/transactions/check", transactionRequestEntity, TransactionResponseDTO.class);
         } catch (Exception e) {
             log.error("Error while calling acquirer bank");
-            return new TransactionResponseDTO("", "", false, "Error while calling acquirer bank");
+            return new TransactionResponseDTO("", createTransactionDTO.getErrorUrlWithOrderId(), false, "Error while calling acquirer bank");
         }
-
 
         if (transactionResponseEntity.getBody() == null || !Objects.requireNonNull(transactionResponseEntity.getBody()).isSuccess()) {
             log.error("Error response from acquirer bank");
-            return new TransactionResponseDTO("", "", false, Objects.requireNonNull(transactionResponseEntity.getBody()).getMessage());
+            return new TransactionResponseDTO("", createTransactionDTO.getFailedUrlWithOrderId(), false, Objects.requireNonNull(transactionResponseEntity.getBody()).getMessage());
         }
 
         Transaction transaction = new Transaction();
         transaction.setBankTransactionId(transactionResponseEntity.getBody().getPaymentId());
         transaction.setAmount(createTransactionDTO.getAmount());
-        transaction.setStatus(OrderStatusForMerchant.IN_PROGRESS);
+        transaction.setStatus(TransactionStatus.IN_PROGRESS);
         transaction.setMerchant(merchant);
         transaction.setOrderId(createTransactionDTO.getMerchantOrderId());
         transaction.setTimestamp(transactionRequestDTO.getMerchantTimestamp());
         transaction.setReturnUrl(transactionResponseEntity.getBody().getPaymentUrl());
         transactionRepository.save(transaction);
-        log.info("Saved transaction with merchanId " + transaction.getMerchant().getMerchantId() + " at " + transaction.getTimestamp());
+        log.info("Saved transaction with merchantId " + transaction.getMerchant().getMerchantId() + " at " + transaction.getTimestamp());
 
         return new TransactionResponseDTO(transactionResponseEntity.getBody().getPaymentId(),
                 transactionResponseEntity.getBody().getPaymentUrl(), true, transactionResponseEntity.getBody().getMessage());
 
     }
+
+    @Override
+    public void finishTransaction(PspResponseDTO dto) {
+        log.info("Finishing transaction");
+        Transaction transaction = transactionRepository.findByOrderId(dto.getMerchantOrderId());
+        if (transaction == null) {
+            log.error("Transaction does not exists!");
+            return;
+        }
+
+        if (dto.isSuccess()) {
+            transaction.setStatus(TransactionStatus.DONE);
+            log.info(String.format("Successfully executed transaction with PAYMENT_ID %s, ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, MERCHANT_ORDER_ID %s",
+                    dto.getPaymentId(), dto.getAcquirerOTimeStamp().toString(), dto.getAcquirerOrderId(), dto.getMerchantOrderId()));
+        } else {
+            log.error(String.format("Failed to execute transaction with with PAYMENT_ID %s, ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, MERCHANT_ORDER_ID %s",
+                    dto.getPaymentId(), dto.getAcquirerOTimeStamp().toString(), dto.getAcquirerOrderId(), dto.getMerchantOrderId()));
+            transaction.setStatus(TransactionStatus.CANCELED);
+        }
+
+    }
+
 
     private String getAcquirerUrl() {
         return HTTP_PREFIX + this.acquirerHost + ":" + this.acquirerPort + "/api";
