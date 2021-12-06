@@ -28,7 +28,7 @@ public class Transaction {
     @Column(name = "merchant_pan", nullable = false)
     private String merchantPan;
 
-    @Column(name = "customer_pan", nullable = false)
+    @Column(name = "customer_pan")
     private String customerPan;
 
     @Column(name = "success_url", nullable = false)

@@ -1,9 +1,6 @@
 package com.example.pspservice.service.impl;
 
-import com.example.pspservice.dto.PaymentMethodTypeDTO;
-import com.example.pspservice.dto.PaymentMethodTypeForMerchantDTO;
-import com.example.pspservice.dto.RequestPaymentDTO;
-import com.example.pspservice.dto.SubscribeToPaymentMethodDTO;
+import com.example.pspservice.dto.*;
 import com.example.pspservice.mapper.PaymentMethodTypeMapper;
 import com.example.pspservice.model.Merchant;
 import com.example.pspservice.model.Payment;
@@ -18,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
@@ -32,6 +31,9 @@ import java.util.List;
 public class PaymentMethodService implements IPaymentMethodService {
 
     protected final Log log = LogFactory.getLog(getClass());
+
+    @Autowired
+    RestTemplate restTemplate;
 
     //izmeni posle u https
     private static final String HTTP_PREFIX = "http://";
@@ -110,6 +112,7 @@ public class PaymentMethodService implements IPaymentMethodService {
             log.error("Failed to get url from psp payment page");
             throw new EntityNotFoundException("Merchant with id: " + dto.getMerchantId() + " doesn't exists.");
         }
+
         Payment payment = new Payment();
         payment.setAmount(dto.getAmount());
         payment.setMerchantOrderId(dto.getTransactionId());
@@ -117,7 +120,8 @@ public class PaymentMethodService implements IPaymentMethodService {
         payment.setReturnUrl("");
         paymentRepository.save(payment);
 
-        return HTTP_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontPaymentUrl + merchant.getId();
+        return HTTP_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontPaymentUrl  + merchant.getId() +
+                "/" + payment.getId();
     }
 
     @Override
@@ -148,7 +152,7 @@ public class PaymentMethodService implements IPaymentMethodService {
 
     @Override
     public List<PaymentMethodTypeDTO> findMerchantsPaymentMethodsForPayment(String merchantId) throws Exception {
-        if (merchantId == null) {
+        if (merchantId == null || merchantId.trim().equals("")) {
             throw new Exception("Merchant id is null!");
         }
 
@@ -171,6 +175,62 @@ public class PaymentMethodService implements IPaymentMethodService {
 
         return returnPaymentsDTO;
     }
+
+    @Override
+    @Transactional
+    public String choosePaymentMethod(ChoosePaymentMethodDTO choosePaymentMethodDTO) throws Exception {
+
+        if (choosePaymentMethodDTO.getPaymentMethodId() == null || choosePaymentMethodDTO.getPaymentMethodId().trim().equals("") ||
+        choosePaymentMethodDTO.getPaymentId() == null || choosePaymentMethodDTO.getPaymentId().trim().equals("") ||
+        choosePaymentMethodDTO.getMerchantId() == null || choosePaymentMethodDTO.getMerchantId().trim().equals("")) {
+            log.error("ChoosePaymentDTO fields are null");
+            throw new NullPointerException("Missing ChoosePaymentDTO fields");
+        }
+
+        if (!merchantRepository.findById(choosePaymentMethodDTO.getMerchantId()).isPresent()) {
+            log.error("Merchant in psp with id " + choosePaymentMethodDTO.getMerchantId() + " does not exists");
+            throw new Exception("Merchant in psp with id " + choosePaymentMethodDTO.getMerchantId() + " does not exists");
+        }
+
+        PaymentMethodType paymentMethodType = paymentMethodTypeRepository.findById(choosePaymentMethodDTO.getPaymentMethodId()).orElse(null);
+        if (paymentMethodType == null) {
+            log.error("PaymentMethodType with id " + choosePaymentMethodDTO.getPaymentMethodId() + " is null");
+            throw new NullPointerException("Missing ChoosePaymentDTO fields");
+        }
+
+        Payment payment = paymentRepository.findById(choosePaymentMethodDTO.getPaymentId()).orElse(null);
+
+        if (payment != null) {
+            payment.setPaymentMethodType(paymentMethodType);
+            paymentRepository.save(payment);
+        } else {
+            log.error("Failed to set payment method type: " + paymentMethodType.getName());
+            return "";
+        }
+
+        Merchant merchant = merchantRepository.getById(choosePaymentMethodDTO.getMerchantId());
+        TransactionResponseDTO httpResponse;
+
+        try {
+            CreateTransactionDTO createTransactionDTO = new CreateTransactionDTO();
+            createTransactionDTO.setMerchantOrderId(payment.getMerchantOrderId());
+            createTransactionDTO.setMerchantId(merchant.getMerchantId());
+            createTransactionDTO.setAmount(payment.getAmount());
+            createTransactionDTO.setTime(payment.getMerchantTimeStamp());
+            httpResponse = restTemplate.postForObject("http://" + paymentMethodType.getServiceName() + "/createTransaction", createTransactionDTO, TransactionResponseDTO.class);
+            log.info("Successfully redirected to " + paymentMethodType.getServiceName());
+        } catch (Exception e) {
+            log.error("Failed to redirect to " + paymentMethodType.getServiceName() + " payment service");
+            throw new Exception("Failed to redirect to " + paymentMethodType.getServiceName() + " payment service");
+        }
+
+        assert httpResponse != null;
+        return httpResponse.getPaymentUrl();
+
+    }
+
+
+
 
     private static String decodeBase64(String image) {
         File currDir = new File(System.getProperty("user.dir"));

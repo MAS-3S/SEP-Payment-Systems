@@ -10,8 +10,8 @@ import LayoutPageNotFound from "./components/routing/LayoutPageNotFound";
 
 const privateRoutes = [
   {
-    key: "payment-methods/payment/webshop-id/:webshopId",
-    path: "/payment-methods/payment/webshop-id/:webshopId",
+    key: "payment-methods/payment/webshop-id/:webshopId/:paymentId",
+    path: "/payment-methods/payment/webshop-id/:webshopId/:paymentId",
     component: PaymentMethodsContainer,
     exact: false,
   },
@@ -30,7 +30,7 @@ function App() {
         <Route
           exact
           path={[
-            "/payment-methods/payment/webshop-id/:webshopId",
+            "/payment-methods/payment/webshop-id/:webshopId/:paymentId",
             "/payment-methods/webshop-id/:webshopId",
           ]}
         >

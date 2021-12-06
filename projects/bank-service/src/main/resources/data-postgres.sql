@@ -1,0 +1,1 @@
+insert into merchants(id, merchant_id, bank_merchant_id, bank_merchant_password) values ('efffe056-17fb-4684-9ca7-e07476f76135', '902a1e99-87e9-43b1-8927-9fbd4c2d9ca8', 'bc5d6b00ae2c49a69b546d5cc2c541', '84914458f046');
