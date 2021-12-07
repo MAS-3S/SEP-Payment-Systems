@@ -1,10 +1,12 @@
 package com.example.webshopbackend.controller;
 
 import com.example.webshopbackend.dto.AccommodationDto;
+import com.example.webshopbackend.dto.ItemToPurchaseDto;
 import com.example.webshopbackend.dto.ProductDto;
 import com.example.webshopbackend.mapper.AccommodationMapper;
 import com.example.webshopbackend.mapper.ProductMapper;
 import com.example.webshopbackend.model.Accommodation;
+import com.example.webshopbackend.model.ItemToPurchase;
 import com.example.webshopbackend.model.Product;
 import com.example.webshopbackend.service.IAccommodationService;
 import com.example.webshopbackend.service.IProductService;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "api/products")
@@ -31,7 +35,6 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> findAllProducts(@PathVariable String id) {
         List<ProductDto> result = new ArrayList<>();
         List<Product> products = productService.findAllByWebShopId(id);
-//        "902a1e99-87e9-43b1-8927-9fbd4c2d9ca8"
         if(products.isEmpty()) {
             return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
         }
@@ -41,5 +44,10 @@ public class ProductController {
         }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<ItemToPurchaseDto>> findAllPayedProductsForUser(@PathVariable String id) {
+        return new ResponseEntity<>(productService.findAllPayedProductsByUserId(id), HttpStatus.OK);
     }
 }
