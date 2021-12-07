@@ -56,6 +56,8 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public TransactionResponseDTO createTransaction(CreateTransactionDTO createTransactionDTO) throws Exception {
+        log.info("Creating new transaction");
+
         if (createTransactionDTO.getMerchantId().trim().equals("") || createTransactionDTO.getMerchantOrderId().trim().equals("")) {
             log.error("merchantId and/or merchantOrderId are null");
             throw new Exception("All ids for creating transaction must be present");
@@ -113,9 +115,10 @@ public class TransactionService implements ITransactionService {
     @Override
     public void finishTransaction(PspResponseDTO dto) {
         log.info("Finishing transaction");
+
         Transaction transaction = transactionRepository.findByOrderId(dto.getMerchantOrderId());
         if (transaction == null) {
-            log.error("Transaction does not exists!");
+            log.error("Transaction with id: " + dto.getMerchantOrderId() + " does not exists!");
             return;
         }
 
@@ -132,6 +135,7 @@ public class TransactionService implements ITransactionService {
     }
 
     private String getAcquirerUrl() {
+        log.info("Getting acquirer url");
         return HTTP_PREFIX + this.acquirerHost + ":" + this.acquirerPort + "/api";
     }
 }

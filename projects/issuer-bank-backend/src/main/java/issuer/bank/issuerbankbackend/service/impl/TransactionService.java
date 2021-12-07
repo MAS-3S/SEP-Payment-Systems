@@ -30,6 +30,8 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public PccResponse handleTransactionRequest(PccRequest pccRequest) {
+        log.info("Handling transaction request");
+
         PccResponse pccResponse = new PccResponse();
 
         if(pccRequest.getAcquirerOrderId().equals("") || pccRequest.getAcquirerTimestamp() == null || pccRequest.getAmount() == null ||
@@ -48,6 +50,7 @@ public class TransactionService implements ITransactionService {
             return pccResponse;
         }
 
+        log.info("Checking available amount");
         if(creditCard.getAvailableAmount() - pccRequest.getAmount() < 0) {
             log.error("No enough money!");
             pccResponse.setAcquirerOrderId(pccRequest.getAcquirerOrderId());
@@ -58,6 +61,7 @@ public class TransactionService implements ITransactionService {
         }
 
         log.info("Card found with available amount: " + creditCard.getAvailableAmount());
+        log.info("Paying with credit card's PAN: " + creditCard.getPan().substring(0, 3) + " - **** - **** - " + creditCard.getPan().substring(12));
         creditCard.setAvailableAmount(creditCard.getAvailableAmount() - pccRequest.getAmount());
         creditCard.setReservedAmount(creditCard.getReservedAmount() + pccRequest.getAmount());
         creditCardRepository.save(creditCard);
@@ -73,13 +77,14 @@ public class TransactionService implements ITransactionService {
 
         transactionRepository.save(transaction);
 
-        log.info("Transaction is successfully executed!");
+        log.info("Transaction is successfully executed and saved!");
         pccResponse.setAcquirerOrderId(pccRequest.getAcquirerOrderId());
         pccResponse.setAcquirerTimestamp(pccRequest.getAcquirerTimestamp());
         pccResponse.setIssuerOrderId(transaction.getId());
         pccResponse.setIssuerTimestamp(transaction.getTimestamp());
         pccResponse.setSuccess(true);
 
+        log.info("Sendin response to ACQUIRER");
         return pccResponse;
     }
 }

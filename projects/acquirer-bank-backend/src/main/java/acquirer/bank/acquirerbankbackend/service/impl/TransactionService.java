@@ -57,7 +57,7 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public TransactionResponse checkTransactionAndReturnUrl(TransactionRequest transactionRequest) {
-        log.info("Check transaction started.");
+        log.info("Checking transaction has started.");
         TransactionResponse transactionResponse = new TransactionResponse();
 
         if(transactionRequest.getMerchantId().equals("") || transactionRequest.getMerchantPassword().equals("") || transactionRequest.getMerchantOrderId().equals("") || transactionRequest.getMerchantTimestamp() == null || transactionRequest.getAmount() == null ||
@@ -101,7 +101,7 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public TransactionResponse executeTransaction(String transactionId, CreditCardRequest creditCardRequest) throws URISyntaxException {
-        log.info("Execute transaction with id:" + transactionId + " started.");
+        log.info("Executing transaction with id:" + transactionId + " started.");
         TransactionResponse transactionResponse = new TransactionResponse();
 
         if(creditCardRequest.getPan().equals("") || creditCardRequest.getCcv().equals("") || creditCardRequest.getExpirationDate() == null || creditCardRequest.getCardholderName().equals("")) {
@@ -113,7 +113,7 @@ public class TransactionService implements ITransactionService {
 
         Transaction transaction = transactionRepository.getById(transactionId);
         if(!transaction.getStatus().equals(TransactionStatus.OPEN)) {
-            log.info("Transaction has already executed!");
+            log.info("Transaction with id: " + transactionId + " has already executed!");
             transactionResponse.setSuccess(false);
             transactionResponse.setMessage("Transaction has already executed!");
             sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
@@ -121,6 +121,7 @@ public class TransactionService implements ITransactionService {
         }
 
         if(creditCardRequest.getPan().startsWith(acquirerBankPan)) { // The same bank
+            log.info("Trying to execute transaction in acquirer bank");
             CreditCard customerCreditCard = creditCardRepository.findByPanAndCcv(creditCardRequest.getPan(), creditCardRequest.getCcv());
             if(customerCreditCard == null || customerCreditCard.getExpirationDate().isBefore(LocalDate.now())) {
                 log.error("Customer credit card not found or expired!");
@@ -142,11 +143,13 @@ public class TransactionService implements ITransactionService {
                 return transactionResponse;
             }
 
+            log.info("Paying with credit card's PAN: " + customerCreditCard.getPan().substring(0, 3) + " - **** - **** - " + customerCreditCard.getPan().substring(12));
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - transaction.getAmount());
             customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + transaction.getAmount());
             log.info("Amount " + transaction.getAmount() + " transfer from available to reserved amount");
         } else { // Different bank
             log.info("Payment is not from the same bank");
+            log.info("Trying to execute transaction in issuer bank");
             PccRequest pccRequest = new PccRequest();
             pccRequest.setAcquirerOrderId(transactionId);
             pccRequest.setAcquirerTimestamp(transaction.getTimestamp());
@@ -164,6 +167,11 @@ public class TransactionService implements ITransactionService {
             }
 
             if(!pccResponse.isSuccess()) {
+                if (pccResponse.getAcquirerOrderId() != null && pccResponse.getAcquirerTimestamp() != null && pccResponse.getIssuerTimestamp() != null && pccResponse.getIssuerOrderId() != null) {
+                    log.info(String.format("Failed to executed transaction with ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, ISSUER_ORDER_ID %s, ISSUER_TIMESTAMP %s",
+                            pccResponse.getAcquirerTimestamp().toString(), pccResponse.getAcquirerOrderId(), pccResponse.getIssuerOrderId(), pccResponse.getIssuerTimestamp().toString()));
+                }
+
                 boolean failed = pccResponse.getAcquirerOrderId() != null;
                 if (failed) {
                     transaction.setStatus(TransactionStatus.FAILED);
@@ -177,6 +185,9 @@ public class TransactionService implements ITransactionService {
                 sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
                 return transactionResponse;
             }
+
+            log.info(String.format("Successfully executed transaction with ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, ISSUER_ORDER_ID %s, ISSUER_TIMESTAMP %s",
+                    pccResponse.getAcquirerTimestamp().toString(), pccResponse.getAcquirerOrderId(), pccResponse.getIssuerOrderId(), pccResponse.getIssuerTimestamp().toString()));
 
         }
 
@@ -193,6 +204,8 @@ public class TransactionService implements ITransactionService {
     }
 
     private PccResponse sendRequestToPcc(PccRequest pccRequest) throws URISyntaxException {
+        log.info("Sending request to PCC");
+
         RestTemplate restTemplate = new RestTemplate();
         final String url = HTTP_PREFIX + this.pccAddress + ":" + this.pccPort + "/api/pcc/forward";
         URI uri = new URI(url);
@@ -203,6 +216,8 @@ public class TransactionService implements ITransactionService {
 
 
     private void sendRequestToPsp(LocalDateTime acquirerTimeStamp, String merchantOrderId, String paymentId, String acquirerOrderId, boolean success) throws URISyntaxException {
+        log.info("Sending request to PSP");
+
         PspResponse pspResponse = new PspResponse(acquirerOrderId, paymentId, merchantOrderId, acquirerTimeStamp, success);
         RestTemplate restTemplate = new RestTemplate();
         final String url = HTTP_PREFIX + this.apiGatewayHost + ":" + this.apiGatewayPort + "/bank-service/checkTransaction";
