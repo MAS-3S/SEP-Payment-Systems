@@ -131,6 +131,16 @@ public class TransactionService implements ITransactionService {
                 return transactionResponse;
             }
 
+            if (!customerCreditCard.getPan().equals(creditCardRequest.getPan()) || !customerCreditCard.getCcv().equals(creditCardRequest.getCcv()) ||
+                    !customerCreditCard.getExpirationDate().equals(creditCardRequest.getExpirationDate())
+                    || !(customerCreditCard.getClient().getFirstName() + " " + customerCreditCard.getClient().getLastName()).equals(creditCardRequest.getCardholderName())) {
+                log.error("Inserted values of credit card are not matching the real one");
+                transactionResponse.setPaymentUrl(transaction.getFailedUrl());
+                transactionResponse.setSuccess(false);
+                transactionResponse.setMessage("Inserted values of credit card are not matching the real one");
+                return transactionResponse;
+            }
+
             if(customerCreditCard.getAvailableAmount() - transaction.getAmount() < 0) {
                 log.error("No enough available money on customer credit card");
                 transaction.setStatus(TransactionStatus.FAILED);
@@ -143,7 +153,7 @@ public class TransactionService implements ITransactionService {
                 return transactionResponse;
             }
 
-            log.info("Paying with credit card's PAN: " + customerCreditCard.getPan().substring(0, 3) + " - **** - **** - " + customerCreditCard.getPan().substring(12));
+            log.info("Paying with credit card's PAN: " + customerCreditCard.getPan().substring(0, 4) + " - **** - **** - " + customerCreditCard.getPan().substring(12));
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - transaction.getAmount());
             customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + transaction.getAmount());
             log.info("Amount " + transaction.getAmount() + " transfer from available to reserved amount");

@@ -20,7 +20,12 @@ export default function TransactionContainer(props) {
       cardHolder
     ).then((response) => {
       if (response !== null) {
-        window.location.href = response.paymentUrl;
+        if (response.success === false) {
+          alert(response.message); 
+          window.location.href = response.paymentUrl;
+        } else {
+          window.location.href = response.paymentUrl;
+        }
       }
     });
   };

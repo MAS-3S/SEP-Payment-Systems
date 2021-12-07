@@ -45,8 +45,21 @@ public class TransactionService implements ITransactionService {
         CreditCard creditCard = creditCardRepository.findByPanAndCcv(pccRequest.getPan(), pccRequest.getCcv());
         if(creditCard == null || creditCard.getExpirationDate().isBefore(LocalDate.now())) {
             log.error("Credit card does not exist or expired!");
+            pccResponse.setAcquirerOrderId(pccRequest.getAcquirerOrderId());
+            pccResponse.setAcquirerTimestamp(pccRequest.getAcquirerTimestamp());
             pccResponse.setSuccess(false);
             pccResponse.setMessage("Credit card does not exist or expired!");
+            return pccResponse;
+        }
+
+        if (!creditCard.getPan().equals(pccRequest.getPan()) || !creditCard.getCcv().equals(pccRequest.getCcv()) ||
+                !creditCard.getExpirationDate().equals(pccRequest.getExpirationDate())
+                || !(creditCard.getClient().getFirstName() + " " + creditCard.getClient().getLastName()).equals(pccRequest.getCardholderName())) {
+            log.error("Inserted values of credit card are not matching the real one");
+            pccResponse.setAcquirerOrderId(pccRequest.getAcquirerOrderId());
+            pccResponse.setAcquirerTimestamp(pccRequest.getAcquirerTimestamp());
+            pccResponse.setSuccess(false);
+            pccResponse.setMessage("Inserted values of credit card are not matching the real one");
             return pccResponse;
         }
 
@@ -61,7 +74,7 @@ public class TransactionService implements ITransactionService {
         }
 
         log.info("Card found with available amount: " + creditCard.getAvailableAmount());
-        log.info("Paying with credit card's PAN: " + creditCard.getPan().substring(0, 3) + " - **** - **** - " + creditCard.getPan().substring(12));
+        log.info("Paying with credit card's PAN: " + creditCard.getPan().substring(0, 4) + " - **** - **** - " + creditCard.getPan().substring(12));
         creditCard.setAvailableAmount(creditCard.getAvailableAmount() - pccRequest.getAmount());
         creditCard.setReservedAmount(creditCard.getReservedAmount() + pccRequest.getAmount());
         creditCardRepository.save(creditCard);
@@ -84,7 +97,7 @@ public class TransactionService implements ITransactionService {
         pccResponse.setIssuerTimestamp(transaction.getTimestamp());
         pccResponse.setSuccess(true);
 
-        log.info("Sendin response to ACQUIRER");
+        log.info("Sending response to ACQUIRER");
         return pccResponse;
     }
 }
