@@ -1,8 +1,11 @@
 package com.example.webshopbackend.controller;
 
 import com.example.webshopbackend.dto.AccommodationDto;
+import com.example.webshopbackend.dto.ItemToPurchaseDto;
 import com.example.webshopbackend.mapper.AccommodationMapper;
+import com.example.webshopbackend.mapper.ConferenceMapper;
 import com.example.webshopbackend.model.Accommodation;
+import com.example.webshopbackend.model.ItemToPurchase;
 import com.example.webshopbackend.service.IAccommodationService;
 import com.example.webshopbackend.service.impl.AccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "api/accommodations")
@@ -28,7 +33,6 @@ public class AccommodationController {
     public ResponseEntity<List<AccommodationDto>> findAllAccommodations(@PathVariable String id) {
         List<AccommodationDto> result = new ArrayList<>();
         List<Accommodation> accommodations = accommodationService.findAllByWebShopId(id);
-//        "4086f1d4-4002-4f1e-9bf8-ab0e82048584"
         if(accommodations.isEmpty()) {
             return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
         }
@@ -38,5 +42,10 @@ public class AccommodationController {
         }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<ItemToPurchaseDto>> findAllPayedAccommodationsForUser(@PathVariable String id) {
+        return new ResponseEntity<>(accommodationService.findAllPayedAccommodationsByUserId(id), HttpStatus.OK);
     }
 }
