@@ -3,19 +3,17 @@ import "../../assets/css/paymentCardStyle.css";
 
 export default function PaymentCard(props) {
   const [paymentsMethod, setPaymentsMethod] = useState(props.paymentsMethod);
-  // const [merchantId, setMerchantId] = useState("");
+  const [merchantId, setMerchantId] = useState(props.merchantId);
+  const [paymentId, setPaymentId] = useState(props.paymentId);
 
   useEffect(() => {
     setPaymentsMethod(props.paymentsMethod);
-  }, [props.paymentsMethod]);
+    setMerchantId(props.merchantId);
+    setPaymentId(props.paymentId);
+  }, [props.paymentsMethod, props.merchantId, props.paymentId]);
 
-  // useEffect(() => {
-  //   setMerchantId(props.merchantId);
-  // }, [props.merchantId]);
-
-  const handleAlertClick = (paymentsMethod) => {
-    //props.handleChangeMerchantSubscription(paymentsMethod, merchantId);
-    console.log(paymentsMethod);
+  const handleAlertClick = (paymentsMethod, merchantId, paymentId) => {
+    props.handleChosePaymentMethod(paymentsMethod.id, merchantId, paymentId);
   };
 
   return (
@@ -26,7 +24,9 @@ export default function PaymentCard(props) {
         <div className="productCardControl">
           <button
             className="productCardBtnSubscribe"
-            onClick={() => handleAlertClick(paymentsMethod)}
+            onClick={() =>
+              handleAlertClick(paymentsMethod, merchantId, paymentId)
+            }
           >
             <span className="productCardBuy">Choose</span>
           </button>

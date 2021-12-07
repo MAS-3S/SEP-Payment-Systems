@@ -40,7 +40,7 @@ public class Transaction {
     @Column(name = "success", nullable = false)
     private boolean success;
 
-    @Column(name = "message", nullable = false)
+    @Column(name = "message")
     private String message;
 
     public Transaction() {

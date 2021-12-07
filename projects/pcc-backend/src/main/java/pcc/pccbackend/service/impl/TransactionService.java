@@ -61,7 +61,7 @@ public class TransactionService implements ITransactionService {
         transactionRepository.save(transaction);
 
         try{
-            forwardToIssuerBank(pccRequest);
+            pccResponse = forwardToIssuerBank(pccRequest);
         } catch (Exception e) {
             log.error("Issuer bank redirection error!");
         }
@@ -75,7 +75,7 @@ public class TransactionService implements ITransactionService {
 
     private PccResponse forwardToIssuerBank(PccRequest pccRequest) throws URISyntaxException {
         RestTemplate restTemplate = new RestTemplate();
-        final String url = HTTP_PREFIX + this.issuerBankHost + ":" + this.issuerBankHost + this.issuerBankTransactionUrl;
+        final String url = HTTP_PREFIX + this.issuerBankHost + ":" + this.issuerBankPort + this.issuerBankTransactionUrl;
         URI uri = new URI(url);
 
         ResponseEntity<PccResponse> result = restTemplate.postForEntity(uri, pccRequest, PccResponse.class);

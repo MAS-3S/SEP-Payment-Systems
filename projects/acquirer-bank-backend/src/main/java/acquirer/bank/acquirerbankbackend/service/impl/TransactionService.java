@@ -101,7 +101,7 @@ public class TransactionService implements ITransactionService {
     @Override
     @Transactional
     public TransactionResponse executeTransaction(String transactionId, CreditCardRequest creditCardRequest) throws URISyntaxException {
-        log.info("Execute transaction started.");
+        log.info("Execute transaction with id:" + transactionId + " started.");
         TransactionResponse transactionResponse = new TransactionResponse();
 
         if(creditCardRequest.getPan().equals("") || creditCardRequest.getCcv().equals("") || creditCardRequest.getExpirationDate() == null || creditCardRequest.getCardholderName().equals("")) {
@@ -112,7 +112,7 @@ public class TransactionService implements ITransactionService {
         }
 
         Transaction transaction = transactionRepository.getById(transactionId);
-        if(transaction.getStatus().equals(TransactionStatus.EXECUTED)) {
+        if(!transaction.getStatus().equals(TransactionStatus.OPEN)) {
             log.info("Transaction has already executed!");
             transactionResponse.setSuccess(false);
             transactionResponse.setMessage("Transaction has already executed!");
@@ -158,7 +158,7 @@ public class TransactionService implements ITransactionService {
 
             PccResponse pccResponse = new PccResponse();
             try {
-                sendRequestToPcc(pccRequest);
+                pccResponse = sendRequestToPcc(pccRequest);
             } catch (Exception e) {
                 log.error("Pcc redirection error!");
             }

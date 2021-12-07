@@ -5,6 +5,7 @@ import "../assets/css/paymentMethodsStyle.css";
 export default function PaymentMethods(props) {
   const [paymentsMethods, setPaymentsMethods] = useState(props.paymentsMethods);
   const [merchantId, setMerchantId] = useState(props.merchantId);
+  const [paymentId, setPaymentId] = useState(props.paymentId);
 
   useEffect(() => {
     setPaymentsMethods(props.paymentsMethods);
@@ -12,10 +13,19 @@ export default function PaymentMethods(props) {
 
   useEffect(() => {
     setMerchantId(props.merchantId);
-  }, [props.merchantId]);
+    setPaymentId(props.paymentId);
+  }, [props.merchantId, props.paymentId]);
 
   const handleChangeMerchantSubscription = (paymentsMethod, merchantId) => {
     props.handleChangeMerchantSubscription(paymentsMethod, merchantId);
+  };
+
+  const handleChosePaymentMethod = (
+    paymentsMethodId,
+    merchantId,
+    paymentId
+  ) => {
+    props.handleChosePaymentMethod(paymentsMethodId, merchantId, paymentId);
   };
 
   return (
@@ -28,7 +38,9 @@ export default function PaymentMethods(props) {
           key={i}
           paymentsMethod={paymentsMethods[i]}
           merchantId={merchantId}
+          paymentId={paymentId}
           handleChangeMerchantSubscription={handleChangeMerchantSubscription}
+          handleChosePaymentMethod={handleChosePaymentMethod}
         />
       ))}
     </div>
