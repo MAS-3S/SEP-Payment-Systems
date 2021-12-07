@@ -8,6 +8,19 @@ class TransactionService {
     );
     return response.data;
   }
+
+  async changeTransactionStatus(transactionId, status) {
+    const body = {
+      id: transactionId,
+      status: status,
+    };
+
+    const response = await api.put(
+      WEBSHOP_URL + "api/transactions/" + transactionId,
+      body
+    );
+    return response.data;
+  }
 }
 
 export default new TransactionService();

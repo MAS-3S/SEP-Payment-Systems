@@ -25,13 +25,13 @@ public class Merchant {
     @ManyToMany(cascade = CascadeType.ALL)
     List<PaymentMethodType> paymentMethodTypes;
 
-    @Column(unique = true)
+    @Column(name="success_url")
     private String successUrl;
 
-    @Column(unique = true)
+    @Column(name="failed_url")
     private String failedUrl;
 
-    @Column(unique = true)
+    @Column(name="error_url")
     private String errorUrl;
 
     public Merchant() {

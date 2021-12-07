@@ -232,9 +232,6 @@ public class PaymentMethodService implements IPaymentMethodService {
 
     }
 
-
-
-
     private static String decodeBase64(String image) {
         File currDir = new File(System.getProperty("user.dir"));
         File assetFolder = new File(currDir, "src/main/java/com/example/pspservice/assets/images");

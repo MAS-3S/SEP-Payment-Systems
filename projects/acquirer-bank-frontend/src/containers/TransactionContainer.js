@@ -19,7 +19,9 @@ export default function TransactionContainer(props) {
       expirationDate,
       cardHolder
     ).then((response) => {
-      console.log(response);
+      if (response !== null) {
+        window.location.href = response.paymentUrl;
+      }
     });
   };
   return <Transaction handleExecuteTransaction={handleExecuteTransaction} />;

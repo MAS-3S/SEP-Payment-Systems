@@ -23,7 +23,20 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public ShoppingCart getShoppingCartForTransaction(String transactionId) {
-        Transaction transaction = transactionRepository.getById(transactionId);
+        Transaction transaction = transactionRepository.findById(transactionId).orElse(null);
+        if(transaction == null) {
+            return null;
+        }
         return transaction.getShoppingCart();
+    }
+
+    @Override
+    public Transaction getById(String id) {
+        return transactionRepository.getById(id);
+    }
+
+    @Override
+    public Transaction save(Transaction transaction) {
+        return transactionRepository.save(transaction);
     }
 }

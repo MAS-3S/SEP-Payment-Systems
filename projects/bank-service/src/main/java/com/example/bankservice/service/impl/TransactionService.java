@@ -108,7 +108,6 @@ public class TransactionService implements ITransactionService {
 
         return new TransactionResponseDTO(transactionResponseEntity.getBody().getPaymentId(),
                 transactionResponseEntity.getBody().getPaymentUrl(), true, transactionResponseEntity.getBody().getMessage());
-
     }
 
     @Override
@@ -131,7 +130,6 @@ public class TransactionService implements ITransactionService {
         }
 
     }
-
 
     private String getAcquirerUrl() {
         return HTTP_PREFIX + this.acquirerHost + ":" + this.acquirerPort + "/api";
