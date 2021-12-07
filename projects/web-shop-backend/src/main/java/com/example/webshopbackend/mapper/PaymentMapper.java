@@ -6,7 +6,6 @@ import com.example.webshopbackend.model.User;
 import com.example.webshopbackend.model.WebShop;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class PaymentMapper {
 
