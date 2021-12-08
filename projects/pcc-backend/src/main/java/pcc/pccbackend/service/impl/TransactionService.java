@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import pcc.pccbackend.dto.PccResponse;
 import pcc.pccbackend.dto.PccRequest;
@@ -15,6 +16,7 @@ import pcc.pccbackend.service.ITransactionService;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -37,6 +39,7 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
+    @Transactional
     public PccResponse forwardTransactionRequest(PccRequest pccRequest) {
         log.info("Forwarding transaction from acquirer to issuer for acquirerOrderId: " + pccRequest.getAcquirerOrderId());
         PccResponse pccResponse = new PccResponse();
@@ -51,14 +54,16 @@ public class TransactionService implements ITransactionService {
 
         Transaction transaction = new Transaction();
         transaction.setAcquirerOrderId(pccRequest.getAcquirerOrderId());
-        transaction.setAcquirerTimestamp(pccRequest.getAcquirerTimestamp());
+        transaction.setAcquirerTimestamp(LocalDateTime.now());
         transaction.setAmount(pccRequest.getAmount());
         transaction.setPan(pccRequest.getPan());
         transaction.setCcv(pccRequest.getCcv());
         transaction.setExpirationDate(pccRequest.getExpirationDate());
         transaction.setCardholderName(pccRequest.getCardholderName());
-
         transactionRepository.save(transaction);
+
+        pccRequest.setAcquirerOrderId(transaction.getId());
+        pccRequest.setAcquirerTimestamp(transaction.getAcquirerTimestamp());
 
         try{
             pccResponse = forwardToIssuerBank(pccRequest);
@@ -66,6 +71,7 @@ public class TransactionService implements ITransactionService {
             log.error("Issuer bank redirection error!");
         }
 
+        transaction.setAcquirerOrderId(transaction.getId());
         transaction.setSuccess(pccResponse.isSuccess());
         transaction.setMessage(pccResponse.getMessage());
         transactionRepository.save(transaction);
