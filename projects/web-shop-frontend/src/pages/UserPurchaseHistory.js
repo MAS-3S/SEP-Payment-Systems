@@ -22,9 +22,15 @@ export default function UserPurchaseHistory(props) {
 
   return (
     <div style={{ width: "98%" }}>
-      <ProductTable products={products} />
-      <AccommodationsTable accommodations={accommodations} />
-      <ConferencesTable conferences={conferences} />
+      {(() => {
+        if (props.webShopName === "Products Shop") {
+          return <ProductTable products={products} />;
+        } else if (props.webShopName === "Conferences Shop") {
+          return <ConferencesTable conferences={conferences} />;
+        } else if (props.webShopName === "Accommodations Shop") {
+          return <AccommodationsTable accommodations={accommodations} />;
+        }
+      })()}
     </div>
   );
 }

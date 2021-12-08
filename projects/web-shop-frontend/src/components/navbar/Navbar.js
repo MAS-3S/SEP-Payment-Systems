@@ -175,6 +175,20 @@ export default function Navbar(props) {
             variant="contained"
             color="primary"
             to={{
+              pathname: `/user-purchase-history/${TokenService.getUserId()}/${
+                activeWebshop.id
+              }`,
+              paramName: `${activeWebshop.name}`,
+            }}
+            className="myButton"
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            Purchase history
+          </Link>
+          <Link
+            variant="contained"
+            color="primary"
+            to={{
               pathname: `/shopping-cart/${activeWebshop.name.toLowerCase()}`,
             }}
             className="myButton"

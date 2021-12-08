@@ -9,9 +9,9 @@ class AccommodationService {
     return response.data;
   }
 
-  async findAllPayedAccommodationsForUser(id) {
+  async findAllPayedAccommodationsForUser(userId, webshopId) {
     const response = await api.get(
-      WEBSHOP_URL + "api/accommodations/user/" + id
+      WEBSHOP_URL + "api/accommodations/user/" + userId + "/" + webshopId
     );
     return response.data;
   }

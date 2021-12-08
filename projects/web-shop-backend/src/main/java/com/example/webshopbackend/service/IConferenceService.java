@@ -8,6 +8,6 @@ import java.util.Set;
 
 public interface IConferenceService {
     List<Conference> findAllByWebShopId(String id);
-    Set<ItemToPurchaseDto> findAllPayedConferencesByUserId(String id);
+    Set<ItemToPurchaseDto> findAllPayedConferencesByUserId(String userId, String webShopId);
     Conference findById(String id);
 }

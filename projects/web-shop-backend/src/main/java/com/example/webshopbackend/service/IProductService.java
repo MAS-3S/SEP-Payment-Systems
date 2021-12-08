@@ -8,5 +8,5 @@ import java.util.Set;
 
 public interface IProductService {
     List<Product> findAllByWebShopId(String id);
-    Set<ItemToPurchaseDto> findAllPayedProductsByUserId(String id);
+    Set<ItemToPurchaseDto> findAllPayedProductsByUserId(String userId, String webShopId);
 }
