@@ -21,6 +21,14 @@ export default function AccommodationsTable(props) {
               <label>{accommodation.accommodationDto.price}</label>
             </td>
             <td style={{ verticalAlign: "middle", textAlign: "center" }}>
+              <label>{accommodation.quantity}</label>
+            </td>
+            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
+              <label>
+                {accommodation.accommodationDto.price * accommodation.quantity}
+              </label>
+            </td>
+            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
               <label>{accommodation.accommodationDto.currency}</label>
             </td>
             <td style={{ verticalAlign: "middle", textAlign: "center" }}>
@@ -39,9 +47,6 @@ export default function AccommodationsTable(props) {
               <label>{accommodation.accommodationDto.transportName}</label>
             </td>
             <td style={{ verticalAlign: "middle", textAlign: "center" }}>
-              <label>{accommodation.quantity}</label>
-            </td>
-            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
               <label>{accommodation.date}</label>
             </td>
           </tr>
@@ -53,7 +58,7 @@ export default function AccommodationsTable(props) {
         <tr>
           <td
             style={{ verticalAlign: "middle", textAlign: "center" }}
-            colSpan="11"
+            colSpan="12"
           >
             <h5>You don't have any bought accommodations...</h5>
           </td>
@@ -97,6 +102,12 @@ export default function AccommodationsTable(props) {
                         Price
                       </th>
                       <th scope="col" style={{ textAlign: "center" }}>
+                        Quantity
+                      </th>
+                      <th scope="col" style={{ textAlign: "center" }}>
+                        Total price
+                      </th>
+                      <th scope="col" style={{ textAlign: "center" }}>
                         Currency
                       </th>
                       <th
@@ -119,10 +130,6 @@ export default function AccommodationsTable(props) {
                         style={{ minWidth: "130px", textAlign: "center" }}
                       >
                         Transport name
-                      </th>
-
-                      <th scope="col" style={{ textAlign: "center" }}>
-                        Quantity
                       </th>
                       <th scope="col" style={{ textAlign: "center" }}>
                         Purchase date

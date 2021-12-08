@@ -51,8 +51,8 @@ const privateRoutes = [
     exact: false,
   },
   {
-    key: "user-purchase-history/:userId",
-    path: "/user-purchase-history/:userId",
+    key: "user-purchase-history/:userId/:webshopId",
+    path: "/user-purchase-history/:userId/:webshopId",
     component: UserPurchaseHistoryContainer,
     exact: false,
   },
@@ -118,7 +118,7 @@ function App() {
           exact
           path={[
             "/shopping-cart/:webshop",
-            "/user-purchase-history/:userId",
+            "/user-purchase-history/:userId/:webshopId",
             "/success-transaction/:orderId",
             "/error-transaction/:orderId",
             "/failed-transaction/:orderId",

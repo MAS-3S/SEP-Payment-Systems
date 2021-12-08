@@ -7,8 +7,10 @@ class ProductService {
     return response.data;
   }
 
-  async findAllPayedProductsForUser(id) {
-    const response = await api.get(WEBSHOP_URL + "api/products/user/" + id);
+  async findAllPayedProductsForUser(userId, webshopId) {
+    const response = await api.get(
+      WEBSHOP_URL + "api/products/user/" + userId + "/" + webshopId
+    );
     return response.data;
   }
 }

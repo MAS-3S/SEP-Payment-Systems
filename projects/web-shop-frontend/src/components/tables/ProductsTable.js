@@ -21,13 +21,13 @@ export default function ProductTable(props) {
               <label>{product.productDto.price}</label>
             </td>
             <td style={{ verticalAlign: "middle", textAlign: "center" }}>
-              <label>{product.productDto.currency}</label>
-            </td>
-            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
-              <label>{product.productDto.availableBalance}</label>
-            </td>
-            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
               <label>{product.quantity}</label>
+            </td>
+            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
+              <label>{product.productDto.price * product.quantity}</label>
+            </td>
+            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
+              <label>{product.productDto.currency}</label>
             </td>
             <td style={{ verticalAlign: "middle", textAlign: "center" }}>
               <label>{product.date}</label>
@@ -85,16 +85,13 @@ export default function ProductTable(props) {
                         Price
                       </th>
                       <th scope="col" style={{ textAlign: "center" }}>
-                        Currency
-                      </th>
-                      <th
-                        scope="col"
-                        style={{ minWidth: "130px", textAlign: "center" }}
-                      >
-                        Available balance
+                        Quantity
                       </th>
                       <th scope="col" style={{ textAlign: "center" }}>
-                        Quantity
+                        Total price
+                      </th>
+                      <th scope="col" style={{ textAlign: "center" }}>
+                        Currency
                       </th>
                       <th scope="col" style={{ textAlign: "center" }}>
                         Purchase date

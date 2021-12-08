@@ -29,6 +29,11 @@ class TokenService {
     return user?.role;
   }
 
+  getUserId() {
+    const user = this.getUser();
+    return user?.id;
+  }
+
   setUser(user) {
     localStorage.setItem("user", JSON.stringify(user));
   }

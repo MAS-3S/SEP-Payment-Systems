@@ -34,18 +34,20 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Set<ItemToPurchaseDto> findAllPayedProductsByUserId(String id) {
+    public Set<ItemToPurchaseDto> findAllPayedProductsByUserId(String userId, String webShopId) {
         Set<ItemToPurchaseDto> productsResult = new HashSet<>();
-        List<ShoppingCart> userShoppingCarts = shoppingCartRepository.findShoppingCartsForUser(id);
+        List<ShoppingCart> userShoppingCarts = shoppingCartRepository.findShoppingCartsForUser(userId);
         for(ShoppingCart shoppingCart : userShoppingCarts) {
-            if(shoppingCart.getTransaction().getStatus().equals(TransactionStatus.SUCCESS)) {
-                for(ItemToPurchase item : shoppingCart.getItems()) {
-                    ItemToPurchaseDto dto = new ItemToPurchaseDto();
-                    dto.setProductId(item.getId());
-                    dto.setProductDto(ProductMapper.convertToDto(item.getProduct()));
-                    dto.setQuantity(item.getQuantity());
-                    dto.setDate(shoppingCart.getCreateDate());
-                    productsResult.add(dto);
+            if (shoppingCart.getWebShop().getId().equals(webShopId)) {
+                if (shoppingCart.getTransaction().getStatus().equals(TransactionStatus.SUCCESS)) {
+                    for (ItemToPurchase item : shoppingCart.getItems()) {
+                        ItemToPurchaseDto dto = new ItemToPurchaseDto();
+                        dto.setProductId(item.getId());
+                        dto.setProductDto(ProductMapper.convertToDto(item.getProduct()));
+                        dto.setQuantity(item.getQuantity());
+                        dto.setDate(shoppingCart.getCreateDate());
+                        productsResult.add(dto);
+                    }
                 }
             }
         }

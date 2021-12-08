@@ -34,18 +34,20 @@ public class ConferenceService implements IConferenceService {
     }
 
     @Override
-    public Set<ItemToPurchaseDto> findAllPayedConferencesByUserId(String id) {
+    public Set<ItemToPurchaseDto> findAllPayedConferencesByUserId(String userId, String webShopId) {
         Set<ItemToPurchaseDto> conferencesResult = new HashSet<>();
-        List<ShoppingCart> userShoppingCarts = shoppingCartRepository.findShoppingCartsForUser(id);
+        List<ShoppingCart> userShoppingCarts = shoppingCartRepository.findShoppingCartsForUser(userId);
         for(ShoppingCart shoppingCart : userShoppingCarts) {
-            if(shoppingCart.getTransaction().getStatus().equals(TransactionStatus.SUCCESS)) {
-                for(ItemToPurchase item : shoppingCart.getItems()) {
-                    ItemToPurchaseDto dto = new ItemToPurchaseDto();
-                    dto.setProductId(item.getId());
-                    dto.setConferenceDto(ConferenceMapper.convertToDto(this.findById(item.getProduct().getId())));
-                    dto.setQuantity(item.getQuantity());
-                    dto.setDate(shoppingCart.getCreateDate());
-                    conferencesResult.add(dto);
+            if (shoppingCart.getWebShop().getId().equals(webShopId)) {
+                if (shoppingCart.getTransaction().getStatus().equals(TransactionStatus.SUCCESS)) {
+                    for (ItemToPurchase item : shoppingCart.getItems()) {
+                        ItemToPurchaseDto dto = new ItemToPurchaseDto();
+                        dto.setProductId(item.getId());
+                        dto.setConferenceDto(ConferenceMapper.convertToDto(this.findById(item.getProduct().getId())));
+                        dto.setQuantity(item.getQuantity());
+                        dto.setDate(shoppingCart.getCreateDate());
+                        conferencesResult.add(dto);
+                    }
                 }
             }
         }

@@ -18,6 +18,14 @@ export default function ConferencesTable(props) {
               <label>{conference.conferenceDto.price}</label>
             </td>
             <td style={{ verticalAlign: "middle", textAlign: "center" }}>
+              <label>{conference.quantity}</label>
+            </td>
+            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
+              <label>
+                {conference.conferenceDto.price * conference.quantity}
+              </label>
+            </td>
+            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
               <label>{conference.conferenceDto.currency}</label>
             </td>
             <td style={{ verticalAlign: "middle", textAlign: "center" }}>
@@ -28,9 +36,6 @@ export default function ConferencesTable(props) {
             </td>
             <td style={{ verticalAlign: "middle", textAlign: "center" }}>
               <label>{conference.conferenceDto.endTime}</label>
-            </td>
-            <td style={{ verticalAlign: "middle", textAlign: "center" }}>
-              <label>{conference.quantity}</label>
             </td>
             <td style={{ verticalAlign: "middle", textAlign: "center" }}>
               <label>{conference.date}</label>
@@ -44,7 +49,7 @@ export default function ConferencesTable(props) {
         <tr>
           <td
             style={{ verticalAlign: "middle", textAlign: "center" }}
-            colSpan="9"
+            colSpan="11"
           >
             <h5>You don't have any bought conferences...</h5>
           </td>
@@ -88,6 +93,12 @@ export default function ConferencesTable(props) {
                         Price
                       </th>
                       <th scope="col" style={{ textAlign: "center" }}>
+                        Quantity
+                      </th>
+                      <th scope="col" style={{ textAlign: "center" }}>
+                        Total price
+                      </th>
+                      <th scope="col" style={{ textAlign: "center" }}>
                         Currency
                       </th>
                       <th
@@ -101,10 +112,6 @@ export default function ConferencesTable(props) {
                       </th>
                       <th scope="col" style={{ textAlign: "center" }}>
                         End time
-                      </th>
-
-                      <th scope="col" style={{ textAlign: "center" }}>
-                        Quantity
                       </th>
                       <th scope="col" style={{ textAlign: "center" }}>
                         Purchase date

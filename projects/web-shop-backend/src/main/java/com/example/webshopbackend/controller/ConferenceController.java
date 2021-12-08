@@ -43,8 +43,8 @@ public class ConferenceController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value="/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<ItemToPurchaseDto>> findAllPayedConferencesForUser(@PathVariable String id) {
-        return new ResponseEntity<>(conferenceService.findAllPayedConferencesByUserId(id), HttpStatus.OK);
+    @GetMapping(value="/user/{userId}/{webShopId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<ItemToPurchaseDto>> findAllPayedConferencesForUser(@PathVariable String userId, @PathVariable String webShopId) {
+        return new ResponseEntity<>(conferenceService.findAllPayedConferencesByUserId(userId, webShopId), HttpStatus.OK);
     }
 }

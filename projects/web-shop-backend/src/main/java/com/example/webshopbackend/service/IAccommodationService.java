@@ -8,6 +8,6 @@ import java.util.Set;
 
 public interface IAccommodationService {
     List<Accommodation> findAllByWebShopId(String id);
-    Set<ItemToPurchaseDto> findAllPayedAccommodationsByUserId(String id);
+    Set<ItemToPurchaseDto> findAllPayedAccommodationsByUserId(String userId, String webShopId);
     Accommodation findById(String id);
 }

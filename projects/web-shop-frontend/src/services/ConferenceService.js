@@ -9,8 +9,10 @@ class ConferenceService {
     return response.data;
   }
 
-  async findAllPayedConferencesForUser(id) {
-    const response = await api.get(WEBSHOP_URL + "api/conferences/user/" + id);
+  async findAllPayedConferencesForUser(userId, webshopId) {
+    const response = await api.get(
+      WEBSHOP_URL + "api/conferences/user/" + userId + "/" + webshopId
+    );
     return response.data;
   }
 }
