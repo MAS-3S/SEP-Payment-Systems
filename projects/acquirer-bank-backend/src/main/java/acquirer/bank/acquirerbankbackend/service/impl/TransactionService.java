@@ -125,6 +125,7 @@ public class TransactionService implements ITransactionService {
             CreditCard customerCreditCard = creditCardRepository.findByPanAndCcv(creditCardRequest.getPan(), creditCardRequest.getCcv());
             if(customerCreditCard == null || customerCreditCard.getExpirationDate().isBefore(LocalDate.now())) {
                 log.error("Customer credit card not found or expired!");
+                transactionResponse.setPaymentUrl(transaction.getFailedUrl());
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage("Customer credit card not found or expired!");
                 sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), "", false);
