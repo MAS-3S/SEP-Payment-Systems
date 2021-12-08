@@ -127,7 +127,7 @@ public class TransactionService implements ITransactionService {
                 log.error("Customer credit card not found or expired!");
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage("Customer credit card not found or expired!");
-                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
+                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), "", false);
                 return transactionResponse;
             }
 
@@ -149,7 +149,7 @@ public class TransactionService implements ITransactionService {
                 transactionResponse.setPaymentUrl(transaction.getFailedUrl());
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage("Payment failed! No enough available money on customer credit card");
-                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
+                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), "", false);
                 return transactionResponse;
             }
 
@@ -177,6 +177,7 @@ public class TransactionService implements ITransactionService {
             }
 
             if(!pccResponse.isSuccess()) {
+
                 if (pccResponse.getAcquirerOrderId() != null && pccResponse.getAcquirerTimestamp() != null && pccResponse.getIssuerTimestamp() != null && pccResponse.getIssuerOrderId() != null) {
                     log.info(String.format("Failed to executed transaction with ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, ISSUER_ORDER_ID %s, ISSUER_TIMESTAMP %s",
                             pccResponse.getAcquirerTimestamp().toString(), pccResponse.getAcquirerOrderId(), pccResponse.getIssuerOrderId(), pccResponse.getIssuerTimestamp().toString()));
@@ -192,12 +193,14 @@ public class TransactionService implements ITransactionService {
                 transactionResponse.setPaymentUrl(failed ? transaction.getFailedUrl() : null);
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage(pccResponse.getMessage());
-                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
+                sendRequestToPsp(pccResponse.getAcquirerTimestamp(), transaction.getOrderId(), transaction.getId(), pccResponse.getAcquirerOrderId(), false);
                 return transactionResponse;
             }
 
             log.info(String.format("Successfully executed transaction with ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, ISSUER_ORDER_ID %s, ISSUER_TIMESTAMP %s",
                     pccResponse.getAcquirerTimestamp().toString(), pccResponse.getAcquirerOrderId(), pccResponse.getIssuerOrderId(), pccResponse.getIssuerTimestamp().toString()));
+
+            sendRequestToPsp(pccResponse.getAcquirerTimestamp(), transaction.getOrderId(), transaction.getId(), pccResponse.getAcquirerOrderId(), true);
 
         }
 
@@ -209,7 +212,7 @@ public class TransactionService implements ITransactionService {
         transactionResponse.setPaymentUrl(transaction.getSuccessUrl());
         transactionResponse.setSuccess(true);
         transactionResponse.setMessage("Payment is successful!");
-        sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), true);
+
         return transactionResponse;
     }
 
