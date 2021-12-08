@@ -70,10 +70,13 @@ public class TransactionService implements ITransactionService {
         transaction.setMessage(pccResponse.getMessage());
         transactionRepository.save(transaction);
 
+        log.info("Transaction with id:" + transaction.getId() +" executed and saved!");
         return pccResponse;
     }
 
     private PccResponse forwardToIssuerBank(PccRequest pccRequest) throws URISyntaxException {
+        log.info("Forwarding request to ISSUER");
+
         RestTemplate restTemplate = new RestTemplate();
         final String url = HTTP_PREFIX + this.issuerBankHost + ":" + this.issuerBankPort + this.issuerBankTransactionUrl;
         URI uri = new URI(url);
