@@ -8,6 +8,13 @@ class AccommodationService {
     );
     return response.data;
   }
+
+  async findAllPayedAccommodationsForUser(id) {
+    const response = await api.get(
+      WEBSHOP_URL + "api/accommodations/user/" + id
+    );
+    return response.data;
+  }
 }
 
 export default new AccommodationService();

@@ -20,6 +20,7 @@ import WebShopService from "./services/WebShopService";
 import SuccessPaymentResultContainer from "./containers/SuccessPaymentResultContainer";
 import ErrorPaymentResultContainer from "./containers/ErrorPaymentResultContainer";
 import FailedPaymentResultContainer from "./containers/FailedPaymentResultContainer";
+import UserPurchaseHistoryContainer from "./containers/UserPurchaseHistoryContainer";
 
 const publicRoutes = [
   {
@@ -47,6 +48,12 @@ const privateRoutes = [
     key: "shopping-cart/:webshop",
     path: "/shopping-cart/:webshop",
     component: ShoppingCartContainer,
+    exact: false,
+  },
+  {
+    key: "user-purchase-history/:userId",
+    path: "/user-purchase-history/:userId",
+    component: UserPurchaseHistoryContainer,
     exact: false,
   },
   {
@@ -111,6 +118,7 @@ function App() {
           exact
           path={[
             "/shopping-cart/:webshop",
+            "/user-purchase-history/:userId",
             "/success-transaction/:orderId",
             "/error-transaction/:orderId",
             "/failed-transaction/:orderId",

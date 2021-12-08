@@ -8,6 +8,11 @@ class ConferenceService {
     );
     return response.data;
   }
+
+  async findAllPayedConferencesForUser(id) {
+    const response = await api.get(WEBSHOP_URL + "api/conferences/user/" + id);
+    return response.data;
+  }
 }
 
 export default new ConferenceService();
