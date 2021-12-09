@@ -1,9 +1,6 @@
 package com.example.bankservice.service.impl;
 
-import com.example.bankservice.dto.CreateTransactionDTO;
-import com.example.bankservice.dto.PspResponseDTO;
-import com.example.bankservice.dto.TransactionRequestDTO;
-import com.example.bankservice.dto.TransactionResponseDTO;
+import com.example.bankservice.dto.*;
 import com.example.bankservice.model.Merchant;
 import com.example.bankservice.model.TransactionStatus;
 import com.example.bankservice.model.Transaction;
@@ -131,6 +128,18 @@ public class TransactionService implements ITransactionService {
                     dto.getPaymentId(), dto.getAcquirerOTimeStamp().toString(), dto.getAcquirerOrderId(), dto.getMerchantOrderId()));
             transaction.setStatus(TransactionStatus.CANCELED);
         }
+
+    }
+
+    @Override
+    public boolean checkIfMerchantExists(String merchantId) throws Exception {
+        log.info("Checking if merchant exists");
+
+        if (merchantId.equals("")) {
+            throw new Exception("Merchant id is not present!");
+        }
+
+        return merchantRepository.findByMerchantId(merchantId) != null;
 
     }
 

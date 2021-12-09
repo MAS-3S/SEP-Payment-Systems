@@ -7,4 +7,5 @@ public interface ITransactionService {
     ShoppingCart getShoppingCartForTransaction(String transactionId);
     Transaction getById(String id);
     Transaction save(Transaction transaction);
+    void changeAvailableBalance(String transactionId);
 }

@@ -8,5 +8,6 @@ public interface ITransactionService {
 
     TransactionResponseDTO createTransaction(CreateTransactionDTO dto) throws Exception;
     void finishTransaction(PspResponseDTO dto);
+    boolean checkIfMerchantExists(String merchantId) throws Exception;
 
 }

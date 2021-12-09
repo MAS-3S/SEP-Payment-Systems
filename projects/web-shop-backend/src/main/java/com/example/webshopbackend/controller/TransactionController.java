@@ -63,6 +63,7 @@ public class TransactionController {
         if(transaction != null) {
             if(transactionDto.getStatus() == 1) {
                 transaction.setStatus(TransactionStatus.SUCCESS);
+                transactionService.changeAvailableBalance(transaction.getId());
             } else if (transactionDto.getStatus() == 2) {
                 transaction.setStatus(TransactionStatus.FAILED);
             } else if (transactionDto.getStatus() == 3) {

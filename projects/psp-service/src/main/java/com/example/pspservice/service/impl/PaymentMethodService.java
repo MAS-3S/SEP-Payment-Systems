@@ -11,6 +11,7 @@ import com.example.pspservice.repository.PaymentRepository;
 import com.example.pspservice.service.IPaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.apache.commons.logging.Log;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PaymentMethodService implements IPaymentMethodService {
@@ -130,6 +132,7 @@ public class PaymentMethodService implements IPaymentMethodService {
     }
 
     @Override
+    @Transactional
     public void changeSubscriptionToPaymentMethod(SubscribeToPaymentMethodDTO dto) throws Exception {
         log.info("Changing subscribed payment methods");
 
@@ -148,8 +151,20 @@ public class PaymentMethodService implements IPaymentMethodService {
         if (merchant.getPaymentMethodTypes().stream().noneMatch(methodType -> methodType.getId().equals(dto.getPaymentId()))) {
             assert paymentMethodType != null;
             log.info("Subscribing to new payment method: " + paymentMethodType.getName());
-            merchant.addToPaymentMethod(paymentMethodType);
-            merchantRepository.save(merchant);
+
+            try {
+                ResponseEntity<Boolean> isMerchantPresent = restTemplate.getForEntity("http://" + paymentMethodType.getServiceName() + "/checkIfMerchantExists/" + merchant.getMerchantId(), Boolean.class);
+                log.info("Successfully redirected to " + paymentMethodType.getServiceName());
+                if (Objects.equals(isMerchantPresent.getBody(), true)) {
+                    merchant.addToPaymentMethod(paymentMethodType);
+                    merchantRepository.save(merchant);
+                }
+            } catch (Exception e) {
+                log.error("Failed to redirect to " + paymentMethodType.getServiceName() + " payment service");
+                throw new Exception("Failed to redirect to " + paymentMethodType.getServiceName() + " payment service");
+            }
+
+
         } else {
             assert paymentMethodType != null;
             log.info("Unsubscribing from payment method: " +paymentMethodType.getName());

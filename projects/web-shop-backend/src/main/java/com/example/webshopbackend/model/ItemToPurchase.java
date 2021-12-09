@@ -21,7 +21,7 @@ public class ItemToPurchase {
 //    @JoinColumn(name = "product_id", referencedColumnName = "id")
 //    private Product product;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Product product;
 
     //**
