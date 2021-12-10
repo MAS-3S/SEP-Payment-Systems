@@ -38,7 +38,7 @@ export default function AccommodationCard(props) {
       }
     }
     for (let i = 0; i < shoppingCart.length; i++) {
-      if (shoppingCart[i].id === props.product.id) {
+      if (shoppingCart[i].id === props.accommodation.id) {
         handleAlertClick("Accommodation is already in shopping cart", "error");
         return;
       }

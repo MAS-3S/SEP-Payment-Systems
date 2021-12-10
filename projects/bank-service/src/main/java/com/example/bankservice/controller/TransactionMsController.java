@@ -21,4 +21,9 @@ public class TransactionMsController {
         TransactionResponseDTO dto  = transactionService.createTransaction(createTransactionDTO);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    @GetMapping("/checkIfMerchantExists/{merchantId}")
+    public ResponseEntity<Boolean> checkIfMerchantExists(@PathVariable String merchantId) throws Exception { ;
+        return new ResponseEntity<>(transactionService.checkIfMerchantExists(merchantId), HttpStatus.OK);
+    }
 }

@@ -38,7 +38,7 @@ export default function ConferenceCard(props) {
       }
     }
     for (let i = 0; i < shoppingCart.length; i++) {
-      if (shoppingCart[i].id === props.product.id) {
+      if (shoppingCart[i].id === props.conference.id) {
         handleAlertClick("Conference is already in shopping cart", "error");
         return;
       }

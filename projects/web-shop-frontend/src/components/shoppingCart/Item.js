@@ -33,6 +33,7 @@ export default function Item(props) {
   };
 
   const handleMinusQuantity = () => {
+    setPlusDisabled("");
     if (quantity - 1 <= 1) {
       setMinusDisabled("disabled");
     } else {
