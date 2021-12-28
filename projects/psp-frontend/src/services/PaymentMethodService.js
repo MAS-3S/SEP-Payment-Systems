@@ -29,7 +29,7 @@ class PaymentMethodService {
     return response.data;
   }
 
-  async chosePaymentMethod(paymentMethodId, merchantId, paymentId) {
+  async choosePaymentMethod(paymentMethodId, merchantId, paymentId) {
     const body = {
       paymentMethodId: paymentMethodId,
       merchantId: merchantId,

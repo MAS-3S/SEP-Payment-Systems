@@ -19,28 +19,56 @@ public class CreateTransactionDTO {
         return merchantId;
     }
 
+    public void setMerchantId(String merchantId) {
+        this.merchantId = merchantId;
+    }
+
     public String getMerchantOrderId() {
         return merchantOrderId;
+    }
+
+    public void setMerchantOrderId(String merchantOrderId) {
+        this.merchantOrderId = merchantOrderId;
     }
 
     public Double getAmount() {
         return amount;
     }
 
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
     public LocalDateTime getTime() {
         return time;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
     }
 
     public String getSuccessUrl() {
         return successUrl;
     }
 
+    public void setSuccessUrl(String successUrl) {
+        this.successUrl = successUrl;
+    }
+
     public String getFailedUrl() {
         return failedUrl;
     }
 
+    public void setFailedUrl(String failedUrl) {
+        this.failedUrl = failedUrl;
+    }
+
     public String getErrorUrl() {
         return errorUrl;
+    }
+
+    public void setErrorUrl(String errorUrl) {
+        this.errorUrl = errorUrl;
     }
 
     public String getSuccessUrlWithOrderId() {
@@ -54,5 +82,4 @@ public class CreateTransactionDTO {
     public String getErrorUrlWithOrderId() {
         return this.getErrorUrl() + this.getMerchantOrderId();
     }
-
 }

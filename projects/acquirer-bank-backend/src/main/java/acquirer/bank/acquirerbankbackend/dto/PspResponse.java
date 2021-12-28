@@ -13,11 +13,11 @@ public class PspResponse {
     public PspResponse() {
     }
 
-    public PspResponse(String acquirerOrderId, String paymentId, String merchantOrderId, LocalDateTime acquirerOTimeStamp, boolean isSuccess) {
+    public PspResponse(String acquirerOrderId, String paymentId, String merchantOrderId, LocalDateTime acquirerTimeStamp, boolean isSuccess) {
         this.acquirerOrderId = acquirerOrderId;
         this.paymentId = paymentId;
         this.merchantOrderId = merchantOrderId;
-        this.acquirerTimeStamp = acquirerOTimeStamp;
+        this.acquirerTimeStamp = acquirerTimeStamp;
         this.isSuccess = isSuccess;
     }
 
@@ -45,12 +45,12 @@ public class PspResponse {
         this.merchantOrderId = merchantOrderId;
     }
 
-    public LocalDateTime getAcquirerOTimeStamp() {
+    public LocalDateTime getAcquirerTimeStamp() {
         return acquirerTimeStamp;
     }
 
-    public void setAcquirerOTimeStamp(LocalDateTime acquirerOTimeStamp) {
-        this.acquirerTimeStamp = acquirerOTimeStamp;
+    public void setAcquirerTimeStamp(LocalDateTime acquirerTimeStamp) {
+        this.acquirerTimeStamp = acquirerTimeStamp;
     }
 
     public boolean isSuccess() {

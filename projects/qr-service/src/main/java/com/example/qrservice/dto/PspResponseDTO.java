@@ -13,11 +13,11 @@ public class PspResponseDTO {
     public PspResponseDTO() {
     }
 
-    public PspResponseDTO(String acquirerOrderId, String paymentId, String merchantOrderId, LocalDateTime acquirerOTimeStamp, boolean isSuccess) {
+    public PspResponseDTO(String acquirerOrderId, String paymentId, String merchantOrderId, LocalDateTime acquirerTimeStamp, boolean isSuccess) {
         this.acquirerOrderId = acquirerOrderId;
         this.paymentId = paymentId;
         this.merchantOrderId = merchantOrderId;
-        this.acquirerTimeStamp = acquirerOTimeStamp;
+        this.acquirerTimeStamp = acquirerTimeStamp;
         this.isSuccess = isSuccess;
     }
 
@@ -25,20 +25,39 @@ public class PspResponseDTO {
         return acquirerOrderId;
     }
 
+    public void setAcquirerOrderId(String acquirerOrderId) {
+        this.acquirerOrderId = acquirerOrderId;
+    }
+
     public String getPaymentId() {
         return paymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
     }
 
     public String getMerchantOrderId() {
         return merchantOrderId;
     }
 
-    public LocalDateTime getAcquirerOTimeStamp() {
+    public void setMerchantOrderId(String merchantOrderId) {
+        this.merchantOrderId = merchantOrderId;
+    }
+
+    public LocalDateTime getAcquirerTimeStamp() {
         return acquirerTimeStamp;
+    }
+
+    public void setAcquirerTimeStamp(LocalDateTime acquirerTimeStamp) {
+        this.acquirerTimeStamp = acquirerTimeStamp;
     }
 
     public boolean isSuccess() {
         return isSuccess;
     }
 
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
 }

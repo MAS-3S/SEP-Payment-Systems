@@ -20,12 +20,12 @@ export default function PaymentMethods(props) {
     props.handleChangeMerchantSubscription(paymentsMethod, merchantId);
   };
 
-  const handleChosePaymentMethod = (
+  const handleChoosePaymentMethod = (
     paymentsMethodId,
     merchantId,
     paymentId
   ) => {
-    props.handleChosePaymentMethod(paymentsMethodId, merchantId, paymentId);
+    props.handleChoosePaymentMethod(paymentsMethodId, merchantId, paymentId);
   };
 
   return (
@@ -40,7 +40,7 @@ export default function PaymentMethods(props) {
           merchantId={merchantId}
           paymentId={paymentId}
           handleChangeMerchantSubscription={handleChangeMerchantSubscription}
-          handleChosePaymentMethod={handleChosePaymentMethod}
+          handleChoosePaymentMethod={handleChoosePaymentMethod}
         />
       ))}
     </div>

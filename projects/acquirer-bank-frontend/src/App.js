@@ -6,6 +6,7 @@ import { PrivateRoute } from "./components/routing/PrivateRoute";
 import NotFound from "./pages/NotFound";
 import LayoutPageNotFound from "./components/routing/LayoutPageNotFound";
 import TransactionContainer from "./containers/TransactionContainer";
+import QRCodeTransactionContainer from "./containers/QRCodeTransactionContainer";
 
 const privateRoutes = [
   {
@@ -14,13 +15,25 @@ const privateRoutes = [
     component: TransactionContainer,
     exact: false,
   },
+  {
+    key: "acquirer-bank/qr-code/:transactionId",
+    path: "/acquirer-bank/qr-code/:transactionId",
+    component: QRCodeTransactionContainer,
+    exact: false,
+  },
 ];
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path={["/acquirer-bank/transaction/:transactionId"]}>
+        <Route
+          exact
+          path={[
+            "/acquirer-bank/transaction/:transactionId",
+            "/acquirer-bank/qr-code/:transactionId",
+          ]}
+        >
           <Layout>
             <Switch>
               {privateRoutes.map((privateRouteProps) => (
