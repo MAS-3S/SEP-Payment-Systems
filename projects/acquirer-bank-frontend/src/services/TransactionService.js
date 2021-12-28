@@ -22,6 +22,49 @@ class TransactionService {
     );
     return response.data;
   }
+
+  async executeAcquirerBankQRCode(transactionId) {
+    const body = {
+      pan: "1239765115145742",
+      ccv: "104",
+      expirationDate: new Date("2022-12"),
+      cardholderName: "Stefan Beljic",
+    };
+
+    const response = await axios.post(
+      ACQUIRER_BANK_URL +
+        "api/transactions/execute/" +
+        transactionId +
+        "/qrCode",
+      body
+    );
+    return response.data;
+  }
+
+  async executeIssuerBankQRCode(transactionId) {
+    const body = {
+      pan: "4566477834965864",
+      ccv: "202",
+      expirationDate: new Date("2022-11"),
+      cardholderName: "Stefan Savic",
+    };
+
+    const response = await axios.post(
+      ACQUIRER_BANK_URL +
+        "api/transactions/execute/" +
+        transactionId +
+        "/qrCode",
+      body
+    );
+    return response.data;
+  }
+
+  async generateQRCode(transactionId) {
+    const response = await axios.get(
+      ACQUIRER_BANK_URL + "api/transactions/qrCode/" + transactionId
+    );
+    return response.data;
+  }
 }
 
 export default new TransactionService();

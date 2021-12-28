@@ -94,7 +94,7 @@ public class TransactionService implements ITransactionService {
         if(type.equals("creditCard")) {
             transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/transaction/" + transaction.getId());
         } else if(type.equals("qrCode")) {
-            transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/qrCode/" + transaction.getId());
+            transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/qr-code/" + transaction.getId());
         }
         transactionResponse.setSuccess(true);
         transactionResponse.setMessage("Transaction is successfully checked!");
@@ -162,6 +162,7 @@ public class TransactionService implements ITransactionService {
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - transaction.getAmount());
             customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + transaction.getAmount());
             log.info("Amount " + transaction.getAmount() + " transfer from available to reserved amount");
+            sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false, type);
         } else { // Different bank
             log.info("Payment is not from the same bank");
             log.info("Trying to execute transaction in issuer bank");

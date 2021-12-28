@@ -13,7 +13,7 @@ export default function PaymentCard(props) {
   }, [props.paymentsMethod, props.merchantId, props.paymentId]);
 
   const handleAlertClick = (paymentsMethod, merchantId, paymentId) => {
-    props.handleChosePaymentMethod(paymentsMethod.id, merchantId, paymentId);
+    props.handleChoosePaymentMethod(paymentsMethod.id, merchantId, paymentId);
   };
 
   return (

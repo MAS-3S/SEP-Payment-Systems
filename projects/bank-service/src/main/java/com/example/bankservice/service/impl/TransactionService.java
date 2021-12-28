@@ -122,10 +122,10 @@ public class TransactionService implements ITransactionService {
         if (dto.isSuccess()) {
             transaction.setStatus(TransactionStatus.DONE);
             log.info(String.format("Successfully executed transaction with PAYMENT_ID %s, ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, MERCHANT_ORDER_ID %s",
-                    dto.getPaymentId(), dto.getAcquirerOTimeStamp().toString(), dto.getAcquirerOrderId(), dto.getMerchantOrderId()));
+                    dto.getPaymentId(), dto.getAcquirerTimeStamp().toString(), dto.getAcquirerOrderId(), dto.getMerchantOrderId()));
         } else {
             log.error(String.format("Failed to execute transaction with with PAYMENT_ID %s, ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, MERCHANT_ORDER_ID %s",
-                    dto.getPaymentId(), dto.getAcquirerOTimeStamp().toString(), dto.getAcquirerOrderId(), dto.getMerchantOrderId()));
+                    dto.getPaymentId(), dto.getAcquirerTimeStamp().toString(), dto.getAcquirerOrderId(), dto.getMerchantOrderId()));
             transaction.setStatus(TransactionStatus.CANCELED);
         }
 

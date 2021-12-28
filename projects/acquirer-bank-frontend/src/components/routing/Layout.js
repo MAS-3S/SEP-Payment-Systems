@@ -4,6 +4,7 @@ const MainLayoutRoot = {
   height: "100%",
   width: "100%",
   overflow: "hidden",
+  backgroundColor: "#f6f5f7",
 };
 
 const MainLayoutContent = {

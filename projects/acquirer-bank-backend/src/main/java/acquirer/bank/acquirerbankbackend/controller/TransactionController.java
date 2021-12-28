@@ -60,10 +60,10 @@ public class TransactionController {
         try {
 
             // Generate and Return Qr Code in Byte Array
-            image = QRCodeGenerator.getQRCodeImage(data,250,250);
+            image = QRCodeGenerator.getQRCodeImage(data,300,300);
 
             // Generate and Save Qr Code Image in static/images folder
-            QRCodeGenerator.generateQRCodeImage(data,250,250, QR_CODE_IMAGE_PATH);
+            QRCodeGenerator.generateQRCodeImage(data,300,300, QR_CODE_IMAGE_PATH);
 
         } catch (WriterException | IOException e) {
             e.printStackTrace();
