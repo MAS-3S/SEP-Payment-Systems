@@ -56,7 +56,7 @@ public class TransactionService implements ITransactionService {
 
     @Override
     @Transactional
-    public TransactionResponse checkTransactionAndReturnUrl(TransactionRequest transactionRequest) {
+    public TransactionResponse checkTransactionAndReturnUrl(TransactionRequest transactionRequest, String type) {
         log.info("Checking transaction has started.");
         TransactionResponse transactionResponse = new TransactionResponse();
 
@@ -91,16 +91,20 @@ public class TransactionService implements ITransactionService {
         log.info("Transaction is successfully saved!");
 
         transactionResponse.setPaymentId(transaction.getId());
-        transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/transaction/" + transaction.getId());
+        if(type.equals("creditCard")) {
+            transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/transaction/" + transaction.getId());
+        } else if(type.equals("qrCode")) {
+            transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/qrCode/" + transaction.getId());
+        }
         transactionResponse.setSuccess(true);
         transactionResponse.setMessage("Transaction is successfully checked!");
 
-        return  transactionResponse;
+        return transactionResponse;
     }
 
     @Override
     @Transactional
-    public TransactionResponse executeTransaction(String transactionId, CreditCardRequest creditCardRequest) throws URISyntaxException {
+    public TransactionResponse executeTransaction(String transactionId, CreditCardRequest creditCardRequest, String type) throws URISyntaxException {
         log.info("Executing transaction with id:" + transactionId + " started.");
         TransactionResponse transactionResponse = new TransactionResponse();
 
@@ -116,7 +120,7 @@ public class TransactionService implements ITransactionService {
             log.info("Transaction with id: " + transactionId + " has already executed!");
             transactionResponse.setSuccess(false);
             transactionResponse.setMessage("Transaction has already executed!");
-            sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false);
+            sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false, type);
             return transactionResponse;
         }
 
@@ -128,7 +132,7 @@ public class TransactionService implements ITransactionService {
                 transactionResponse.setPaymentUrl(transaction.getFailedUrl());
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage("Customer credit card not found or expired!");
-                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), "", false);
+                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), "", false, type);
                 return transactionResponse;
             }
 
@@ -150,7 +154,7 @@ public class TransactionService implements ITransactionService {
                 transactionResponse.setPaymentUrl(transaction.getFailedUrl());
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage("Payment failed! No enough available money on customer credit card");
-                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), "", false);
+                sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), "", false, type);
                 return transactionResponse;
             }
 
@@ -194,14 +198,14 @@ public class TransactionService implements ITransactionService {
                 transactionResponse.setPaymentUrl(failed ? transaction.getFailedUrl() : null);
                 transactionResponse.setSuccess(false);
                 transactionResponse.setMessage(pccResponse.getMessage());
-                sendRequestToPsp(pccResponse.getAcquirerTimestamp(), transaction.getOrderId(), transaction.getId(), pccResponse.getAcquirerOrderId(), false);
+                sendRequestToPsp(pccResponse.getAcquirerTimestamp(), transaction.getOrderId(), transaction.getId(), pccResponse.getAcquirerOrderId(), false, type);
                 return transactionResponse;
             }
 
             log.info(String.format("Successfully executed transaction with ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, ISSUER_ORDER_ID %s, ISSUER_TIMESTAMP %s",
                     pccResponse.getAcquirerTimestamp().toString(), pccResponse.getAcquirerOrderId(), pccResponse.getIssuerOrderId(), pccResponse.getIssuerTimestamp().toString()));
 
-            sendRequestToPsp(pccResponse.getAcquirerTimestamp(), transaction.getOrderId(), transaction.getId(), pccResponse.getAcquirerOrderId(), true);
+            sendRequestToPsp(pccResponse.getAcquirerTimestamp(), transaction.getOrderId(), transaction.getId(), pccResponse.getAcquirerOrderId(), true, type);
 
         }
 
@@ -229,16 +233,21 @@ public class TransactionService implements ITransactionService {
     }
 
 
-    private void sendRequestToPsp(LocalDateTime acquirerTimeStamp, String merchantOrderId, String paymentId, String acquirerOrderId, boolean success) throws URISyntaxException {
+    private void sendRequestToPsp(LocalDateTime acquirerTimeStamp, String merchantOrderId, String paymentId, String acquirerOrderId, boolean success, String type) throws URISyntaxException {
         log.info("Sending request to PSP");
 
         PspResponse pspResponse = new PspResponse(acquirerOrderId, paymentId, merchantOrderId, acquirerTimeStamp, success);
         RestTemplate restTemplate = new RestTemplate();
-        final String url = HTTP_PREFIX + this.apiGatewayHost + ":" + this.apiGatewayPort + "/bank-service/checkTransaction";
+        final String url = type.equals("creditCard") ? HTTP_PREFIX + this.apiGatewayHost + ":" + this.apiGatewayPort + "/bank-service/checkTransaction" :
+                HTTP_PREFIX + this.apiGatewayHost + ":" + this.apiGatewayPort + "/qr-service/checkTransaction";
         URI uri = new URI(url);
 
         ResponseEntity<?> result = restTemplate.postForEntity(uri, pspResponse, PspResponse.class);
+    }
 
+    @Override
+    public Transaction findById(String id) {
+        return transactionRepository.findById(id).orElse(null);
     }
 
 }

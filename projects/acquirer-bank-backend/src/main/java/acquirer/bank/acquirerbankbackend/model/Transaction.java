@@ -125,4 +125,13 @@ public class Transaction {
     public void setStatus(TransactionStatus status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "amount=" + amount +
+                ", timestamp=" + timestamp +
+                ", merchantPan='" + merchantPan + '\'' +
+                '}';
+    }
 }
