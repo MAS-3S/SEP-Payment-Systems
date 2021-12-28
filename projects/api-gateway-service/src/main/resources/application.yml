@@ -56,3 +56,8 @@ spring:
           predicates:
             - Path=/bank-service/checkTransaction #check executed transaction from acquirer bank
             - Method=POST
+        - id: qrServicecheckTransaction
+          uri: lb://QR-SERVICE
+          predicates:
+            - Path=/qr-service/checkTransaction #check executed transaction from acquirer bank over qr code
+            - Method=POST
