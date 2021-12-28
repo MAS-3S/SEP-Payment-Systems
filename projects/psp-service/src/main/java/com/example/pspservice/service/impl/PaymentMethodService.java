@@ -66,6 +66,7 @@ public class PaymentMethodService implements IPaymentMethodService {
         return paymentMethodTypeRepository.findAll();
     }
 
+    //izlistavanje svih nacina placanja webshop-a prilikom potrebe za subscribe-ovanjem
     @Override
     public List<PaymentMethodTypeForMerchantDTO> findMerchantsPaymentMethodsForSubscription(String merchantId) throws Exception {
         log.info("Finding merchant's payment methods for subscription");
@@ -98,6 +99,7 @@ public class PaymentMethodService implements IPaymentMethodService {
         return returnPaymentsDTO;
     }
 
+    //slanje webshop (admina) na stranicu u kojoj se vrsi subscribe
     @Override
     public String redirectMerchantToSubscribePage(String merchantId) throws Exception {
         log.info("Redirecting merchant to subscribe page from PSP");
@@ -110,6 +112,7 @@ public class PaymentMethodService implements IPaymentMethodService {
         return HTTP_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontSubscribeUrl + merchant.getId();
     }
 
+    //slanje kupca da odabere nacin placanja
     @Override
     public String redirectMerchantToPaymentPage(RequestPaymentDTO dto) throws Exception {
         log.info("Redirecting merchant to payment page from PSP");
@@ -131,6 +134,7 @@ public class PaymentMethodService implements IPaymentMethodService {
                 "/" + payment.getId();
     }
 
+    //menjanje pretplate na odredjeni nacin placanja
     @Override
     @Transactional
     public void changeSubscriptionToPaymentMethod(SubscribeToPaymentMethodDTO dto) throws Exception {
@@ -173,6 +177,7 @@ public class PaymentMethodService implements IPaymentMethodService {
         }
     }
 
+    //izlistavanje svih nacina placanja webshop-a prilikom potrebe za konkretnim placanjem
     @Override
     public List<PaymentMethodTypeDTO> findMerchantsPaymentMethodsForPayment(String merchantId) throws Exception {
         log.info("Finding merchant's payment methods for payment choosing");
@@ -202,6 +207,7 @@ public class PaymentMethodService implements IPaymentMethodService {
         return returnPaymentsDTO;
     }
 
+    //odabiranje nacina placanje i redirektovanje na sledeci servis u okviru PSP-a
     @Override
     @Transactional
     public String choosePaymentMethod(ChoosePaymentMethodDTO choosePaymentMethodDTO) throws Exception {
