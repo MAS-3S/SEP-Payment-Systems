@@ -70,4 +70,16 @@ public class CreateTransactionDTO {
     public void setErrorUrl(String errorUrl) {
         this.errorUrl = errorUrl;
     }
+
+    public String getSuccessUrlWithOrderId() {
+        return this.getSuccessUrl() + this.getMerchantOrderId();
+    }
+
+    public String getFailedUrlWithOrderId() {
+        return this.getFailedUrl() + this.getMerchantOrderId();
+    }
+
+    public String getErrorUrlWithOrderId() {
+        return this.getErrorUrl() + this.getMerchantOrderId();
+    }
 }

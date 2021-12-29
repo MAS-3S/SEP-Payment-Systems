@@ -6,4 +6,5 @@ import com.example.bitcoinservice.dto.TransactionResponseDTO;
 public interface ITransactionService {
 
     TransactionResponseDTO createTransaction(CreateTransactionDTO dto) throws Exception;
+    boolean checkIfMerchantExists(String merchantId) throws Exception;
 }

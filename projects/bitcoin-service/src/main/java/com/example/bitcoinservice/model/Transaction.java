@@ -31,7 +31,7 @@ public class Transaction {
     private String currency;
 
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private String timestamp;
 
     @Column(nullable = false)
     private String returnUrl;
@@ -90,11 +90,11 @@ public class Transaction {
         this.currency = currency;
     }
 
-    public LocalDateTime getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
