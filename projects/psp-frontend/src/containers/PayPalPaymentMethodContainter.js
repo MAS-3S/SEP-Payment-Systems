@@ -4,35 +4,33 @@ import PayPalPaymentMethod from "../pages/PayPalPaymentMethod";
 import { Redirect } from "react-router-dom";
 
 export default function PayPalPaymentMethodContainter(props) {
+  const [loading, setLoading] = useState(true);
   const [sholudRedirect, setSholudRedirect] = useState(false);
-  const [payPalTransaction, setPayPalTransaction] = useState(
-    props.match.params.paypalTransactionId
-  );
+  const [payPalTransaction, setPayPalTransaction] = useState({});
 
   useEffect(() => {
     async function fetchData() {
-      let payPalTransaction = null;
-      payPalTransaction = await PayPalService.getPayPalTransaction(
+      await PayPalService.getPayPalTransaction(
         props.match.params.paypalTransactionId
-      );
-      if (payPalTransaction === null) {
-        setSholudRedirect(true);
-        return;
-      }
-      setPayPalTransaction(payPalTransaction);
+      ).then((response) => {
+        if (response === null) {
+          setSholudRedirect(true);
+          return;
+        }
+        setPayPalTransaction(response);
+        setLoading(false);
+      });
     }
     fetchData();
   }, [props.match.params.paypalTransactionId]);
 
-  return sholudRedirect ? (
+  return loading ? null : sholudRedirect ? (
     <Redirect
       to={{
         pathname: `/`,
       }}
     />
   ) : (
-    <div>
-      <PayPalPaymentMethod payPalTransaction={payPalTransaction} />
-    </div>
+    <PayPalPaymentMethod payPalTransaction={payPalTransaction} />
   );
 }

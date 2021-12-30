@@ -85,12 +85,12 @@ export default function PayPalPaymentMethod(props) {
                     window.location.href = payPalTransaction.failedUrl;
                   }}
                   options={{
-                    clientId: payPalTransaction.clientId
-                      ? payPalTransaction.clientId
-                      : "AbyipjcjSVGHvV-CflLej8uUdlgw-Xo9XvRd4Xzt6P9S2LR7GE1Y4hpaDPbM_H26erKl8xhOJFkSvW6G",
-                    currency: payPalTransaction.currency
-                      ? payPalTransaction.currency
-                      : "EUR",
+                    clientId: payPalTransaction.clientId,
+                    // ? payPalTransaction.clientId
+                    // : "AbyipjcjSVGHvV-CflLej8uUdlgw-Xo9XvRd4Xzt6P9S2LR7GE1Y4hpaDPbM_H26erKl8xhOJFkSvW6G",
+                    currency: payPalTransaction.currency,
+                    // ? payPalTransaction.currency
+                    // : "EUR",
                   }}
                 />
               </div>
