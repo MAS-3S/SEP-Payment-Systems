@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../assets/css/transactionCardStyle.css";
 import { PayPalButton } from "react-paypal-button-v2";
 
-export default function PayPalPaymentMethod() {
+export default function PayPalPaymentMethod(props) {
+  const [payPalTransaction, setPayPalTransaction] = useState(
+    props.payPalTransaction
+  );
+
+  useEffect(() => {
+    setPayPalTransaction(props.payPalTransaction);
+  }, [props.payPalTransaction]);
+
   return (
     <div>
       <h1 className="titlePaymentsMethods">Payment Method - PayPal</h1>
@@ -16,16 +24,17 @@ export default function PayPalPaymentMethod() {
                 style={{ marginTop: 80, paddingRight: 60, paddingLeft: 60 }}
               >
                 <PayPalButton
-                  amount="0.01"
-                  currency="EUR"
+                  //amount="0.01"
+                  currency={payPalTransaction.currency}
                   // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                   createOrder={(data, actions) => {
                     return actions.order.create({
                       purchase_units: [
                         {
+                          intent: "CAPTURE",
                           amount: {
-                            currency_code: "EUR",
-                            value: "0.01",
+                            currency_code: payPalTransaction.currency,
+                            value: payPalTransaction.amount,
                           },
                         },
                       ],
@@ -34,48 +43,54 @@ export default function PayPalPaymentMethod() {
                       // }
                     });
                   }}
-                  onApprove={(data, actions) => {
-                    // Capture the funds from the transaction
-                    return actions.order.capture().then(function (details) {
-                      // Show a success message to your buyer
-                      alert(
-                        "Transaction completed by " +
-                          details.payer.name.given_name
-                      );
+                  // onApprove={(data, actions) => {
+                  //   // Capture the funds from the transaction
+                  //   return actions.order.capture().then(function (details) {
+                  //     // Show a success message to your buyer
+                  //     alert(
+                  //       "Transaction completed by " +
+                  //         details.payer.name.given_name
+                  //     );
 
-                      // OPTIONAL: Call your server to save the transaction
-                      return fetch("/paypal-transaction-complete", {
-                        method: "post",
-                        body: JSON.stringify({
-                          orderID: data.orderID,
-                        }),
-                      });
-                    });
-                  }}
+                  //     //OPTIONAL: Call your server to save the transaction
+                  //     return fetch("/paypal-transaction-complete", {
+                  //       method: "post",
+                  //       body: JSON.stringify({
+                  //         orderID: data.orderID,
+                  //       }),
+                  //     });
+                  //   });
+                  // }}
                   onSuccess={(details, data) => {
                     alert(
                       "Transaction completed by " +
                         details.payer.name.given_name
                     );
 
+                    window.location.href = payPalTransaction.successUrl;
                     // OPTIONAL: Call your server to save the transaction
-                    return fetch("/paypal-transaction-complete", {
-                      method: "post",
-                      body: JSON.stringify({
-                        orderId: data.orderID,
-                      }),
-                    });
+                    // return fetch("/paypal-transaction-complete", {
+                    //   method: "post",
+                    //   body: JSON.stringify({
+                    //     orderId: data.orderID,
+                    //   }),
+                    // });
                   }}
                   onCancel={(data) => {
                     alert("Cancel", data);
+                    window.location.href = payPalTransaction.failedUrl;
                   }}
                   onError={(err) => {
                     alert("Error", err);
+                    window.location.href = payPalTransaction.failedUrl;
                   }}
                   options={{
-                    clientId:
-                      "ARoSLly2260BRX4ew1qRJYYSKKO35em5ifi-ObiUOQDTTMsbp5peEh0Pxlhp4ILKQBHXDTdHrRug7uF1",
-                    currency: "EUR",
+                    clientId: payPalTransaction.clientId
+                      ? payPalTransaction.clientId
+                      : "AbyipjcjSVGHvV-CflLej8uUdlgw-Xo9XvRd4Xzt6P9S2LR7GE1Y4hpaDPbM_H26erKl8xhOJFkSvW6G",
+                    currency: payPalTransaction.currency
+                      ? payPalTransaction.currency
+                      : "EUR",
                   }}
                 />
               </div>

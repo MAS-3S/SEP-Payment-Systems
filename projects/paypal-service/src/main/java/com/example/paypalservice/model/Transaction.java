@@ -20,7 +20,7 @@ public class Transaction {
     @Column(nullable = false)
     private String orderId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Long payPalOrderId;
 
     @Column(nullable = false)
