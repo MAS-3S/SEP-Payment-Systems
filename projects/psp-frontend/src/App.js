@@ -7,6 +7,7 @@ import PaymentMethodsContainer from "./containers/PaymentMethodsContainer";
 import SubscribePaymentMethodsContainer from "./containers/SubscribePaymentMethodsContainer";
 import NotFound from "./pages/NotFound";
 import LayoutPageNotFound from "./components/routing/LayoutPageNotFound";
+import PayPalPaymentMethod from "./pages/PayPalPaymentMethod";
 
 const privateRoutes = [
   {
@@ -21,6 +22,12 @@ const privateRoutes = [
     component: SubscribePaymentMethodsContainer,
     exact: false,
   },
+  {
+    key: "payment-method/pay-pal",
+    path: "/payment-method/pay-pal",
+    component: PayPalPaymentMethod,
+    exact: false,
+  },
 ];
 
 function App() {
@@ -32,6 +39,7 @@ function App() {
           path={[
             "/payment-methods/payment/webshop-id/:webshopId/:paymentId",
             "/payment-methods/webshop-id/:webshopId",
+            "/payment-method/pay-pal",
           ]}
         >
           <Layout>
