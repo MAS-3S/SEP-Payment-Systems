@@ -7,7 +7,7 @@ import PaymentMethodsContainer from "./containers/PaymentMethodsContainer";
 import SubscribePaymentMethodsContainer from "./containers/SubscribePaymentMethodsContainer";
 import NotFound from "./pages/NotFound";
 import LayoutPageNotFound from "./components/routing/LayoutPageNotFound";
-import PayPalPaymentMethod from "./pages/PayPalPaymentMethod";
+import PayPalPaymentMethodContainter from "./containers/PayPalPaymentMethodContainter";
 
 const privateRoutes = [
   {
@@ -23,9 +23,9 @@ const privateRoutes = [
     exact: false,
   },
   {
-    key: "payment-method/pay-pal",
-    path: "/payment-method/pay-pal",
-    component: PayPalPaymentMethod,
+    key: "payment-method/pay-pal/:paypalTransactionId",
+    path: "/payment-method/pay-pal/:paypalTransactionId",
+    component: PayPalPaymentMethodContainter,
     exact: false,
   },
 ];
@@ -39,7 +39,7 @@ function App() {
           path={[
             "/payment-methods/payment/webshop-id/:webshopId/:paymentId",
             "/payment-methods/webshop-id/:webshopId",
-            "/payment-method/pay-pal",
+            "/payment-method/pay-pal/:paypalTransactionId",
           ]}
         >
           <Layout>

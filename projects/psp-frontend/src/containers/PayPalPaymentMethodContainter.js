@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PayPalService from "../services/PayPalService";
 import PayPalPaymentMethod from "../pages/PayPalPaymentMethod";
+import { Redirect } from "react-router-dom";
 
 export default function PayPalPaymentMethodContainter(props) {
   const [sholudRedirect, setSholudRedirect] = useState(false);
-  const [payPalTransaction, setPayPalTransaction] = useState({});
+  const [payPalTransaction, setPayPalTransaction] = useState(
+    props.match.params.paypalTransactionId
+  );
 
   useEffect(() => {
     async function fetchData() {

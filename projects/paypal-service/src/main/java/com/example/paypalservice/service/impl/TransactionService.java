@@ -59,6 +59,7 @@ public class TransactionService implements ITransactionService {
         transaction.setMerchant(merchant);
         transaction.setOrderId(createTransactionDTO.getMerchantOrderId());
         transaction.setPayPalOrderId(null);
+        transaction.setTimestamp(createTransactionDTO.getTime().toString());
         transaction.setReturnUrl("");
         transaction.setStatus(TransactionStatus.IN_PROGRESS);
         transaction.setSuccessUrl(createTransactionDTO.getSuccessUrlWithOrderId());
