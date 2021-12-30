@@ -2,7 +2,16 @@ import React from "react";
 import "../assets/css/transactionCardStyle.css";
 import { PayPalButton } from "react-paypal-button-v2";
 
-export default function PayPalPaymentMethod() {
+export default function PayPalPaymentMethod(props) {
+  const [payPalTransaction, setPayPalTransaction] = useState(
+    props.payPalTransaction
+  );
+
+  useEffect(() => {
+    console.log(props.payPalTransaction);
+    setPayPalTransaction(props.payPalTransaction);
+  }, [props.payPalTransaction]);
+
   return (
     <div>
       <h1 className="titlePaymentsMethods">Payment Method - PayPal</h1>
@@ -16,13 +25,14 @@ export default function PayPalPaymentMethod() {
                 style={{ marginTop: 80, paddingRight: 60, paddingLeft: 60 }}
               >
                 <PayPalButton
-                  amount="0.01"
-                  currency="EUR"
+                  //amount="0.01"
+                  //currency="EUR"
                   // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                   createOrder={(data, actions) => {
                     return actions.order.create({
                       purchase_units: [
                         {
+                          intent: "CAPTURE",
                           amount: {
                             currency_code: "EUR",
                             value: "0.01",
@@ -52,23 +62,23 @@ export default function PayPalPaymentMethod() {
                       });
                     });
                   }}
-                  onSuccess={(details, data) => {
-                    alert(
-                      "Transaction completed by " +
-                        details.payer.name.given_name
-                    );
+                  // onSuccess={(details, data) => {
+                  //   alert(
+                  //     "Transaction completed by " +
+                  //       details.payer.name.given_name
+                  //   );
 
-                    // OPTIONAL: Call your server to save the transaction
-                    return fetch("/paypal-transaction-complete", {
-                      method: "post",
-                      body: JSON.stringify({
-                        orderId: data.orderID,
-                      }),
-                    });
-                  }}
-                  onCancel={(data) => {
-                    alert("Cancel", data);
-                  }}
+                  //   // OPTIONAL: Call your server to save the transaction
+                  //   return fetch("/paypal-transaction-complete", {
+                  //     method: "post",
+                  //     body: JSON.stringify({
+                  //       orderId: data.orderID,
+                  //     }),
+                  //   });
+                  // }}
+                  // onCancel={(data) => {
+                  //   alert("Cancel", data);
+                  // }}
                   onError={(err) => {
                     alert("Error", err);
                   }}
