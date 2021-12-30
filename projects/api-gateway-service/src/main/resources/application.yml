@@ -61,3 +61,8 @@ spring:
           predicates:
             - Path=/qr-service/checkTransaction #check executed transaction from acquirer bank over qr code
             - Method=POST
+        - id: payPalTransactionId
+          uri: lb://PAYPAL-SERVICE
+          predicates:
+            - Path=/paypal-service/transactions/{transactionId} #get paypal transaction by id
+            - Method=GET
