@@ -55,7 +55,7 @@ public class TransactionService implements ITransactionService {
 
         Transaction transaction = new Transaction();
         transaction.setAmount(createTransactionDTO.getAmount());
-        transaction.setCurrency("EUR"); //Izmeniti posle iz DTO
+        transaction.setCurrency(createTransactionDTO.getCurrency());
         transaction.setMerchant(merchant);
         transaction.setOrderId(createTransactionDTO.getMerchantOrderId());
         transaction.setPayPalOrderId(null);

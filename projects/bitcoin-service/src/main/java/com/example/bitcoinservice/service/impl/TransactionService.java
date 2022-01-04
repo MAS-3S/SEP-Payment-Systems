@@ -56,7 +56,7 @@ public class TransactionService implements ITransactionService {
 
         CoinGateTransactionRequestDTO coinGateTransactionRequestDTO = new CoinGateTransactionRequestDTO();
         coinGateTransactionRequestDTO.setPrice_amount(createTransactionDTO.getAmount());
-        coinGateTransactionRequestDTO.setPrice_currency("EUR"); //iz dto izmeni!!!!
+        coinGateTransactionRequestDTO.setPrice_currency(createTransactionDTO.getCurrency());
         coinGateTransactionRequestDTO.setReceive_currency("BTC");
         coinGateTransactionRequestDTO.setTitle("Order #" + createTransactionDTO.getMerchantOrderId());
         coinGateTransactionRequestDTO.setDescription("Ordering items under id " + createTransactionDTO.getMerchantOrderId() + " and paying with BitCoin");
