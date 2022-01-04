@@ -7,6 +7,7 @@ public class CreateTransactionDTO {
     String merchantId;
     String merchantOrderId;
     Double amount;
+    String currency;
     LocalDateTime time;
     String successUrl;
     String failedUrl;
@@ -81,5 +82,13 @@ public class CreateTransactionDTO {
 
     public String getErrorUrlWithOrderId() {
         return this.getErrorUrl() + this.getMerchantOrderId();
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }
