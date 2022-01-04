@@ -16,6 +16,7 @@ export default function ShoppingCart(props) {
   const [activeWebshop, setActiveWebshop] = useState(props.webshop);
   const [shoppingCartItems, setShoppingCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0.0);
+  const [activeCurrency, setActiveCurrency] = useState("");
 
   useEffect(() => {
     setLoggedUser(props.loggedUser);
@@ -23,6 +24,7 @@ export default function ShoppingCart(props) {
     if (JSON.parse(localStorage.getItem("shoppingCart")) !== null) {
       setShoppingCartItems(JSON.parse(localStorage.getItem("shoppingCart")));
     }
+    checkActiveCurrency();
     calculateTotalPrice();
   }, [props.webshop, props.loggedUser]);
 
@@ -33,6 +35,13 @@ export default function ShoppingCart(props) {
       totalPrice += shoppingCartItems[i].price * shoppingCartItems[i].quantity;
     }
     setTotalPrice(totalPrice);
+  };
+
+  const checkActiveCurrency = () => {
+    var shoppingCartItems = JSON.parse(localStorage.getItem("shoppingCart"));
+    if (shoppingCartItems.length > 0) {
+      setActiveCurrency(shoppingCartItems[0].currency);
+    }
   };
 
   const handleRemovedItem = (removed) => {
@@ -63,6 +72,7 @@ export default function ShoppingCart(props) {
       userId: TokenService.getUser().id,
       webShopId: JSON.parse(sessionStorage.getItem("activeWebShop")).id,
       totalPrice: totalPrice,
+      currency: activeCurrency,
       itemsToPurchase: itemsToPurchase,
     };
     props.saveShoppingCart(shoppingCart);
@@ -126,7 +136,7 @@ export default function ShoppingCart(props) {
           <div className="back-to-shop">
             <Link
               to={{
-                pathname: `/webshop/${activeWebshop}`,
+                pathname: `/webshop/${activeWebshop}/${activeCurrency}`,
               }}
               style={{ textDecoration: "none", color: "black" }}
             >
@@ -180,14 +190,16 @@ export default function ShoppingCart(props) {
             <div className="col" style={{ paddingLeft: 0 }}>
               TOTAL PRICE
             </div>
-            <div className="col text-right">&euro; {totalPrice}</div>
+            <div className="col text-right">
+              {totalPrice} {activeCurrency}
+            </div>
           </div>
           <Link
             type="button"
             variant="contained"
             color="primary"
             to={{
-              pathname: `/shopping-cart/${activeWebshop}`,
+              pathname: `/shopping-cart/${activeWebshop}/${activeCurrency}`,
             }}
             className="checkoutButton"
             style={{ textDecoration: "none", color: "white" }}

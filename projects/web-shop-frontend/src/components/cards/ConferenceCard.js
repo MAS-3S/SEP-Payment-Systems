@@ -6,6 +6,7 @@ import TokenService from "../../services/TokenService";
 
 export default function ConferenceCard(props) {
   const [conference, setConference] = useState(props.conference);
+  const [activeCurrency, setActiveCurrency] = useState(props.activeCurrency);
   const [open, setOpen] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState("");
   const [alertType, setAlertType] = React.useState("");
@@ -13,7 +14,8 @@ export default function ConferenceCard(props) {
 
   useEffect(() => {
     setConference(props.conference);
-  }, [props.conference]);
+    setActiveCurrency(props.activeCurrency);
+  }, [props.conference, props.activeCurrency]);
 
   const addToShoppingCart = () => {
     if (!TokenService.getUser()) {
@@ -35,6 +37,12 @@ export default function ConferenceCard(props) {
           "error"
         );
         return;
+      } else if (shoppingCart[0].currency !== activeCurrency) {
+        handleAlertClick(
+          "You can't add product with another currency in your shopping card!",
+          "error"
+        );
+        return;
       }
     }
     for (let i = 0; i < shoppingCart.length; i++) {
@@ -48,10 +56,20 @@ export default function ConferenceCard(props) {
       "success"
     );
     var product = props.conference;
-    product.quantity = 1;
     product.webShopId = JSON.parse(sessionStorage.getItem("activeWebShop")).id;
+    product.quantity = 1;
+    product.currency = activeCurrency;
+    product.price = convertCurrency(product.price);
     shoppingCart.push(product);
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+  };
+
+  const convertCurrency = (amount) => {
+    if (activeCurrency === "EUR") {
+      return amount;
+    } else if (activeCurrency === "USD") {
+      return Math.round(amount * 1.13 * 100) / 100;
+    }
   };
 
   const handleAlertClick = (message, type) => {
@@ -89,7 +107,7 @@ export default function ConferenceCard(props) {
         <div className="productCardControl">
           <button className="productCardBtn" onClick={addToShoppingCart}>
             <span className="productCardPrice">
-              {conference.price} {conference.currency}
+              {convertCurrency(conference.price)} {activeCurrency}
             </span>
             <span className="productCardShopping-cart">
               <i className="fa fa-shopping-cart" aria-hidden="true"></i>

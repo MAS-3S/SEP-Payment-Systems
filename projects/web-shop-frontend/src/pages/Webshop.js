@@ -18,28 +18,42 @@ export default function Webshop(props) {
 
   useEffect(() => {
     const products = Array.apply(null, { length: props.products.length }).map(
-      (_, i) => <ProductCard key={i} product={props.products[i]} />
+      (_, i) => (
+        <ProductCard
+          key={i}
+          product={props.products[i]}
+          activeCurrency={props.activeCurrency}
+        />
+      )
     );
     setProductsList(products);
-  }, [props.products]);
+  }, [props.products, props.activeCurrency]);
 
   useEffect(() => {
     const conferences = Array.apply(null, {
       length: props.conferences.length,
     }).map((_, i) => (
-      <ConferenceCard key={i} conference={props.conferences[i]} />
+      <ConferenceCard
+        key={i}
+        conference={props.conferences[i]}
+        activeCurrency={props.activeCurrency}
+      />
     ));
     setConferencesList(conferences);
-  }, [props.conferences]);
+  }, [props.conferences, props.activeCurrency]);
 
   useEffect(() => {
     const accommodations = Array.apply(null, {
       length: props.accommodations.length,
     }).map((_, i) => (
-      <AccommodationCard key={i} accommodation={props.accommodations[i]} />
+      <AccommodationCard
+        key={i}
+        accommodation={props.accommodations[i]}
+        activeCurrency={props.activeCurrency}
+      />
     ));
     setAccommodationsList(accommodations);
-  }, [props.accommodations]);
+  }, [props.accommodations, props.activeCurrency]);
 
   const items = (() => {
     if (activeWebshop.type === "PRODUCT") {

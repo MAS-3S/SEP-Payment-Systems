@@ -125,7 +125,7 @@ export default function Item(props) {
           </div>
         </div>
         <div className="col" style={{ marginLeft: 20 }}>
-          &euro; {item.price}{" "}
+          {item.price} {item.currency}{" "}
           <span className="close" onClick={handleRemoveItem}>
             <CloseIcon
               style={{
