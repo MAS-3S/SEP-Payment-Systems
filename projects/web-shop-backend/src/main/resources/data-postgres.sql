@@ -42,5 +42,5 @@ insert into shopping_carts (id, create_date, total_price, user_id, web_shop_id) 
 
 insert into items_to_purchase (id, quantity, product_id, shopping_cart_id) values ('099ff31b-0c67-4e19-aa78-1396de7faeca', 2, '05ba8c89-607c-4632-9941-908b0c00e7e2', '6c0f1553-baaf-4d0e-9434-8d7dc3b352fa');
 
-insert into transactions (id, timestamp, amount, status, shopping_cart_id) values ('a06e51b7-cbcf-4223-be6f-4381becdfeec', '2021-11-30 08:00:00', 1400.0, 1, '6c0f1553-baaf-4d0e-9434-8d7dc3b352fa');
+insert into transactions (id, timestamp, currency, amount, status, shopping_cart_id) values ('a06e51b7-cbcf-4223-be6f-4381becdfeec', '2021-11-30 08:00:00', 'EUR', 1400.0, 1, '6c0f1553-baaf-4d0e-9434-8d7dc3b352fa');
 

@@ -7,6 +7,7 @@ public class ShoppingCartDto {
     UserDto user;
     WebShopDto webShop;
     Double totalPrice;
+    String currency;
     List<ItemToPurchaseDto> itemsToPurchase;
 
     public ShoppingCartDto() {
@@ -34,6 +35,14 @@ public class ShoppingCartDto {
 
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public List<ItemToPurchaseDto> getItemsToPurchase() {

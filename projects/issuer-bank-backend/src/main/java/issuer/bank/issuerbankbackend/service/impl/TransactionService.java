@@ -79,8 +79,8 @@ public class TransactionService implements ITransactionService {
 
         log.info("Card found with available amount: " + creditCard.getAvailableAmount());
         log.info("Paying with credit card's PAN: " + creditCard.getPan().substring(0, 4) + " - **** - **** - " + creditCard.getPan().substring(12));
-        creditCard.setAvailableAmount(creditCard.getAvailableAmount() - pccRequest.getAmount());
-        creditCard.setReservedAmount(creditCard.getReservedAmount() + pccRequest.getAmount());
+        creditCard.setAvailableAmount(creditCard.getAvailableAmount() - convertTransactionAmountToEUR(pccRequest.getAmount(), pccRequest.getCurrency()));
+        creditCard.setReservedAmount(creditCard.getReservedAmount() + convertTransactionAmountToEUR(pccRequest.getAmount(), pccRequest.getCurrency()));
         creditCardRepository.save(creditCard);
         log.info("Amount: " + pccRequest.getAmount() + " transferred from available to reserved amount");
 

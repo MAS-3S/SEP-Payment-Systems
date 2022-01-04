@@ -164,8 +164,8 @@ public class TransactionService implements ITransactionService {
             }
 
             log.info("Paying with credit card's PAN: " + customerCreditCard.getPan().substring(0, 4) + " - **** - **** - " + customerCreditCard.getPan().substring(12));
-            customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - transaction.getAmount());
-            customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + transaction.getAmount());
+            customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
+            customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             log.info("Amount " + transaction.getAmount() + " transfer from available to reserved amount");
             sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false, type);
         } else { // Different bank

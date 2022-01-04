@@ -89,6 +89,7 @@ public class ShoppingCartService implements IShoppingCartService {
         Transaction transaction = new Transaction();
 
         transaction.setAmount(shoppingCart.getTotalPrice());
+        transaction.setCurrency(paymentDto.getCurrency());
         transaction.setTimestamp(shoppingCart.getCreateDate());
         transaction.setStatus(TransactionStatus.IN_PROGRESS);
         transaction.setShoppingCart(shoppingCart);

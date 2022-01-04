@@ -11,6 +11,7 @@ public class ShoppingCartMapper {
         dto.setUser(UserMapper.convertToDto(shoppingCart.getUser()));
         dto.setWebShop(WebShopMapper.convertToDto(shoppingCart.getWebShop()));
         dto.setTotalPrice(shoppingCart.getTotalPrice());
+        dto.setCurrency(shoppingCart.getTransaction().getCurrency());
 
         return dto;
     }

@@ -29,7 +29,11 @@ export default function PaymentResult(props) {
   const items = Array.apply(null, {
     length: transaction.itemsToPurchase.length,
   }).map((_, i) => (
-    <PaymentResultItem key={i} item={transaction.itemsToPurchase[i]} />
+    <PaymentResultItem
+      key={i}
+      item={transaction.itemsToPurchase[i]}
+      currency={transaction.currency}
+    />
   ));
 
   return (
@@ -109,7 +113,7 @@ export default function PaymentResult(props) {
               TOTAL PRICE
             </div>
             <div className="col text-right">
-              &euro; {transaction.totalPrice}
+              {transaction.totalPrice} {transaction.currency}
             </div>
           </div>
         </div>
