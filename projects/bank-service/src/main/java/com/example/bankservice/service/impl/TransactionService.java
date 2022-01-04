@@ -74,6 +74,7 @@ public class TransactionService implements ITransactionService {
         transactionRequestDTO.setMerchantPassword(merchant.getBankMerchantPassword());
         transactionRequestDTO.setMerchantOrderId(createTransactionDTO.getMerchantOrderId());
         transactionRequestDTO.setMerchantTimestamp(LocalDateTime.now());
+        transactionRequestDTO.setCurrency(createTransactionDTO.getCurrency());
         transactionRequestDTO.setSuccessUrl(createTransactionDTO.getSuccessUrlWithOrderId());
         transactionRequestDTO.setFailedUrl(createTransactionDTO.getFailedUrlWithOrderId());
         transactionRequestDTO.setErrorUrl(createTransactionDTO.getErrorUrlWithOrderId());
@@ -97,6 +98,7 @@ public class TransactionService implements ITransactionService {
         Transaction transaction = new Transaction();
         transaction.setBankTransactionId(transactionResponseEntity.getBody().getPaymentId());
         transaction.setAmount(createTransactionDTO.getAmount());
+        transaction.setCurrency(createTransactionDTO.getCurrency());
         transaction.setStatus(TransactionStatus.IN_PROGRESS);
         transaction.setMerchant(merchant);
         transaction.setOrderId(createTransactionDTO.getMerchantOrderId());

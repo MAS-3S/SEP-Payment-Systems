@@ -9,6 +9,7 @@ public class TransactionRequestDTO {
     private String merchantOrderId;
     private LocalDateTime merchantTimestamp;
     private Double amount;
+    private String currency;
     private String description;
     private String successUrl;
     private String failedUrl;
@@ -55,6 +56,14 @@ public class TransactionRequestDTO {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getDescription() {

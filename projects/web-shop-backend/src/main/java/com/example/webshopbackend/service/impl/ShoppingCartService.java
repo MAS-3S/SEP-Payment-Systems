@@ -96,10 +96,10 @@ public class ShoppingCartService implements IShoppingCartService {
         transactionRepository.save(transaction);
         log.info("Transaction " + transaction.getId() + " is saved.");
 
-        return getPspPaymentUrl(transaction, paymentDto.getWebShopId());
+        return getPspPaymentUrl(transaction, paymentDto.getWebShopId(), paymentDto.getCurrency());
     }
 
-    private String getPspPaymentUrl(Transaction transaction, String merchantId) throws URISyntaxException {
+    private String getPspPaymentUrl(Transaction transaction, String merchantId, String currency) throws URISyntaxException {
         RestTemplate restTemplate = new RestTemplate();
         final String url = HTTP_PREFIX + this.pspBackHost + ":" + this.pspBackPort + this.pspBackPaymentUrl;
         URI uri = new URI(url);
@@ -109,6 +109,7 @@ public class ShoppingCartService implements IShoppingCartService {
         requestPaymentDto.setTransactionId(transaction.getId());
         requestPaymentDto.setAmount(transaction.getAmount());
         requestPaymentDto.setTimestamp(transaction.getTimestamp());
+        requestPaymentDto.setCurrency(currency);
 
         ResponseEntity<String> result = restTemplate.postForEntity(uri, requestPaymentDto, String.class);
         return result.getBody();

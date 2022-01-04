@@ -8,6 +8,7 @@ public class PccRequest {
     private String acquirerOrderId;
     private LocalDateTime acquirerTimestamp;
     private Double amount;
+    private String currency;
     private String pan;
     private String ccv;
     private LocalDate expirationDate;
@@ -70,5 +71,13 @@ public class PccRequest {
 
     public void setCardholderName(String cardholderName) {
         this.cardholderName = cardholderName;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

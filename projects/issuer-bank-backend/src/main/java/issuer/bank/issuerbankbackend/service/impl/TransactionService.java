@@ -18,6 +18,10 @@ import java.time.LocalDateTime;
 @Service
 public class TransactionService implements ITransactionService {
 
+    private static final Double RSDtoEUR = 0.0085;
+    private static final Double USDtoEUR = 0.89;
+    private static final Double YUANtoEUR = 0.14;
+
     protected final Log log = LogFactory.getLog(getClass());
 
     private final TransactionRepository transactionRepository;
@@ -64,7 +68,7 @@ public class TransactionService implements ITransactionService {
         }
 
         log.info("Checking available amount");
-        if(creditCard.getAvailableAmount() - pccRequest.getAmount() < 0) {
+        if(creditCard.getAvailableAmount() - convertTransactionAmountToEUR(pccRequest.getAmount(), pccRequest.getCurrency()) < 0) {
             log.error("No enough money!");
             pccResponse.setAcquirerOrderId(pccRequest.getAcquirerOrderId());
             pccResponse.setAcquirerTimestamp(pccRequest.getAcquirerTimestamp());
@@ -82,6 +86,7 @@ public class TransactionService implements ITransactionService {
 
         Transaction transaction = new Transaction();
         transaction.setAmount(pccRequest.getAmount());
+        transaction.setCurrency(pccRequest.getCurrency());
         transaction.setAcquirerOrderId(pccRequest.getAcquirerOrderId());
         transaction.setAcquirerTimestamp(pccRequest.getAcquirerTimestamp());
         transaction.setTimestamp(LocalDateTime.now());
@@ -99,5 +104,18 @@ public class TransactionService implements ITransactionService {
 
         log.info("Sending response to ACQUIRER");
         return pccResponse;
+    }
+
+    private Double convertTransactionAmountToEUR(Double amount, String transactionCurrency) {
+        switch (transactionCurrency) {
+            case "USD":
+                return amount * USDtoEUR;
+            case "RSD":
+                return amount * RSDtoEUR;
+            case "YUAN":
+                return amount * YUANtoEUR;
+            default:
+                return amount; //EUR original
+        }
     }
 }

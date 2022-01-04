@@ -6,6 +6,7 @@ public class RequestPaymentDTO {
     private String merchantId;
     private String transactionId;
     private Double amount;
+    private String currency;
     private LocalDateTime timestamp;
 
     public RequestPaymentDTO() {
@@ -33,6 +34,14 @@ public class RequestPaymentDTO {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public LocalDateTime getTimestamp() {
