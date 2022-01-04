@@ -24,6 +24,10 @@ import java.time.LocalDateTime;
 @Service
 public class TransactionService implements ITransactionService {
 
+    private static final Double RSDtoEUR = 0.0085;
+    private static final Double USDtoEUR = 0.89;
+    private static final Double YUANtoEUR = 0.14;
+
     protected final Log log = LogFactory.getLog(getClass());
 
     private static final String HTTP_PREFIX = "http://";
@@ -79,6 +83,7 @@ public class TransactionService implements ITransactionService {
         log.info("Card is successfully found!");
         Transaction transaction = new Transaction();
         transaction.setAmount(transactionRequest.getAmount());
+        transaction.setCurrency(transactionRequest.getCurrency());
         transaction.setTimestamp(transactionRequest.getMerchantTimestamp());
         transaction.setOrderId(transactionRequest.getMerchantOrderId());
         transaction.setMerchantPan(creditCard.getPan());
@@ -146,7 +151,7 @@ public class TransactionService implements ITransactionService {
                 return transactionResponse;
             }
 
-            if(customerCreditCard.getAvailableAmount() - transaction.getAmount() < 0) {
+            if (customerCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()) < 0) {
                 log.error("No enough available money on customer credit card");
                 transaction.setStatus(TransactionStatus.FAILED);
                 transactionRepository.save(transaction);
@@ -159,8 +164,8 @@ public class TransactionService implements ITransactionService {
             }
 
             log.info("Paying with credit card's PAN: " + customerCreditCard.getPan().substring(0, 4) + " - **** - **** - " + customerCreditCard.getPan().substring(12));
-            customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - transaction.getAmount());
-            customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + transaction.getAmount());
+            customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
+            customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             log.info("Amount " + transaction.getAmount() + " transfer from available to reserved amount");
             sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false, type);
         } else { // Different bank
@@ -170,6 +175,7 @@ public class TransactionService implements ITransactionService {
             pccRequest.setAcquirerOrderId(transactionId);
             pccRequest.setAcquirerTimestamp(transaction.getTimestamp());
             pccRequest.setAmount(transaction.getAmount());
+            pccRequest.setCurrency(transaction.getCurrency());
             pccRequest.setPan(creditCardRequest.getPan());
             pccRequest.setCcv(creditCardRequest.getCcv());
             pccRequest.setExpirationDate(creditCardRequest.getExpirationDate());
@@ -249,6 +255,19 @@ public class TransactionService implements ITransactionService {
     @Override
     public Transaction findById(String id) {
         return transactionRepository.findById(id).orElse(null);
+    }
+
+    private Double convertTransactionAmountToEUR(Double amount, String transactionCurrency) {
+        switch (transactionCurrency) {
+            case "USD":
+                return amount * USDtoEUR;
+            case "RSD":
+                return amount * RSDtoEUR;
+            case "YUAN":
+                return amount * YUANtoEUR;
+            default:
+                return amount; //EUR original
+        }
     }
 
 }

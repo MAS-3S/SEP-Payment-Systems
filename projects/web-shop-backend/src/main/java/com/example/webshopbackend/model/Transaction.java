@@ -20,6 +20,9 @@ public class Transaction {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
+    @Column(name = "currency", nullable = false)
+    private String currency;
+
     @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
 
@@ -47,6 +50,14 @@ public class Transaction {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public LocalDateTime getTimestamp() {

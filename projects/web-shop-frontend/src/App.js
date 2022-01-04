@@ -24,8 +24,8 @@ import UserPurchaseHistoryContainer from "./containers/UserPurchaseHistoryContai
 
 const publicRoutes = [
   {
-    key: "webshop/:webshop",
-    path: "/webshop/:webshop",
+    key: "webshop/:webshop/:currency",
+    path: "/webshop/:webshop/:currency",
     component: WebshopContainer,
     exact: true,
   },
@@ -45,8 +45,8 @@ const publicRoutes = [
 
 const privateRoutes = [
   {
-    key: "shopping-cart/:webshop",
-    path: "/shopping-cart/:webshop",
+    key: "shopping-cart/:webshop/:currency",
+    path: "/shopping-cart/:webshop/:currency",
     component: ShoppingCartContainer,
     exact: false,
   },
@@ -92,19 +92,29 @@ function App() {
       <Switch>
         <Redirect
           exact
+          from="/webshop//EUR"
+          to={{
+            pathname: `/webshop/${activeWebshop.name.toLowerCase()}/EUR`,
+          }}
+        />
+        <Redirect
+          exact
           from="/webshop/"
           to={{
-            pathname: `/webshop/${activeWebshop.name.toLowerCase()}`,
+            pathname: `/webshop/${activeWebshop.name.toLowerCase()}/EUR`,
           }}
         />
         <Redirect
           exact
           from="/"
           to={{
-            pathname: `/webshop/${activeWebshop.name.toLowerCase()}`,
+            pathname: `/webshop/${activeWebshop.name.toLowerCase()}/EUR`,
           }}
         />
-        <Route exact path={["/webshop/:webshop", "/login", "/registration"]}>
+        <Route
+          exact
+          path={["/webshop/:webshop/:currency", "/login", "/registration"]}
+        >
           <Layout>
             <Switch>
               {publicRoutes.map((publicRouteProps) => (
@@ -113,11 +123,10 @@ function App() {
             </Switch>
           </Layout>
         </Route>
-
         <Route
           exact
           path={[
-            "/shopping-cart/:webshop",
+            "/shopping-cart/:webshop/:currency",
             "/user-purchase-history/:userId/:webshopId",
             "/success-transaction/:orderId",
             "/error-transaction/:orderId",

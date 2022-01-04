@@ -32,7 +32,7 @@ export default function LoginContainer() {
   return sholudRedirect ? (
     <Redirect
       to={{
-        pathname: `/webshop/${activeWebshop.name.toLowerCase()}`,
+        pathname: `/webshop/${activeWebshop.name.toLowerCase()}/EUR`,
       }}
     />
   ) : (

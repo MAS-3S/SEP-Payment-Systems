@@ -9,6 +9,7 @@ import WebShopService from "../services/WebShopService";
 export default function WebshopContainer(props) {
   const [sholudRedirect, setSholudRedirect] = useState(false);
   const [activeWebshop, setActiveWebshop] = useState({});
+  const [activeCurrency, setActiveCurrency] = useState({});
   const [products, setProducts] = useState([]);
   const [conferences, setConferences] = useState([]);
   const [accommodations, setAccommodations] = useState([]);
@@ -47,8 +48,9 @@ export default function WebshopContainer(props) {
         }
       }
     }
+    setActiveCurrency(props.match.params.currency);
     fetchData();
-  }, [props.match.params.webshop]);
+  }, [props.match.params.webshop, props.match.params.currency]);
 
   return sholudRedirect ? (
     <Redirect
@@ -59,6 +61,7 @@ export default function WebshopContainer(props) {
   ) : (
     <Webshop
       activeWebshop={activeWebshop}
+      activeCurrency={activeCurrency}
       products={products}
       conferences={conferences}
       accommodations={accommodations}

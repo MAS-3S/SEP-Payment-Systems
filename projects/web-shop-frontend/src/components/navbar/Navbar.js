@@ -43,21 +43,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const availableCurrencies = [{ name: "EUR" }, { name: "USD" }];
+
 export default function Navbar(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorCurrencyEl, setAnchorCurrencyEl] = useState(null);
   const [webshops, setWebshops] = useState([]);
   const [activeWebshop, setActiveWebshop] = useState({ name: "" });
+  const [activeCurrency, setActiveCurrency] = useState({ name: "" });
   const [numberOfProductsInShoppingCart, setNumberOfProductsInShoppingCart] =
     useState(0);
 
   const isMenuOpen = Boolean(anchorEl);
+  const isCurrencyMenuOpen = Boolean(anchorCurrencyEl);
 
   useEffect(() => {
     async function fetchData() {
       var webshops = await WebShopService.findAll();
       setWebshops(webshops);
       setActiveWebshop(webshops[0]);
+      setActiveCurrency(availableCurrencies[0]);
       setNumberOfProductsInShoppingCart(0);
       // setNumberOfProductsInShoppingCart(
       //   JSON.parse(localStorage.getItem("shoppingCart")).length
@@ -74,9 +80,22 @@ export default function Navbar(props) {
     setAnchorEl(null);
   };
 
+  const handleCurrencyMenuOpen = (event) => {
+    setAnchorCurrencyEl(event.currentTarget);
+  };
+
+  const handleCurrencyMenuClose = () => {
+    setAnchorCurrencyEl(null);
+  };
+
   const changeWebshop = (webshop) => {
     setAnchorEl(null);
     setActiveWebshop(webshop);
+  };
+
+  const changeCurrency = (currency) => {
+    setAnchorCurrencyEl(null);
+    setActiveCurrency(currency);
   };
 
   const navigateToHome = () => {};
@@ -98,7 +117,9 @@ export default function Navbar(props) {
           return (
             <Link
               to={{
-                pathname: `/webshop/${webshop.name.toLowerCase()}`,
+                pathname: `/webshop/${webshop.name.toLowerCase()}/${
+                  activeCurrency.name
+                }`,
               }}
               style={{ textDecoration: "none", color: "black" }}
               onClick={() => changeWebshop(webshop)}
@@ -130,6 +151,30 @@ export default function Navbar(props) {
       </MenuItem>
     );
 
+  const currencyItems = availableCurrencies.map((currency) => {
+    return (
+      <Link
+        to={{
+          pathname: `/webshop/${activeWebshop.name.toLowerCase()}/${
+            currency.name
+          }`,
+        }}
+        style={{ textDecoration: "none", color: "black" }}
+        onClick={() => changeCurrency(currency)}
+      >
+        <MenuItem
+          style={{
+            width: 100,
+            height: 40,
+            justifyContent: "flex-start",
+          }}
+        >
+          {currency.name}
+        </MenuItem>
+      </Link>
+    );
+  });
+
   const renderMenu = (
     <Menu
       style={{ marginTop: 42 }}
@@ -141,6 +186,20 @@ export default function Navbar(props) {
       onClose={handleMenuClose}
     >
       {webShopItems}
+    </Menu>
+  );
+
+  const renderCurrencyMenu = (
+    <Menu
+      style={{ marginTop: 42 }}
+      anchorEl={anchorCurrencyEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isCurrencyMenuOpen}
+      onClose={handleCurrencyMenuClose}
+    >
+      {currencyItems}
     </Menu>
   );
 
@@ -171,6 +230,22 @@ export default function Navbar(props) {
     } else if (TokenService.getUserRole() === "CUSTOMER") {
       return (
         <div className={classes.sectionDesktop}>
+          <IconButton
+            onClick={handleCurrencyMenuOpen}
+            edge="end"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="open drawer"
+            style={{ width: 100, justifyContent: "felx-end" }}
+          >
+            <Typography className={classes.title} variant="h6">
+              {activeCurrency.name}
+            </Typography>
+            <ExpandMoreIcon
+              style={{ marginLeft: 3 }}
+              onClick={handleCurrencyMenuOpen}
+            />
+          </IconButton>
           <Link
             variant="contained"
             color="primary"
@@ -189,7 +264,9 @@ export default function Navbar(props) {
             variant="contained"
             color="primary"
             to={{
-              pathname: `/shopping-cart/${activeWebshop.name.toLowerCase()}`,
+              pathname: `/shopping-cart/${activeWebshop.name.toLowerCase()}/${
+                activeCurrency.name
+              }`,
             }}
             className="myButton"
             style={{ textDecoration: "none", color: "white" }}
@@ -252,7 +329,9 @@ export default function Navbar(props) {
         <Toolbar className={classes.toolbar}>
           <Link
             to={{
-              pathname: `/webshop/${activeWebshop.name.toLowerCase()}`,
+              pathname: `/webshop/${activeWebshop.name.toLowerCase()}/${
+                activeCurrency.name
+              }`,
             }}
           >
             <IconButton
@@ -289,6 +368,7 @@ export default function Navbar(props) {
         </Toolbar>
       </AppBar>
       {renderMenu}
+      {renderCurrencyMenu}
     </div>
   );
 }
