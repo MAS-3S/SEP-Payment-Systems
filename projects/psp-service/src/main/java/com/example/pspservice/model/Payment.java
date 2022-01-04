@@ -18,6 +18,9 @@ public class Payment {
     @Column(nullable = false)
     private Double amount;
 
+    @Column(nullable = false)
+    private String currency;
+
     private String returnUrl;
 
     @Column(nullable = false)
@@ -77,5 +80,13 @@ public class Payment {
 
     public void setPaymentMethodType(PaymentMethodType paymentMethodType) {
         this.paymentMethodType = paymentMethodType;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

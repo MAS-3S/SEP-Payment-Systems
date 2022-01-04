@@ -56,6 +56,7 @@ public class TransactionService implements ITransactionService {
         transaction.setAcquirerOrderId(pccRequest.getAcquirerOrderId());
         transaction.setAcquirerTimestamp(LocalDateTime.now());
         transaction.setAmount(pccRequest.getAmount());
+        transaction.setCurrency(pccRequest.getCurrency());
         transaction.setPan(pccRequest.getPan());
         transaction.setCcv(pccRequest.getCcv());
         transaction.setExpirationDate(pccRequest.getExpirationDate());

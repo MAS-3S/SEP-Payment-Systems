@@ -25,6 +25,9 @@ public class Transaction {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
+    @Column(name = "currency", nullable = false)
+    private String currency;
+
     @Column(name = "pan", nullable = false)
     private String pan;
 
@@ -124,5 +127,13 @@ public class Transaction {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

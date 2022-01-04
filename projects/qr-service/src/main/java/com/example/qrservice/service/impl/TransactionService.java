@@ -63,6 +63,7 @@ public class TransactionService implements ITransactionService {
         TransactionRequestDTO transactionRequestDTO = new TransactionRequestDTO();
         transactionRequestDTO.setDescription("Creating transaction over qr code.");
         transactionRequestDTO.setAmount(createTransactionDTO.getAmount());
+        transactionRequestDTO.setCurrency(createTransactionDTO.getCurrency());
         transactionRequestDTO.setMerchantId(merchant.getBankMerchantId());
         transactionRequestDTO.setMerchantPassword(merchant.getBankMerchantPassword());
         transactionRequestDTO.setMerchantOrderId(createTransactionDTO.getMerchantOrderId());
@@ -90,6 +91,7 @@ public class TransactionService implements ITransactionService {
         Transaction transaction = new Transaction();
         transaction.setBankTransactionId(transactionResponseEntity.getBody().getPaymentId());
         transaction.setAmount(createTransactionDTO.getAmount());
+        transaction.setCurrency(createTransactionDTO.getCurrency());
         transaction.setStatus(TransactionStatus.IN_PROGRESS);
         transaction.setMerchant(merchant);
         transaction.setOrderId(createTransactionDTO.getMerchantOrderId());

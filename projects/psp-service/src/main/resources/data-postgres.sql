@@ -17,4 +17,4 @@ insert into merchants_payment_method_types(merchant_id, payment_method_types_id)
 -- Accommodations Web Shop
 insert into merchants_payment_method_types(merchant_id, payment_method_types_id) values ('aa9b922c-0106-4316-9eff-e29b0ce63fc3', 'f8a5841a-5957-4550-a417-20c7504f59ff');
 
-insert into payments(id, amount, merchant_order_id, merchant_time_stamp, return_url, payment_method_type_id) values ('d24a16c6-6533-4fb4-87b9-b4d76ab568a0', 1400.0, 'a06e51b7-cbcf-4223-be6f-4381becdfeec', '2021-11-30 08:00:00', '', 'c0079450-7db8-442b-98c5-6488709ac526');
+insert into payments(id, amount, currency, merchant_order_id, merchant_time_stamp, return_url, payment_method_type_id) values ('d24a16c6-6533-4fb4-87b9-b4d76ab568a0', 1400.0, 'EUR', 'a06e51b7-cbcf-4223-be6f-4381becdfeec', '2021-11-30 08:00:00', '', 'c0079450-7db8-442b-98c5-6488709ac526');

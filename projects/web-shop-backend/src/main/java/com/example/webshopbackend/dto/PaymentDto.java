@@ -7,6 +7,7 @@ public class PaymentDto {
     String userId;
     String webShopId;
     Double totalPrice;
+    String currency;
     List<ItemToPurchaseDto> itemsToPurchase;
 
     public PaymentDto() {
@@ -34,6 +35,14 @@ public class PaymentDto {
 
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public List<ItemToPurchaseDto> getItemsToPurchase() {

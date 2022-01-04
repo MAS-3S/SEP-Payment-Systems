@@ -9,6 +9,7 @@ public class TransactionRequest {
     private String merchantOrderId;
     private LocalDateTime merchantTimestamp;
     private Double amount;
+    private String currency;
     private String description;
     private String successUrl;
     private String failedUrl;
@@ -87,5 +88,13 @@ public class TransactionRequest {
 
     public void setErrorUrl(String errorUrl) {
         this.errorUrl = errorUrl;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }
