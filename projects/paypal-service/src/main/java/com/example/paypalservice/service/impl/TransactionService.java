@@ -98,11 +98,35 @@ public class TransactionService implements ITransactionService {
         Merchant merchant = merchantRepository.findById(transaction.getMerchant().getId()).orElse(null);
 
         if (merchant == null) {
-            log.error("TransactionId: " + transactionId + " is not present");
+            log.error("Merchant or/and transaction is null");
             throw new Exception("Merchant or/and transaction is null");
         }
 
-        return new PayPalTransactionDTO(merchant.getClientId(), transaction.getCurrency(), transaction.getAmount(), transaction.getSuccessUrl(), transaction.getCancelUrl());
+        return new PayPalTransactionDTO(transactionId, merchant.getClientId(), transaction.getCurrency(), transaction.getAmount(), transaction.getSuccessUrl(), transaction.getCancelUrl());
+    }
+
+    @Override
+    public void changeTransactionStatusToSuccess(String transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId).orElse(null);
+        if(transaction == null) {
+            log.error("Transaction with id:" + transactionId + " does not exist");
+            return;
+        }
+        transaction.setStatus(TransactionStatus.SUCCESS);
+        transactionRepository.save(transaction);
+        log.info("Transaction with id:" + transactionId + " is successfully executed");
+    }
+
+    @Override
+    public void changeTransactionStatusToCanceled(String transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId).orElse(null);
+        if(transaction == null) {
+            log.error("Transaction with id:" + transactionId + " does not exist");
+            return;
+        }
+        transaction.setStatus(TransactionStatus.CANCELED);
+        transactionRepository.save(transaction);
+        log.info("Transaction with id:" + transactionId + " is canceled");
     }
 
     public String getPspPaymentReturnUrl(String transactionId) {

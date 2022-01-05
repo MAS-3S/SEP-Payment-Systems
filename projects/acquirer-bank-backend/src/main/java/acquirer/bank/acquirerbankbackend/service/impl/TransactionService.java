@@ -51,7 +51,6 @@ public class TransactionService implements ITransactionService {
     private final TransactionRepository transactionRepository;
     private final CreditCardRepository creditCardRepository;
 
-
     @Autowired
     public TransactionService(TransactionRepository transactionRepository, CreditCardRepository creditCardRepository) {
         this.transactionRepository = transactionRepository;
@@ -268,6 +267,10 @@ public class TransactionService implements ITransactionService {
             default:
                 return amount; //EUR original
         }
+    }
+
+    public CreditCard findCreditCardByMerchantPan(String pan) {
+        return creditCardRepository.findByPan(pan);
     }
 
 }

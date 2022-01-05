@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface CreditCardRepository extends JpaRepository<CreditCard, String> {
     CreditCard findByMerchantIdAndMerchantPassword(String merchantId, String merchantPassword);
     CreditCard findByPanAndCcv(String pan, String ccv);
+    CreditCard findByPan(String pan);
 }

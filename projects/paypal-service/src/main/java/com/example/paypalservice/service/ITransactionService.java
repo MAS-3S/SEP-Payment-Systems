@@ -9,5 +9,6 @@ public interface ITransactionService {
     TransactionResponseDTO createTransaction(CreateTransactionDTO createTransactionDTO) throws Exception;
     boolean checkIfMerchantExists(String merchantId) throws Exception;
     PayPalTransactionDTO getTransactionForPayPalBy(String transactionId) throws Exception;
-
+    void changeTransactionStatusToSuccess(String transactionId);
+    void changeTransactionStatusToCanceled(String transactionId);
 }

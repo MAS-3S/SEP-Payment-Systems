@@ -19,4 +19,16 @@ public class TransactionController {
     public ResponseEntity<PayPalTransactionDTO> getTransactionForPayPalBy(@PathVariable String transactionId) throws Exception {
         return new ResponseEntity<>(transactionService.getTransactionForPayPalBy(transactionId), HttpStatus.OK);
     }
+
+    @PutMapping("/transactions/{transactionId}/success")
+    public ResponseEntity<?> changeTransactionStatusToSuccess(@PathVariable String transactionId) {
+        transactionService.changeTransactionStatusToSuccess(transactionId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/transactions/{transactionId}/cancel")
+    public ResponseEntity<?> changeTransactionStatusToCanceled(@PathVariable String transactionId) {
+        transactionService.changeTransactionStatusToCanceled(transactionId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

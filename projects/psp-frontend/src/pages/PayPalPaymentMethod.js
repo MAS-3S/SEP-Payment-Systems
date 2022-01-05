@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../assets/css/transactionCardStyle.css";
 import { PayPalButton } from "react-paypal-button-v2";
+import PayPalService from "../services/PayPalService";
 
 export default function PayPalPaymentMethod(props) {
   const [payPalTransaction, setPayPalTransaction] = useState(
@@ -24,8 +25,8 @@ export default function PayPalPaymentMethod(props) {
                 style={{ marginTop: 80, paddingRight: 60, paddingLeft: 60 }}
               >
                 <PayPalButton
-                  //amount="0.01"
                   currency={payPalTransaction.currency}
+                  //amount="0.01"
                   // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                   createOrder={(data, actions) => {
                     return actions.order.create({
@@ -68,6 +69,9 @@ export default function PayPalPaymentMethod(props) {
                     );
 
                     window.location.href = payPalTransaction.successUrl;
+                    PayPalService.changeTransactionStatusToSuccess(
+                      payPalTransaction.transactionId
+                    );
                     // OPTIONAL: Call your server to save the transaction
                     // return fetch("/paypal-transaction-complete", {
                     //   method: "post",
@@ -77,20 +81,20 @@ export default function PayPalPaymentMethod(props) {
                     // });
                   }}
                   onCancel={(data) => {
-                    alert("Cancel", data);
-                    window.location.href = payPalTransaction.failedUrl;
+                    window.location.href = payPalTransaction.cancelUrl;
+                    PayPalService.changeTransactionStatusToCanceled(
+                      payPalTransaction.transactionId
+                    );
                   }}
                   onError={(err) => {
-                    alert("Error", err);
-                    window.location.href = payPalTransaction.failedUrl;
+                    window.location.href = payPalTransaction.cancelUrl;
+                    PayPalService.changeTransactionStatusToCanceled(
+                      payPalTransaction.transactionId
+                    );
                   }}
                   options={{
                     clientId: payPalTransaction.clientId,
-                    // ? payPalTransaction.clientId
-                    // : "AbyipjcjSVGHvV-CflLej8uUdlgw-Xo9XvRd4Xzt6P9S2LR7GE1Y4hpaDPbM_H26erKl8xhOJFkSvW6G",
                     currency: payPalTransaction.currency,
-                    // ? payPalTransaction.currency
-                    // : "EUR",
                   }}
                 />
               </div>
