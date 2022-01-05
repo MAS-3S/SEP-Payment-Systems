@@ -8,6 +8,20 @@ class PayPalService {
     );
     return response.data;
   }
+
+  async changeTransactionStatusToSuccess(transactionId) {
+    const response = await axios.put(
+      GATEWAY_URL + "paypal-service/transactions/" + transactionId + "/success"
+    );
+    return response.data;
+  }
+
+  async changeTransactionStatusToCanceled(transactionId) {
+    const response = await axios.put(
+      GATEWAY_URL + "paypal-service/transactions/" + transactionId + "/cancel"
+    );
+    return response.data;
+  }
 }
 
 export default new PayPalService();

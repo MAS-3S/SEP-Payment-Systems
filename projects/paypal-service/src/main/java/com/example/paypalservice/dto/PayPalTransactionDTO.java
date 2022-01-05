@@ -2,6 +2,7 @@ package com.example.paypalservice.dto;
 
 public class PayPalTransactionDTO {
 
+    private String transactionId;
     private String clientId;
     private String currency;
     private Double amount;
@@ -11,12 +12,21 @@ public class PayPalTransactionDTO {
     public PayPalTransactionDTO() {
     }
 
-    public PayPalTransactionDTO(String clientId, String currency, Double amount, String successUrl, String cancelUrl) {
+    public PayPalTransactionDTO(String transactionId, String clientId, String currency, Double amount, String successUrl, String cancelUrl) {
+        this.transactionId = transactionId;
         this.clientId = clientId;
         this.currency = currency;
         this.amount = amount;
         this.successUrl = successUrl;
         this.cancelUrl = cancelUrl;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
     public String getClientId() {

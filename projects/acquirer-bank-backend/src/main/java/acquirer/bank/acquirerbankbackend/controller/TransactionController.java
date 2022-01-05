@@ -3,6 +3,7 @@ package acquirer.bank.acquirerbankbackend.controller;
 import acquirer.bank.acquirerbankbackend.dto.CreditCardRequest;
 import acquirer.bank.acquirerbankbackend.dto.TransactionRequest;
 import acquirer.bank.acquirerbankbackend.dto.TransactionResponse;
+import acquirer.bank.acquirerbankbackend.model.CreditCard;
 import acquirer.bank.acquirerbankbackend.model.Transaction;
 import acquirer.bank.acquirerbankbackend.qrcode.QRCodeGenerator;
 import acquirer.bank.acquirerbankbackend.service.ITransactionService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
 @RestController
@@ -50,12 +52,13 @@ public class TransactionController {
     }
 
     @GetMapping(value="/qrCode/{transactionId}")
-    public ResponseEntity<String>  getQRCode(@PathVariable String transactionId){
+    public ResponseEntity<String> getQRCode(@PathVariable String transactionId){
         Transaction transaction = transactionService.findById(transactionId);
         if(transaction == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        String data = transaction.toString();
+        CreditCard creditCard = transactionService.findCreditCardByMerchantPan(transaction.getMerchantPan());
+        String data = formatQrCodeData(transaction, creditCard);
         byte[] image = new byte[0];
         try {
 
@@ -72,5 +75,15 @@ public class TransactionController {
         String qrcode = Base64.getEncoder().encodeToString(image);
 
         return new ResponseEntity<>("data:image/jpg;base64," + qrcode, HttpStatus.OK);
+    }
+
+    private String formatQrCodeData(Transaction transaction, CreditCard merchantCreditCard) {
+        return "Transaction{\n" +
+                "amount=" + transaction.getAmount() + ",\n" +
+                "currency=" + transaction.getCurrency() + ",\n" +
+                "timestamp=" + transaction.getTimestamp().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")) + ",\n" +
+                "merchantName=" + merchantCreditCard.getClient().getFirstName() + " " + merchantCreditCard.getClient().getLastName() + ",\n" +
+                "merchantPan=" + transaction.getMerchantPan().substring(0, 4) + " - **** - **** - " + transaction.getMerchantPan().substring(12) + "\n" +
+                '}';
     }
 }
