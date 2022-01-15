@@ -15,10 +15,4 @@ public class PspServiceApplication {
 		SpringApplication.run(PspServiceApplication.class, args);
 	}
 
-	@Bean
-	@LoadBalanced
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
-
 }

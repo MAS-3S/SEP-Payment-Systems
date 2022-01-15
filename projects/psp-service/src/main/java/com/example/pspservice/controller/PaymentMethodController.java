@@ -62,13 +62,10 @@ public class PaymentMethodController {
         return new ResponseEntity<>(s, HttpStatus.OK);
     }
 
-
     @GetMapping("/test")
     public ResponseEntity<?> getStudents() {
         String objects = restTemplate.getForObject("http://test-service/test/message", String.class);
         return new ResponseEntity<>(objects, HttpStatus.OK);
     }
-
-
 
 }

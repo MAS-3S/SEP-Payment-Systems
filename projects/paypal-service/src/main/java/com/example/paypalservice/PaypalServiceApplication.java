@@ -12,4 +12,8 @@ public class PaypalServiceApplication {
 		SpringApplication.run(PaypalServiceApplication.class, args);
 	}
 
+//	@Bean
+//	public RestTemplate restTemplate() {
+//		return new RestTemplate();
+//	}
 }

@@ -28,6 +28,7 @@ public class TransactionService implements ITransactionService {
 
     protected final Log log = LogFactory.getLog(getClass());
     private static final String HTTP_PREFIX = "http://";
+
     @Value("${acquirer.host}")
     private String acquirerHost;
     @Value("${acquirer.port}")

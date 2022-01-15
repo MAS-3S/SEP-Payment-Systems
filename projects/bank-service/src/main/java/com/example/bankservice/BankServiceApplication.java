@@ -15,9 +15,9 @@ public class BankServiceApplication {
 		SpringApplication.run(BankServiceApplication.class, args);
 	}
 
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
+//	@Bean
+//	public RestTemplate restTemplate() {
+//		return new RestTemplate();
+//	}
 
 }

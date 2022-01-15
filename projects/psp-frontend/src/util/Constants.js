@@ -1,1 +1,1 @@
-export const GATEWAY_URL = "http://localhost:9002/";
+export const GATEWAY_URL = "https://localhost:9002/";

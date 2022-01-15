@@ -24,8 +24,6 @@ import java.util.Objects;
 public class TransactionService implements ITransactionService {
 
     protected final Log log = LogFactory.getLog(getClass());
-    private static final String HTTP_PREFIX = "http://";
-    private static final String HTTPS_PREFIX = "https://";
 
     @Autowired
     RestTemplate restTemplate;

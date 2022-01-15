@@ -130,7 +130,7 @@ public class TransactionService implements ITransactionService {
     }
 
     public String getPspPaymentReturnUrl(String transactionId) {
-        return HTTP_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + "/payment-method/pay-pal/" + transactionId;
+        return HTTPS_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + "/payment-method/pay-pal/" + transactionId;
     }
 
 }

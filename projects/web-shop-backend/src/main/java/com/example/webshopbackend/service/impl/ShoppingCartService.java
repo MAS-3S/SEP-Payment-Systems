@@ -24,8 +24,11 @@ import java.net.URISyntaxException;
 public class ShoppingCartService implements IShoppingCartService {
 
     protected final Log log = LogFactory.getLog(getClass());
-    //izmeni posle u https
     private static final String HTTP_PREFIX = "http://";
+    private static final String HTTPS_PREFIX = "https://";
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @Value("${pspback.port}")
     private String pspBackPort;
@@ -101,8 +104,8 @@ public class ShoppingCartService implements IShoppingCartService {
     }
 
     private String getPspPaymentUrl(Transaction transaction, String merchantId, String currency) throws URISyntaxException {
-        RestTemplate restTemplate = new RestTemplate();
-        final String url = HTTP_PREFIX + this.pspBackHost + ":" + this.pspBackPort + this.pspBackPaymentUrl;
+        //RestTemplate restTemplate = new RestTemplate();
+        final String url = HTTPS_PREFIX + this.pspBackHost + ":" + this.pspBackPort + this.pspBackPaymentUrl;
         URI uri = new URI(url);
 
         RequestPaymentDTO requestPaymentDto = new RequestPaymentDTO();

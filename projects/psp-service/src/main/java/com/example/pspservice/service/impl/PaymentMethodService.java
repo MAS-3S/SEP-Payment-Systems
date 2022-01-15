@@ -37,8 +37,8 @@ public class PaymentMethodService implements IPaymentMethodService {
     @Autowired
     RestTemplate restTemplate;
 
-    //izmeni posle u https
     private static final String HTTP_PREFIX = "http://";
+    private static final String HTTPS_PREFIX = "https://";
 
     @Value("${pspfront.port}")
     private String pspFrontPort;
@@ -109,7 +109,7 @@ public class PaymentMethodService implements IPaymentMethodService {
             log.error("Merchant with id: " + merchantId + " doesn't exists.");
             throw new EntityNotFoundException("Merchant with id: " + merchantId + " doesn't exists.");
         }
-        return HTTP_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontSubscribeUrl + merchant.getId();
+        return HTTPS_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontSubscribeUrl + merchant.getId();
     }
 
     //slanje kupca da odabere nacin placanja
@@ -131,7 +131,7 @@ public class PaymentMethodService implements IPaymentMethodService {
         payment.setReturnUrl("");
         paymentRepository.save(payment);
 
-        return HTTP_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontPaymentUrl  + merchant.getId() +
+        return HTTPS_PREFIX + this.pspFrontHost + ":" + this.pspFrontPort + this.pspFrontPaymentUrl  + merchant.getId() +
                 "/" + payment.getId();
     }
 
@@ -158,7 +158,7 @@ public class PaymentMethodService implements IPaymentMethodService {
             log.info("Subscribing to new payment method: " + paymentMethodType.getName());
 
             try {
-                ResponseEntity<Boolean> isMerchantPresent = restTemplate.getForEntity("http://" + paymentMethodType.getServiceName() + "/checkIfMerchantExists/" + merchant.getMerchantId(), Boolean.class);
+                ResponseEntity<Boolean> isMerchantPresent = restTemplate.getForEntity("https://" + paymentMethodType.getServiceName() + "/checkIfMerchantExists/" + merchant.getMerchantId(), Boolean.class);
                 log.info("Successfully redirected to " + paymentMethodType.getServiceName());
                 if (Objects.equals(isMerchantPresent.getBody(), true)) {
                     merchant.addToPaymentMethod(paymentMethodType);
@@ -256,7 +256,7 @@ public class PaymentMethodService implements IPaymentMethodService {
             createTransactionDTO.setFailedUrl(merchant.getFailedUrl());
             createTransactionDTO.setErrorUrl(merchant.getErrorUrl());
             log.info("Trying to redirect to " + paymentMethodType.getServiceName());
-            httpResponse = restTemplate.postForObject("http://" + paymentMethodType.getServiceName() + "/createTransaction", createTransactionDTO, TransactionResponseDTO.class);
+            httpResponse = restTemplate.postForObject("https://" + paymentMethodType.getServiceName() + "/createTransaction", createTransactionDTO, TransactionResponseDTO.class);
             log.info("Successfully redirected to " + paymentMethodType.getServiceName());
         } catch (Exception e) {
             log.error("Failed to redirect to " + paymentMethodType.getServiceName() + " payment service");

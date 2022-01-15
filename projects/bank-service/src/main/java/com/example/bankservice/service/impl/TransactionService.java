@@ -37,7 +37,6 @@ public class TransactionService implements ITransactionService {
     @Value("${acquirer.port}")
     private String acquirerPort;
 
-
     @Autowired
     RestTemplate restTemplate;
     private final MerchantRepository merchantRepository;
@@ -48,7 +47,6 @@ public class TransactionService implements ITransactionService {
         this.merchantRepository = merchantRepository;
         this.transactionRepository = transactionRepository;
     }
-
 
     @Override
     @Transactional
