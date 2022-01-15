@@ -5,7 +5,7 @@
 
 ## Architecture
 
-<img src="systems-architecture/SEP-system-architecture.jpg" />
+![SEP-system-architecture](https://user-images.githubusercontent.com/57643299/149632492-94ca0921-17ba-46a2-b87a-071702c7ccb8.jpg)
 
 ## Demo
 
