@@ -27,6 +27,7 @@ public class TransactionService implements ITransactionService {
     protected final Log log = LogFactory.getLog(getClass());
 
     private static final String HTTP_PREFIX = "http://";
+    private static final String HTTPS_PREFIX = "https://";
 
     @Value("${front.host}")
     private String frontHost;
@@ -145,6 +146,6 @@ public class TransactionService implements ITransactionService {
 
     private String getAcquirerUrl() {
         log.info("Getting acquirer url");
-        return HTTP_PREFIX + this.acquirerHost + ":" + this.acquirerPort + "/api";
+        return HTTPS_PREFIX + this.acquirerHost + ":" + this.acquirerPort + "/api";
     }
 }
