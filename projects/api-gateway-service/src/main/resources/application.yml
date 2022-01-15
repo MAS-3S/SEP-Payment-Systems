@@ -4,13 +4,16 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:9001/eureka
+      defaultZone: https://localhost:9001/eureka
 
 spring:
   application:
     name: api-gateway-service
   cloud:
     gateway:
+      httpclient:
+        ssl:
+          useInsecureTrustManager: true
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_UNIQUE
       globalcors:

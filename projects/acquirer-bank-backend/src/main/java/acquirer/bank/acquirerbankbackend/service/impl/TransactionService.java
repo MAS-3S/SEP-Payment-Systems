@@ -29,8 +29,12 @@ public class TransactionService implements ITransactionService {
     private static final Double YUANtoEUR = 0.14;
 
     protected final Log log = LogFactory.getLog(getClass());
-
     private static final String HTTP_PREFIX = "http://";
+    private static final String HTTPS_PREFIX = "https://";
+
+    @Autowired
+    RestTemplate restTemplate;
+
     @Value("${server.ipaddress}")
     private String serverAddress;
     @Value("${server.port}")
@@ -96,9 +100,9 @@ public class TransactionService implements ITransactionService {
 
         transactionResponse.setPaymentId(transaction.getId());
         if(type.equals("creditCard")) {
-            transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/transaction/" + transaction.getId());
+            transactionResponse.setPaymentUrl(HTTPS_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/transaction/" + transaction.getId());
         } else if(type.equals("qrCode")) {
-            transactionResponse.setPaymentUrl(HTTP_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/qr-code/" + transaction.getId());
+            transactionResponse.setPaymentUrl(HTTPS_PREFIX + serverAddress + ":" + acquirerBankFrontPort + "/acquirer-bank/qr-code/" + transaction.getId());
         }
         transactionResponse.setSuccess(true);
         transactionResponse.setMessage("Transaction is successfully checked!");
@@ -230,8 +234,8 @@ public class TransactionService implements ITransactionService {
     private PccResponse sendRequestToPcc(PccRequest pccRequest) throws URISyntaxException {
         log.info("Sending request to PCC");
 
-        RestTemplate restTemplate = new RestTemplate();
-        final String url = HTTP_PREFIX + this.pccAddress + ":" + this.pccPort + "/api/pcc/forward";
+        //RestTemplate restTemplate = new RestTemplate();
+        final String url = HTTPS_PREFIX + this.pccAddress + ":" + this.pccPort + "/api/pcc/forward";
         URI uri = new URI(url);
 
         ResponseEntity<PccResponse> result = restTemplate.postForEntity(uri, pccRequest, PccResponse.class);
@@ -243,9 +247,9 @@ public class TransactionService implements ITransactionService {
         log.info("Sending request to PSP");
 
         PspResponse pspResponse = new PspResponse(acquirerOrderId, paymentId, merchantOrderId, acquirerTimeStamp, success);
-        RestTemplate restTemplate = new RestTemplate();
-        final String url = type.equals("creditCard") ? HTTP_PREFIX + this.apiGatewayHost + ":" + this.apiGatewayPort + "/bank-service/checkTransaction" :
-                HTTP_PREFIX + this.apiGatewayHost + ":" + this.apiGatewayPort + "/qr-service/checkTransaction";
+        //RestTemplate restTemplate = new RestTemplate();
+        final String url = type.equals("creditCard") ? HTTPS_PREFIX + this.apiGatewayHost + ":" + this.apiGatewayPort + "/bank-service/checkTransaction" :
+                HTTPS_PREFIX + this.apiGatewayHost + ":" + this.apiGatewayPort + "/qr-service/checkTransaction";
         URI uri = new URI(url);
 
         ResponseEntity<?> result = restTemplate.postForEntity(uri, pspResponse, PspResponse.class);

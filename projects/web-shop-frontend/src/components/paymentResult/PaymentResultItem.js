@@ -25,7 +25,7 @@ export default function PaymentResultItem(props) {
               type="text"
               name="quant[1]"
               class="form-control input-number"
-              value={quantity}
+              value={""}
               style={{
                 textAlign: "center",
                 width: 40,
@@ -37,7 +37,7 @@ export default function PaymentResultItem(props) {
           </div>
         </div>
         <div className="col text-right" style={{ marginLeft: 20 }}>
-          &euro; {item.price}
+          {quantity}
         </div>
       </div>
     </div>
