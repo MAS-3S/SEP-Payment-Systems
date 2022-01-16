@@ -16,10 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Base64;
+
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -51,6 +56,10 @@ public class TransactionService implements ITransactionService {
     private String apiGatewayPort;
     @Value("${api.gateway.host}")
     private String apiGatewayHost;
+    @Value("${encryption.key}")
+    private String encryptionKey;
+    @Value("${encryption.vector}")
+    private String encryptionVector;
 
     private final TransactionRepository transactionRepository;
     private final CreditCardRepository creditCardRepository;
@@ -134,7 +143,8 @@ public class TransactionService implements ITransactionService {
 
         if(creditCardRequest.getPan().startsWith(acquirerBankPan)) { // The same bank
             log.info("Trying to execute transaction in acquirer bank");
-            CreditCard customerCreditCard = creditCardRepository.findByPanAndCcv(creditCardRequest.getPan(), creditCardRequest.getCcv());
+            String encryptedCreditCardPan = this.encryptPan(creditCardRequest.getPan());
+            CreditCard customerCreditCard = creditCardRepository.findByPanAndCcv(encryptedCreditCardPan, creditCardRequest.getCcv());
             if(customerCreditCard == null || customerCreditCard.getExpirationDate().isBefore(LocalDate.now())) {
                 log.error("Customer credit card not found or expired!");
                 transactionResponse.setPaymentUrl(transaction.getFailedUrl());
@@ -144,7 +154,7 @@ public class TransactionService implements ITransactionService {
                 return transactionResponse;
             }
 
-            if (!customerCreditCard.getPan().equals(creditCardRequest.getPan()) || !customerCreditCard.getCcv().equals(creditCardRequest.getCcv()) ||
+            if (!customerCreditCard.getPan().equals(encryptedCreditCardPan) || !customerCreditCard.getCcv().equals(creditCardRequest.getCcv()) ||
                     !customerCreditCard.getExpirationDate().equals(creditCardRequest.getExpirationDate())
                     || !(customerCreditCard.getClient().getFirstName() + " " + customerCreditCard.getClient().getLastName()).equals(creditCardRequest.getCardholderName())) {
                 log.error("Inserted values of credit card are not matching the real one");
@@ -166,11 +176,12 @@ public class TransactionService implements ITransactionService {
                 return transactionResponse;
             }
 
-            log.info("Paying with credit card's PAN: " + customerCreditCard.getPan().substring(0, 4) + " - **** - **** - " + customerCreditCard.getPan().substring(12));
+            String decryptedCustomerCreditCardPan = this.decryptPan(customerCreditCard.getPan());
+            log.info("Paying with credit card's PAN: " + decryptedCustomerCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedCustomerCreditCardPan.substring(12));
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             log.info("Amount " + transaction.getAmount() + " transfer from available to reserved amount");
-            sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), false, type);
+            sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), true, type);
         } else { // Different bank
             log.info("Payment is not from the same bank");
             log.info("Trying to execute transaction in issuer bank");
@@ -179,7 +190,7 @@ public class TransactionService implements ITransactionService {
             pccRequest.setAcquirerTimestamp(transaction.getTimestamp());
             pccRequest.setAmount(transaction.getAmount());
             pccRequest.setCurrency(transaction.getCurrency());
-            pccRequest.setPan(creditCardRequest.getPan());
+            pccRequest.setPan(this.encryptPan(creditCardRequest.getPan()));
             pccRequest.setCcv(creditCardRequest.getCcv());
             pccRequest.setExpirationDate(creditCardRequest.getExpirationDate());
             pccRequest.setCardholderName(creditCardRequest.getCardholderName());
@@ -220,7 +231,7 @@ public class TransactionService implements ITransactionService {
         }
 
         transaction.setStatus(TransactionStatus.SUBMITTED);
-        transaction.setCustomerPan(creditCardRequest.getPan());
+        transaction.setCustomerPan(this.encryptPan(creditCardRequest.getPan()));
         transactionRepository.save(transaction);
         log.info("Transaction " + transaction.getId() + " submitted!");
 
@@ -275,6 +286,40 @@ public class TransactionService implements ITransactionService {
 
     public CreditCard findCreditCardByMerchantPan(String pan) {
         return creditCardRepository.findByPan(pan);
+    }
+
+    private String encryptPan(String value) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
+            SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(value.getBytes());
+            return Base64.getEncoder()
+                    .encodeToString(encrypted);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public String decryptPan(String encrypted) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
+            SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, iv);
+            byte[] original = cipher.doFinal(Base64.getDecoder().decode(encrypted));
+
+            return new String(original);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 
 }

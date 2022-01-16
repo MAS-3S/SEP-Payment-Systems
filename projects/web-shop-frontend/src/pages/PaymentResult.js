@@ -53,7 +53,7 @@ export default function PaymentResult(props) {
           <div className="back-to-shop">
             <Link
               to={{
-                pathname: `/webshop/${transaction.webShop.name}`,
+                pathname: `/webshop/${transaction.webShop.name}/EUR`,
               }}
               style={{ textDecoration: "none", color: "black" }}
             >
