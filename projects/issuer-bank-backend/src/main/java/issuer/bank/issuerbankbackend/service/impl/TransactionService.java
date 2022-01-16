@@ -10,10 +10,15 @@ import issuer.bank.issuerbankbackend.repository.TransactionRepository;
 import issuer.bank.issuerbankbackend.service.ITransactionService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -23,6 +28,11 @@ public class TransactionService implements ITransactionService {
     private static final Double YUANtoEUR = 0.14;
 
     protected final Log log = LogFactory.getLog(getClass());
+
+    @Value("${encryption.key}")
+    private String encryptionKey;
+    @Value("${encryption.vector}")
+    private String encryptionVector;
 
     private final TransactionRepository transactionRepository;
     private final CreditCardRepository creditCardRepository;
@@ -78,7 +88,8 @@ public class TransactionService implements ITransactionService {
         }
 
         log.info("Card found with available amount: " + creditCard.getAvailableAmount());
-        log.info("Paying with credit card's PAN: " + creditCard.getPan().substring(0, 4) + " - **** - **** - " + creditCard.getPan().substring(12));
+        String decryptedCreditCardPan = this.decryptPan(creditCard.getPan());
+        log.info("Paying with credit card's PAN: " + decryptedCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedCreditCardPan.substring(12));
         creditCard.setAvailableAmount(creditCard.getAvailableAmount() - convertTransactionAmountToEUR(pccRequest.getAmount(), pccRequest.getCurrency()));
         creditCard.setReservedAmount(creditCard.getReservedAmount() + convertTransactionAmountToEUR(pccRequest.getAmount(), pccRequest.getCurrency()));
         creditCardRepository.save(creditCard);
@@ -117,5 +128,39 @@ public class TransactionService implements ITransactionService {
             default:
                 return amount; //EUR original
         }
+    }
+
+    private String encryptPan(String value) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
+            SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(value.getBytes());
+            return Base64.getEncoder()
+                    .encodeToString(encrypted);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public String decryptPan(String encrypted) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
+            SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, iv);
+            byte[] original = cipher.doFinal(Base64.getDecoder().decode(encrypted));
+
+            return new String(original);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 }

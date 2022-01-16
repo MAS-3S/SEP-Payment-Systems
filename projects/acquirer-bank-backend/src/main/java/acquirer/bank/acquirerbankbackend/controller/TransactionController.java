@@ -9,12 +9,16 @@ import acquirer.bank.acquirerbankbackend.qrcode.QRCodeGenerator;
 import acquirer.bank.acquirerbankbackend.service.ITransactionService;
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +29,11 @@ import java.util.Base64;
 public class TransactionController {
 
     private static final String QR_CODE_IMAGE_PATH = "./src/main/resources/static/images/QRCode.png";
+
+    @Value("${encryption.key}")
+    private String encryptionKey;
+    @Value("${encryption.vector}")
+    private String encryptionVector;
 
     @Autowired
     private ITransactionService transactionService;
@@ -78,12 +87,30 @@ public class TransactionController {
     }
 
     private String formatQrCodeData(Transaction transaction, CreditCard merchantCreditCard) {
+        String decryptedMerchantPan = this.decryptPan(transaction.getMerchantPan());
         return "Transaction{\n" +
                 "amount=" + transaction.getAmount() + ",\n" +
                 "currency=" + transaction.getCurrency() + ",\n" +
                 "timestamp=" + transaction.getTimestamp().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")) + ",\n" +
                 "merchantName=" + merchantCreditCard.getClient().getFirstName() + " " + merchantCreditCard.getClient().getLastName() + ",\n" +
-                "merchantPan=" + transaction.getMerchantPan().substring(0, 4) + " - **** - **** - " + transaction.getMerchantPan().substring(12) + "\n" +
+                "merchantPan=" + decryptedMerchantPan.substring(0, 4) + " - **** - **** - " + decryptedMerchantPan.substring(12) + "\n" +
                 '}';
+    }
+
+    public String decryptPan(String encrypted) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
+            SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, iv);
+            byte[] original = cipher.doFinal(Base64.getDecoder().decode(encrypted));
+
+            return new String(original);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 }
