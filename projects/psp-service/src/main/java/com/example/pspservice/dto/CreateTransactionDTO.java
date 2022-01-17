@@ -8,11 +8,11 @@ public class CreateTransactionDTO {
     String merchantOrderId;
     Double amount;
     String currency;
+    boolean isPossibleSubscription;
     LocalDateTime time;
     String successUrl;
     String failedUrl;
     String errorUrl;
-
 
     public CreateTransactionDTO() {
     }
@@ -79,5 +79,13 @@ public class CreateTransactionDTO {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public boolean isPossibleSubscription() {
+        return isPossibleSubscription;
+    }
+
+    public void setPossibleSubscription(boolean possibleSubscription) {
+        isPossibleSubscription = possibleSubscription;
     }
 }

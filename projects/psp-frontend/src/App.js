@@ -8,6 +8,8 @@ import SubscribePaymentMethodsContainer from "./containers/SubscribePaymentMetho
 import NotFound from "./pages/NotFound";
 import LayoutPageNotFound from "./components/routing/LayoutPageNotFound";
 import PayPalPaymentMethodContainter from "./containers/PayPalPaymentMethodContainter";
+import PayPalMonthSubscriptionContainer from "./containers/PayPalMonthSubscriptionContainer";
+import PayPalYearSubscriptionContainer from "./containers/PayPalYearSubscriptionContainer";
 
 const privateRoutes = [
   {
@@ -20,6 +22,18 @@ const privateRoutes = [
     key: "payment-methods/webshop-id/:webshopId",
     path: "/payment-methods/webshop-id/:webshopId",
     component: SubscribePaymentMethodsContainer,
+    exact: false,
+  },
+  {
+    key: "payment-method/pay-pal/subscription/month/:paypalTransactionId",
+    path: "/payment-method/pay-pal/subscription/month/:paypalTransactionId",
+    component: PayPalMonthSubscriptionContainer,
+    exact: false,
+  },
+  {
+    key: "payment-method/pay-pal/subscription/year/:paypalTransactionId",
+    path: "/payment-method/pay-pal/subscription/year/:paypalTransactionId",
+    component: PayPalYearSubscriptionContainer,
     exact: false,
   },
   {
@@ -40,6 +54,8 @@ function App() {
             "/payment-methods/payment/webshop-id/:webshopId/:paymentId",
             "/payment-methods/webshop-id/:webshopId",
             "/payment-method/pay-pal/:paypalTransactionId",
+            "/payment-method/pay-pal/subscription/month/:paypalTransactionId",
+            "/payment-method/pay-pal/subscription/year/:paypalTransactionId",
           ]}
         >
           <Layout>

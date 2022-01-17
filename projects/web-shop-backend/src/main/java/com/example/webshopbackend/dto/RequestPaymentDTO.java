@@ -8,6 +8,7 @@ public class RequestPaymentDTO {
     private Double amount;
     private String currency;
     private LocalDateTime timestamp;
+    private boolean isPossibleSubscription;
 
     public RequestPaymentDTO() {
     }
@@ -50,5 +51,13 @@ public class RequestPaymentDTO {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public boolean isPossibleSubscription() {
+        return isPossibleSubscription;
+    }
+
+    public void setPossibleSubscription(boolean possibleSubscription) {
+        isPossibleSubscription = possibleSubscription;
     }
 }

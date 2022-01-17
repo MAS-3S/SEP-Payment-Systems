@@ -124,10 +124,11 @@ public class PaymentMethodService implements IPaymentMethodService {
         }
 
         Payment payment = new Payment();
-        payment.setAmount(dto.getAmount());
         payment.setMerchantOrderId(dto.getTransactionId());
         payment.setMerchantTimeStamp(dto.getTimestamp());
+        payment.setAmount(dto.getAmount());
         payment.setCurrency(dto.getCurrency());
+        payment.setPossibleSubscription(dto.isPossibleSubscription());
         payment.setReturnUrl("");
         paymentRepository.save(payment);
 
@@ -251,6 +252,7 @@ public class PaymentMethodService implements IPaymentMethodService {
             createTransactionDTO.setMerchantId(merchant.getMerchantId());
             createTransactionDTO.setAmount(payment.getAmount());
             createTransactionDTO.setCurrency(payment.getCurrency());
+            createTransactionDTO.setPossibleSubscription(payment.isPossibleSubscription());
             createTransactionDTO.setTime(payment.getMerchantTimeStamp());
             createTransactionDTO.setSuccessUrl(merchant.getSuccessUrl());
             createTransactionDTO.setFailedUrl(merchant.getFailedUrl());

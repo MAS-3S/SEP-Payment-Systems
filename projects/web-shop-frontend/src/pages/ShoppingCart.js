@@ -63,10 +63,11 @@ export default function ShoppingCart(props) {
       return;
     }
     for (let i = 0; i < shoppingCartItems.length; i++) {
-      itemsToPurchase.push({
-        productId: shoppingCartItems[i].id,
-        quantity: shoppingCartItems[i].quantity,
-      });
+      var itemToPurchase = {};
+      itemToPurchase.productId = shoppingCartItems[i].id;
+      itemToPurchase.quantity = shoppingCartItems[i].quantity;
+      itemToPurchase.isPossibleSubscription = shoppingCartItems[i].isCourse;
+      itemsToPurchase.push(itemToPurchase);
     }
     var shoppingCart = {
       userId: TokenService.getUser().id,
