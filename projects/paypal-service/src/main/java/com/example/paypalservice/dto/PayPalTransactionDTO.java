@@ -5,6 +5,7 @@ public class PayPalTransactionDTO {
     private String transactionId;
     private String clientId;
     private String currency;
+    private boolean isPossibleSubscription;
     private Double amount;
     private String successUrl;
     private String cancelUrl;
@@ -12,13 +13,14 @@ public class PayPalTransactionDTO {
     public PayPalTransactionDTO() {
     }
 
-    public PayPalTransactionDTO(String transactionId, String clientId, String currency, Double amount, String successUrl, String cancelUrl) {
+    public PayPalTransactionDTO(String transactionId, String clientId, String currency, Double amount, String successUrl, String cancelUrl, boolean isPossibleSubscription) {
         this.transactionId = transactionId;
         this.clientId = clientId;
         this.currency = currency;
         this.amount = amount;
         this.successUrl = successUrl;
         this.cancelUrl = cancelUrl;
+        this.isPossibleSubscription = isPossibleSubscription;
     }
 
     public String getTransactionId() {
@@ -67,5 +69,13 @@ public class PayPalTransactionDTO {
 
     public void setCancelUrl(String cancelUrl) {
         this.cancelUrl = cancelUrl;
+    }
+
+    public boolean isPossibleSubscription() {
+        return isPossibleSubscription;
+    }
+
+    public void setPossibleSubscription(boolean possibleSubscription) {
+        isPossibleSubscription = possibleSubscription;
     }
 }

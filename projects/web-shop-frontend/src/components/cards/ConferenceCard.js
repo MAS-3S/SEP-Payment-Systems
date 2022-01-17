@@ -47,15 +47,41 @@ export default function ConferenceCard(props) {
     }
     for (let i = 0; i < shoppingCart.length; i++) {
       if (shoppingCart[i].id === props.conference.id) {
-        handleAlertClick("Conference is already in shopping cart", "error");
+        if (shoppingCart[i].isConference === true) {
+          handleAlertClick("Conference is already in shopping cart", "error");
+          return;
+        } else if (shoppingCart[i].isCourse === true) {
+          handleAlertClick("Course is already in shopping cart", "error");
+          return;
+        }
+      } else if (shoppingCart[i].isConference === true) {
+        handleAlertClick(
+          "You can not add course if you have have conference in shopping cart",
+          "error"
+        );
+        return;
+      } else if (shoppingCart[i].isCourse === true) {
+        handleAlertClick(
+          "You can not add conference if you have have course in shopping cart",
+          "error"
+        );
         return;
       }
     }
-    handleAlertClick(
-      "Conference is successfully added in shopping cart",
-      "success"
-    );
     var product = props.conference;
+    if (product.name.includes("course")) {
+      product.isCourse = true;
+      handleAlertClick(
+        "Course is successfully added in shopping cart",
+        "success"
+      );
+    } else if (product.name.includes("conference")) {
+      product.isConference = true;
+      handleAlertClick(
+        "Conference is successfully added in shopping cart",
+        "success"
+      );
+    }
     product.webShopId = JSON.parse(sessionStorage.getItem("activeWebShop")).id;
     product.quantity = 1;
     product.currency = activeCurrency;

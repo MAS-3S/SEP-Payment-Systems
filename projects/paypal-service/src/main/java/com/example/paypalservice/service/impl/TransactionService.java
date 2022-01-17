@@ -56,6 +56,7 @@ public class TransactionService implements ITransactionService {
         Transaction transaction = new Transaction();
         transaction.setAmount(createTransactionDTO.getAmount());
         transaction.setCurrency(createTransactionDTO.getCurrency());
+        transaction.setPossibleSubscription(createTransactionDTO.isPossibleSubscription());
         transaction.setMerchant(merchant);
         transaction.setOrderId(createTransactionDTO.getMerchantOrderId());
         transaction.setPayPalOrderId(null);
@@ -102,7 +103,7 @@ public class TransactionService implements ITransactionService {
             throw new Exception("Merchant or/and transaction is null");
         }
 
-        return new PayPalTransactionDTO(transactionId, merchant.getClientId(), transaction.getCurrency(), transaction.getAmount(), transaction.getSuccessUrl(), transaction.getCancelUrl());
+        return new PayPalTransactionDTO(transactionId, merchant.getClientId(), transaction.getCurrency(), transaction.getAmount(), transaction.getSuccessUrl(), transaction.getCancelUrl(), transaction.isPossibleSubscription());
     }
 
     @Override

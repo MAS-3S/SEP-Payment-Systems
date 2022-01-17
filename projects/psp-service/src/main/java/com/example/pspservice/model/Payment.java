@@ -21,6 +21,8 @@ public class Payment {
     @Column(nullable = false)
     private String currency;
 
+    private boolean isPossibleSubscription;
+
     private String returnUrl;
 
     @Column(nullable = false)
@@ -88,5 +90,13 @@ public class Payment {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public boolean isPossibleSubscription() {
+        return isPossibleSubscription;
+    }
+
+    public void setPossibleSubscription(boolean possibleSubscription) {
+        isPossibleSubscription = possibleSubscription;
     }
 }
