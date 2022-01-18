@@ -32,6 +32,7 @@ public class UserController {
     private IUserService userService;
 
     @GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN') || hasRole('CUSTOMER')")
     public ResponseEntity<UserDto> findById(@PathVariable String id) {
         User user = userService.findById(id);
 
@@ -73,8 +74,6 @@ public class UserController {
         String siteURL = request.getRequestURL().toString();
         return siteURL.replace(request.getServletPath(), "");
     }
-
-
 
     //za prikaz gresaka, izmeniti posle
     @ResponseBody
