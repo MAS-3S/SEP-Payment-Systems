@@ -32,6 +32,8 @@ public class Transaction {
     @Column(nullable = false)
     private String currency;
 
+    private boolean isPossibleSubscription;
+
     @Column(nullable = false)
     private String timestamp;
 
@@ -102,6 +104,14 @@ public class Transaction {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public boolean isPossibleSubscription() {
+        return isPossibleSubscription;
+    }
+
+    public void setPossibleSubscription(boolean possibleSubscription) {
+        isPossibleSubscription = possibleSubscription;
     }
 
     public String getTimestamp() {

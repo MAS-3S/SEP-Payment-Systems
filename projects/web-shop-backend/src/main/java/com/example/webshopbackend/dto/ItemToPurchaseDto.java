@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public class ItemToPurchaseDto {
 
@@ -14,6 +15,8 @@ public class ItemToPurchaseDto {
     int quantity;
     @JsonFormat(pattern = "dd.MM.yyyy.")
     private LocalDateTime date;
+    @JsonFormat(pattern = "isPossibleSubscription")
+    boolean isPossibleSubscription;
 
     public ItemToPurchaseDto() {
     }
@@ -64,5 +67,13 @@ public class ItemToPurchaseDto {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public boolean isPossibleSubscription() {
+        return isPossibleSubscription;
+    }
+
+    public void setPossibleSubscription(boolean possibleSubscription) {
+        isPossibleSubscription = possibleSubscription;
     }
 }

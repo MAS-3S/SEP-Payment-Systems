@@ -2,15 +2,31 @@ import React, { useEffect, useState } from "react";
 import "../assets/css/transactionCardStyle.css";
 import { PayPalButton } from "react-paypal-button-v2";
 import PayPalService from "../services/PayPalService";
+import { Link } from "react-router-dom";
+import { FRONT_URL } from "../util/Constants";
 
 export default function PayPalPaymentMethod(props) {
   const [payPalTransaction, setPayPalTransaction] = useState(
     props.payPalTransaction
   );
+  const [isPossibleSubscription, setIsPossibleSubscription] = useState(
+    props.payPalTransaction.possibleSubscription
+  );
 
   useEffect(() => {
     setPayPalTransaction(props.payPalTransaction);
-  }, [props.payPalTransaction]);
+    setIsPossibleSubscription(props.payPalTransaction.possibleSubscription);
+  }, [props.payPalTransaction, props.payPalTransaction.possibleSubscription]);
+
+  const navigateToMonthSubscription = (transactionId) => {
+    window.location.href =
+      FRONT_URL + "payment-method/pay-pal/subscription/month/" + transactionId;
+  };
+
+  const navigateToYearSubscription = (transactionId) => {
+    window.location.href =
+      FRONT_URL + "payment-method/pay-pal/subscription/year/" + transactionId;
+  };
 
   return (
     <div>
@@ -22,12 +38,14 @@ export default function PayPalPaymentMethod(props) {
             <div className="row">
               <div
                 className="col-sm-6"
-                style={{ marginTop: 80, paddingRight: 60, paddingLeft: 60 }}
+                style={{
+                  marginTop: 80,
+                  paddingRight: 60,
+                  paddingLeft: 60,
+                }}
               >
                 <PayPalButton
                   currency={payPalTransaction.currency}
-                  //amount="0.01"
-                  // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                   createOrder={(data, actions) => {
                     return actions.order.create({
                       purchase_units: [
@@ -39,9 +57,6 @@ export default function PayPalPaymentMethod(props) {
                           },
                         },
                       ],
-                      // application_context: {
-                      //   shipping_preference: "NO_SHIPPING" // default is "GET_FROM_FILE"
-                      // }
                     });
                   }}
                   // onApprove={(data, actions) => {
@@ -67,18 +82,10 @@ export default function PayPalPaymentMethod(props) {
                       "Transaction completed by " +
                         details.payer.name.given_name
                     );
-
                     window.location.href = payPalTransaction.successUrl;
                     PayPalService.changeTransactionStatusToSuccess(
                       payPalTransaction.transactionId
                     );
-                    // OPTIONAL: Call your server to save the transaction
-                    // return fetch("/paypal-transaction-complete", {
-                    //   method: "post",
-                    //   body: JSON.stringify({
-                    //     orderId: data.orderID,
-                    //   }),
-                    // });
                   }}
                   onCancel={(data) => {
                     window.location.href = payPalTransaction.cancelUrl;
@@ -97,6 +104,31 @@ export default function PayPalPaymentMethod(props) {
                     currency: payPalTransaction.currency,
                   }}
                 />
+                {isPossibleSubscription ? (
+                  <div style={{ marginTop: 20 }}>
+                    <Link
+                      onClick={() =>
+                        navigateToMonthSubscription(
+                          payPalTransaction.transactionId
+                        )
+                      }
+                      to="/"
+                    >
+                      Month Subscribe
+                    </Link>
+                    <div></div>
+                    <Link
+                      onClick={() =>
+                        navigateToYearSubscription(
+                          payPalTransaction.transactionId
+                        )
+                      }
+                      to="/"
+                    >
+                      Year Subscribe
+                    </Link>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

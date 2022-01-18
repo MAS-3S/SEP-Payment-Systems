@@ -74,6 +74,7 @@ public class ShoppingCartService implements IShoppingCartService {
         shoppingCartRepository.save(shoppingCart);
         log.info("Shopping card " + shoppingCart.getId() + " is saved.");
 
+        boolean isPossibleSubscription = false;
         for (ItemToPurchaseDto dto : paymentDto.getItemsToPurchase()) {
             ItemToPurchase itemToPurchase = new ItemToPurchase();
 
@@ -83,6 +84,9 @@ public class ShoppingCartService implements IShoppingCartService {
                 throw new Exception("Invalid product id!");
             }
 
+            if(dto.isPossibleSubscription()) {
+                isPossibleSubscription = true;
+            }
             itemToPurchase.setShoppingCart(shoppingCart);
             itemToPurchase.setProduct(product);
             itemToPurchase.setQuantity(dto.getQuantity());
@@ -100,10 +104,10 @@ public class ShoppingCartService implements IShoppingCartService {
         transactionRepository.save(transaction);
         log.info("Transaction " + transaction.getId() + " is saved.");
 
-        return getPspPaymentUrl(transaction, paymentDto.getWebShopId(), paymentDto.getCurrency());
+        return getPspPaymentUrl(transaction, paymentDto.getWebShopId(), paymentDto.getCurrency(), isPossibleSubscription);
     }
 
-    private String getPspPaymentUrl(Transaction transaction, String merchantId, String currency) throws URISyntaxException {
+    private String getPspPaymentUrl(Transaction transaction, String merchantId, String currency, boolean isPossibleSubscription) throws URISyntaxException {
         //RestTemplate restTemplate = new RestTemplate();
         final String url = HTTPS_PREFIX + this.pspBackHost + ":" + this.pspBackPort + this.pspBackPaymentUrl;
         URI uri = new URI(url);
@@ -114,6 +118,7 @@ public class ShoppingCartService implements IShoppingCartService {
         requestPaymentDto.setAmount(transaction.getAmount());
         requestPaymentDto.setTimestamp(transaction.getTimestamp());
         requestPaymentDto.setCurrency(currency);
+        requestPaymentDto.setPossibleSubscription(isPossibleSubscription);
 
         ResponseEntity<String> result = restTemplate.postForEntity(uri, requestPaymentDto, String.class);
         return result.getBody();
