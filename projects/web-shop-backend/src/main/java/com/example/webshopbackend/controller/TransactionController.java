@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class TransactionController {
     private IProductService productService;
 
     @GetMapping(value="/{id}/shoppingCart", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ShoppingCartDto> getShoppingCartForTransaction(@PathVariable String id) {
         ShoppingCart shoppingCart = transactionService.getShoppingCartForTransaction(id);
         if(shoppingCart == null) {
@@ -57,6 +59,7 @@ public class TransactionController {
     }
 
     @PutMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<?> handleTransactionRequest(@PathVariable String id, @RequestBody TransactionDto transactionDto) {
         Transaction transaction = transactionService.getById(id);
 

@@ -2,6 +2,7 @@ package com.example.webshopbackend.controller;
 
 import com.example.webshopbackend.dto.AuthenticatedUserDTO;
 import com.example.webshopbackend.model.User;
+import com.example.webshopbackend.model.enums.Role;
 import com.example.webshopbackend.repository.UserRepository;
 import com.example.webshopbackend.security.TokenUtils;
 import com.example.webshopbackend.security.UserTokenState;
@@ -60,7 +61,7 @@ public class AuthenticationController {
         if (!account.isRegistered()) {
             return new ResponseEntity<>("Verify profile before using application", HttpStatus.UNAUTHORIZED);
         }
-        String jwt = tokenUtils.generateToken(account.getEmail());
+        String jwt = tokenUtils.generateToken(account.getEmail(), account.getRole().toString());
         String refresh = tokenUtils.refreshToken(jwt, account.getId());
         int expiresIn = tokenUtils.getExpiredIn();
         authenticatedUserDTO = new AuthenticatedUserDTO(account.getId(), account.getEmail(), account.getRole().toString(), new UserTokenState(jwt, expiresIn, refresh));
@@ -83,7 +84,7 @@ public class AuthenticationController {
                     log.error("Using access token instead of refresh token");
                     return new ResponseEntity<>("Use refresh token for creating new access token!", HttpStatus.UNAUTHORIZED);
                 }
-                String accessToken = tokenUtils.generateToken(user.getEmail());
+                String accessToken = tokenUtils.generateToken(user.getEmail(), user.getRole().toString());
                 int expiresIn = tokenUtils.getExpiredIn();
 
                 AuthenticatedUserDTO authenticatedUserDTO = new AuthenticatedUserDTO(user.getId(), user.getEmail(), user.getRole().toString(), new UserTokenState(accessToken, expiresIn, refreshToken));
