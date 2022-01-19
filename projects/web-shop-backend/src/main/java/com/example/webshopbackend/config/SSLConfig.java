@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
 
-@Configuration
+//@Configuration
 public class SSLConfig {
 
     @Value("${server.ssl.trust-store}")

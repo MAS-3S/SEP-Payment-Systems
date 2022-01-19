@@ -27,8 +27,8 @@ public class ShoppingCartService implements IShoppingCartService {
     private static final String HTTP_PREFIX = "http://";
     private static final String HTTPS_PREFIX = "https://";
 
-    @Autowired
-    RestTemplate restTemplate;
+//    @Autowired
+//    RestTemplate restTemplate;
 
     @Value("${pspback.port}")
     private String pspBackPort;
@@ -108,7 +108,7 @@ public class ShoppingCartService implements IShoppingCartService {
     }
 
     private String getPspPaymentUrl(Transaction transaction, String merchantId, String currency, boolean isPossibleSubscription) throws URISyntaxException {
-        //RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
         final String url = HTTPS_PREFIX + this.pspBackHost + ":" + this.pspBackPort + this.pspBackPaymentUrl;
         URI uri = new URI(url);
 
