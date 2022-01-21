@@ -21,5 +21,6 @@ public interface IPaymentMethodService {
 
     String choosePaymentMethod(ChoosePaymentMethodDTO dto) throws Exception;
 
+    WageResponse paymentWage(WageRequest wageRequest) throws  Exception;
 
 }

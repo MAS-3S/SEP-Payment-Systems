@@ -79,3 +79,8 @@ spring:
           predicates:
             - Path=/paypal-service/transactions/{transactionId}/cancel #change paypal transaction status to canceled
             - Method=PUT
+        - id: pspPaymentWage
+          uri: lb://PSP-SERVICE
+          predicates:
+            - Path=/api/psp/paymentMethods/paymentWage #payment wage
+            - Method=POST

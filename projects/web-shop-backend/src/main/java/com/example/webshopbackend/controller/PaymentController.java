@@ -1,6 +1,8 @@
 package com.example.webshopbackend.controller;
 
 import com.example.webshopbackend.dto.PaymentDto;
+import com.example.webshopbackend.dto.WageDto;
+import com.example.webshopbackend.dto.WageResponse;
 import com.example.webshopbackend.service.IShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,5 +35,18 @@ public class PaymentController {
         }
 
         return new ResponseEntity<>(url, HttpStatus.OK);
+    }
+
+    @PostMapping("/wage")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<WageResponse> wagePayment(@RequestBody WageDto dto) {
+        WageResponse response;
+        try {
+            response = shoppingCartService.paymentWage(dto);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

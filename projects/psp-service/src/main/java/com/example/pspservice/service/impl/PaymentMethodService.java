@@ -270,6 +270,52 @@ public class PaymentMethodService implements IPaymentMethodService {
 
     }
 
+    @Override
+    @Transactional
+    public WageResponse paymentWage(WageRequest wageRequest) throws Exception {
+        log.info("Payment wage is started.");
+        WageResponse response = new WageResponse();
+
+        Merchant merchant = merchantRepository.findByMerchantId(wageRequest.getMerchantId());
+        if (merchant == null) {
+            log.error("Failed to pay wage");
+            log.error("Merchant with id: " + wageRequest.getMerchantId() + " doesn't exists.");
+            response.setSuccess(false);
+            response.setMessage("Merchant with id: " + wageRequest.getMerchantId() + " doesn't exists.");
+            return response;
+        }
+
+        Payment payment = new Payment();
+        payment.setMerchantOrderId(wageRequest.getTransactionId());
+        payment.setMerchantTimeStamp(wageRequest.getTimestamp());
+        payment.setAmount(wageRequest.getAmount());
+        payment.setCurrency(wageRequest.getCurrency());
+        payment.setPossibleSubscription(false);
+        payment.setReturnUrl("");
+        paymentRepository.save(payment);
+        log.info("Payment " + payment.getId()  + " is saved.");
+
+        try {
+            WageTransactionRequest wageTransactionRequest = new WageTransactionRequest();
+            wageTransactionRequest.setMerchantOrderId(payment.getMerchantOrderId());
+            wageTransactionRequest.setMerchantId(merchant.getMerchantId());
+            wageTransactionRequest.setAmount(wageRequest.getAmount());
+            wageTransactionRequest.setCurrency(wageRequest.getCurrency());
+            wageTransactionRequest.setTimestamp(payment.getMerchantTimeStamp());
+            wageTransactionRequest.setAccountNumber(wageRequest.getAccountNumber());
+            wageTransactionRequest.setBankNumber(wageRequest.getBankNumber());
+            log.info("Trying to redirect to bank-service");
+            response = restTemplate.postForObject("https://bank-service/paymentWage", wageTransactionRequest, WageResponse.class);
+            log.info("Successfully redirected to bank-service");
+        } catch (Exception e) {
+            log.error("Failed to redirect to bank-service payment service");
+            throw new Exception("Failed to redirect to bank-service payment service");
+        }
+
+        assert response != null;
+        return response;
+    }
+
     private static String decodeBase64(String image) {
         File currDir = new File(System.getProperty("user.dir"));
         File assetFolder = new File(currDir, "src/main/java/com/example/pspservice/assets/images");
