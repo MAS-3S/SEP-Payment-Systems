@@ -10,12 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import pcc.pccbackend.dto.PccResponse;
 import pcc.pccbackend.dto.PccRequest;
+import pcc.pccbackend.dto.WageResponse;
+import pcc.pccbackend.dto.WageTransactionRequest;
 import pcc.pccbackend.model.Transaction;
 import pcc.pccbackend.repository.TransactionRepository;
 import pcc.pccbackend.service.ITransactionService;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -34,6 +37,8 @@ public class TransactionService implements ITransactionService {
     private String issuerBankHost;
     @Value("${issuer.bank.transaction.route}")
     private String issuerBankTransactionUrl;
+    @Value("${issuer.bank.wageTransaction.route}")
+    private String issuerBankWageTransactionUrl;
 
     private final TransactionRepository transactionRepository;
 
@@ -85,6 +90,44 @@ public class TransactionService implements ITransactionService {
         return pccResponse;
     }
 
+    @Override
+    @Transactional
+    public WageResponse forwardWageTransactionRequest(WageTransactionRequest wageTransactionRequest) {
+        log.info("Forwarding transaction from acquirer to issuer for merchantOrderId: " + wageTransactionRequest.getMerchantOrderId());
+        WageResponse wageResponse = new WageResponse();
+
+        if (wageTransactionRequest.getAmount() == null || wageTransactionRequest.getCurrency().equals("") || wageTransactionRequest.getMerchantOrderId().equals("") ||
+        wageTransactionRequest.getAccountNumber().equals("") || wageTransactionRequest.getBankNumber().equals("") || wageTransactionRequest.getTimestamp() == null) {
+            log.error("Some field was empty!");
+            wageResponse.setSuccess(false);
+            wageResponse.setMessage("Error, pcc failed while some fields are empty");
+            return wageResponse;
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setAcquirerOrderId("");
+        transaction.setAcquirerTimestamp(LocalDateTime.now());
+        transaction.setAmount(wageTransactionRequest.getAmount());
+        transaction.setCurrency(wageTransactionRequest.getCurrency());
+        transaction.setPan("");
+        transaction.setCcv("");
+        transaction.setExpirationDate(LocalDate.now());
+        transaction.setCardholderName("");
+        transactionRepository.save(transaction);
+        log.info("Transaction is successfully saved!");
+
+        try {
+            wageResponse = forwardWageToIssuerBank(wageTransactionRequest);
+        } catch (Exception e) {
+            log.error("Issuer bank redirection error!");
+            wageResponse.setSuccess(false);
+            wageResponse.setMessage("Issuer bank redirection error!");
+            return wageResponse;
+        }
+
+        return wageResponse;
+    }
+
     private PccResponse forwardToIssuerBank(PccRequest pccRequest) throws URISyntaxException {
         log.info("Forwarding request to ISSUER");
 
@@ -93,6 +136,17 @@ public class TransactionService implements ITransactionService {
         URI uri = new URI(url);
 
         ResponseEntity<PccResponse> result = restTemplate.postForEntity(uri, pccRequest, PccResponse.class);
+        return result.getBody();
+    }
+
+    private WageResponse forwardWageToIssuerBank(WageTransactionRequest wageTransactionRequest) throws URISyntaxException {
+        log.info("Forwarding wage request to ISSUER");
+
+        //RestTemplate restTemplate = new RestTemplate();
+        final String url = HTTPS_PREFIX + this.issuerBankHost + ":" + this.issuerBankPort + this.issuerBankWageTransactionUrl;
+        URI uri = new URI(url);
+
+        ResponseEntity<WageResponse> result = restTemplate.postForEntity(uri, wageTransactionRequest, WageResponse.class);
         return result.getBody();
     }
 }

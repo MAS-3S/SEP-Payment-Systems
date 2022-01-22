@@ -1,8 +1,6 @@
 package acquirer.bank.acquirerbankbackend.controller;
 
-import acquirer.bank.acquirerbankbackend.dto.CreditCardRequest;
-import acquirer.bank.acquirerbankbackend.dto.TransactionRequest;
-import acquirer.bank.acquirerbankbackend.dto.TransactionResponse;
+import acquirer.bank.acquirerbankbackend.dto.*;
 import acquirer.bank.acquirerbankbackend.model.CreditCard;
 import acquirer.bank.acquirerbankbackend.model.Transaction;
 import acquirer.bank.acquirerbankbackend.qrcode.QRCodeGenerator;
@@ -58,6 +56,12 @@ public class TransactionController {
     @PostMapping(value = "/execute/{transactionId}/qrCode", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public TransactionResponse executeQrCodeTransaction(@PathVariable String transactionId, @RequestBody CreditCardRequest creditCardRequest) throws URISyntaxException {
         return transactionService.executeTransaction(transactionId, creditCardRequest, "qrCode");
+    }
+
+    @PostMapping(value="/paymentWage", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<WageResponse> paymentWage(@RequestBody WageTransactionRequest wageTransactionRequest) {
+        WageResponse wageResponse = transactionService.paymentWage(wageTransactionRequest);
+        return new ResponseEntity<>(wageResponse, HttpStatus.OK);
     }
 
     @GetMapping(value="/qrCode/{transactionId}")

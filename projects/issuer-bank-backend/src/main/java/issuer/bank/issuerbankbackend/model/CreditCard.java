@@ -43,6 +43,9 @@ public class CreditCard {
     @OneToMany(mappedBy = "creditCard", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Transaction> transactions;
 
+    @Column(name = "account_number", nullable = false)
+    private String accountNumber;
+
     public CreditCard() {
     }
 
@@ -124,5 +127,13 @@ public class CreditCard {
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 }

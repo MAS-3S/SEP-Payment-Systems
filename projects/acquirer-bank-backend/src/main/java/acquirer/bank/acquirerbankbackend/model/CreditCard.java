@@ -36,6 +36,9 @@ public class CreditCard {
     @Column(name = "merchant_password", nullable = false)
     private String merchantPassword;
 
+    @Column(name = "account_number", nullable = false)
+    private String accountNumber;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Client client;
 
@@ -112,5 +115,13 @@ public class CreditCard {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 }

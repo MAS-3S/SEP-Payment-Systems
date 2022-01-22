@@ -1,8 +1,6 @@
 package acquirer.bank.acquirerbankbackend.service;
 
-import acquirer.bank.acquirerbankbackend.dto.CreditCardRequest;
-import acquirer.bank.acquirerbankbackend.dto.TransactionRequest;
-import acquirer.bank.acquirerbankbackend.dto.TransactionResponse;
+import acquirer.bank.acquirerbankbackend.dto.*;
 import acquirer.bank.acquirerbankbackend.model.CreditCard;
 import acquirer.bank.acquirerbankbackend.model.Transaction;
 
@@ -13,4 +11,5 @@ public interface ITransactionService {
     TransactionResponse executeTransaction(String transactionId, CreditCardRequest creditCardRequest, String type) throws URISyntaxException;
     Transaction findById(String id);
     CreditCard findCreditCardByMerchantPan(String pan);
+    WageResponse paymentWage(WageTransactionRequest wageTransactionRequest);
 }

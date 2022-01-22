@@ -62,6 +62,12 @@ public class PaymentMethodController {
         return new ResponseEntity<>(s, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/paymentWage", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<WageResponse> paymentWage(@RequestBody WageRequest dto) throws Exception {
+        WageResponse wageResponse = paymentMethodService.paymentWage(dto);
+        return new ResponseEntity<>(wageResponse, HttpStatus.OK);
+    }
+
     @GetMapping("/test")
     public ResponseEntity<?> getStudents() {
         String objects = restTemplate.getForObject("http://test-service/test/message", String.class);

@@ -1,12 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import WagePage from "../pages/WagePage";
+import Wage from "../pages/Wage";
 import PaymentService from "../services/PaymentService";
 
 export default function WageContainer(props) {
+  const [shouldOpenSnackbar, setShouldOpenSnackbar] = useState(false);
   const [webshopId, setWebshopId] = useState(-1);
   const [wageResponse, setWageResponse] = useState({
-    isSuccess: false,
+    success: false,
     message: "",
   });
 
@@ -28,23 +29,26 @@ export default function WageContainer(props) {
       webshopId
     )
       .then((response) => {
+        setShouldOpenSnackbar(true);
         setWageResponse({
-          isSuccess: response.isSuccess,
+          success: response.success,
           message: response.message,
         });
       })
       .catch((error) => {
+        setShouldOpenSnackbar(true);
         setWageResponse({
-          isSuccess: false,
+          success: false,
           message: "Bad request",
         });
       });
   };
 
   return (
-    <WagePage
+    <Wage
       webshopId={webshopId}
       wageResponse={wageResponse}
+      shouldOpenSnackbar={shouldOpenSnackbar}
       executePayment={handleExecutePayment}
     />
   );
