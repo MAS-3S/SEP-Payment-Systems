@@ -21,6 +21,7 @@ import SuccessPaymentResultContainer from "./containers/SuccessPaymentResultCont
 import ErrorPaymentResultContainer from "./containers/ErrorPaymentResultContainer";
 import FailedPaymentResultContainer from "./containers/FailedPaymentResultContainer";
 import UserPurchaseHistoryContainer from "./containers/UserPurchaseHistoryContainer";
+import WageContainer from "./containers/WageContainer";
 
 const publicRoutes = [
   {
@@ -72,6 +73,12 @@ const privateRoutes = [
     key: "failed-transaction/:orderId",
     path: "/failed-transaction/:orderId",
     component: FailedPaymentResultContainer,
+    exact: false,
+  },
+  {
+    key: "wage/:webshopId",
+    path: "/wage/:webshopId",
+    component: WageContainer,
     exact: false,
   },
 ];
@@ -131,6 +138,7 @@ function App() {
             "/success-transaction/:orderId",
             "/error-transaction/:orderId",
             "/failed-transaction/:orderId",
+            "/wage/:webshopId",
           ]}
         >
           <Layout>

@@ -291,29 +291,66 @@ export default function Navbar(props) {
         </div>
       );
     } else {
-      return (
-        <div className={classes.sectionDesktop}>
-          <button
-            variant="contained"
-            color="primary"
-            className="myButton"
-            style={{ textDecoration: "none", color: "white", marginTop: 15 }}
-            onClick={handleSubscribe}
-          >
-            Payments
-          </button>
-          <Link
-            variant="contained"
-            color="primary"
-            to="/login"
-            className="myButton"
-            onClick={handleLogOut}
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            Log out
-          </Link>
-        </div>
-      );
+      if (activeWebshop.name.toLowerCase() === "conferences shop") {
+        return (
+          <div className={classes.sectionDesktop}>
+            <Link
+              variant="contained"
+              color="primary"
+              to={{
+                pathname: `/wage/${activeWebshop.id}`,
+              }}
+              className="myButton"
+              style={{ textDecoration: "none", color: "white" }}
+            >
+              Wage
+            </Link>
+            <button
+              variant="contained"
+              color="primary"
+              className="myButton"
+              style={{ textDecoration: "none", color: "white", marginTop: 15 }}
+              onClick={handleSubscribe}
+            >
+              Payments
+            </button>
+            <Link
+              variant="contained"
+              color="primary"
+              to="/login"
+              className="myButton"
+              onClick={handleLogOut}
+              style={{ textDecoration: "none", color: "white" }}
+            >
+              Log out
+            </Link>
+          </div>
+        );
+      } else {
+        return (
+          <div className={classes.sectionDesktop}>
+            <button
+              variant="contained"
+              color="primary"
+              className="myButton"
+              style={{ textDecoration: "none", color: "white", marginTop: 15 }}
+              onClick={handleSubscribe}
+            >
+              Payments
+            </button>
+            <Link
+              variant="contained"
+              color="primary"
+              to="/login"
+              className="myButton"
+              onClick={handleLogOut}
+              style={{ textDecoration: "none", color: "white" }}
+            >
+              Log out
+            </Link>
+          </div>
+        );
+      }
     }
   })();
 
