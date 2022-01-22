@@ -39,8 +39,24 @@ const WageSchema = Yup.object().shape({
 });
 
 export default function WageCard(props) {
-  const handlePayWage = (amount, currency, accountNumber, bankNumber) => {
-    props.executePayment(amount, currency, accountNumber, bankNumber);
+  const onSubmit = async (
+    values,
+    { setSubmitting, setErrors, setStatus, resetForm }
+  ) => {
+    try {
+      props.executePayment(
+        values.amount,
+        values.currency,
+        values.accountNumber,
+        values.bank
+      );
+      resetForm({});
+      setStatus({ success: true });
+    } catch (error) {
+      setStatus({ success: false });
+      setSubmitting(false);
+      setErrors({ submit: error.message });
+    }
   };
 
   return (
@@ -54,7 +70,7 @@ export default function WageCard(props) {
             bank: "",
           }}
           validationSchema={WageSchema}
-          onSubmit={() => {}}
+          onSubmit={onSubmit}
         >
           {({
             values,
@@ -144,14 +160,6 @@ export default function WageCard(props) {
                       }
                       type="submit"
                       disabled={!(dirty && isValid)}
-                      onClick={() =>
-                        handlePayWage(
-                          values.amount,
-                          values.currency,
-                          values.accountNumber,
-                          values.bank
-                        )
-                      }
                     >
                       Pay wage
                     </button>
