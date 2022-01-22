@@ -143,7 +143,7 @@ public class TransactionService implements ITransactionService {
 
         if(creditCardRequest.getPan().startsWith(acquirerBankPan)) { // The same bank
             log.info("Trying to execute transaction in acquirer bank");
-            String encryptedCreditCardPan = this.encryptPan(creditCardRequest.getPan());
+            String encryptedCreditCardPan = this.encrypt(creditCardRequest.getPan());
             CreditCard customerCreditCard = creditCardRepository.findByPanAndCcv(encryptedCreditCardPan, creditCardRequest.getCcv());
             if(customerCreditCard == null || customerCreditCard.getExpirationDate().isBefore(LocalDate.now())) {
                 log.error("Customer credit card not found or expired!");
@@ -176,7 +176,7 @@ public class TransactionService implements ITransactionService {
                 return transactionResponse;
             }
 
-            String decryptedCustomerCreditCardPan = this.decryptPan(customerCreditCard.getPan());
+            String decryptedCustomerCreditCardPan = this.decrypt(customerCreditCard.getPan());
             log.info("Paying with credit card's PAN: " + decryptedCustomerCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedCustomerCreditCardPan.substring(12));
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
@@ -190,7 +190,7 @@ public class TransactionService implements ITransactionService {
             pccRequest.setAcquirerTimestamp(transaction.getTimestamp());
             pccRequest.setAmount(transaction.getAmount());
             pccRequest.setCurrency(transaction.getCurrency());
-            pccRequest.setPan(this.encryptPan(creditCardRequest.getPan()));
+            pccRequest.setPan(this.encrypt(creditCardRequest.getPan()));
             pccRequest.setCcv(creditCardRequest.getCcv());
             pccRequest.setExpirationDate(creditCardRequest.getExpirationDate());
             pccRequest.setCardholderName(creditCardRequest.getCardholderName());
@@ -230,7 +230,7 @@ public class TransactionService implements ITransactionService {
         }
 
         transaction.setStatus(TransactionStatus.SUBMITTED);
-        transaction.setCustomerPan(this.encryptPan(creditCardRequest.getPan()));
+        transaction.setCustomerPan(this.encrypt(creditCardRequest.getPan()));
         transactionRepository.save(transaction);
         log.info("Transaction " + transaction.getId() + " submitted!");
 
@@ -278,7 +278,7 @@ public class TransactionService implements ITransactionService {
         }
 
         wageResponse.setBankTransactionId(transaction.getId());
-        if(wageTransactionRequest.getBankNumber().equals(acquirerBankPan)) { // The same bank
+        if(this.decrypt(wageTransactionRequest.getBankNumber()).equals(acquirerBankPan)) { // The same bank
             log.info("Trying to execute transaction in acquirer bank");
             CreditCard customerCreditCard = creditCardRepository.findByAccountNumber(wageTransactionRequest.getAccountNumber());
             if(customerCreditCard == null || customerCreditCard.getExpirationDate().isBefore(LocalDate.now())) {
@@ -288,12 +288,12 @@ public class TransactionService implements ITransactionService {
                 return wageResponse;
             }
 
-            String decryptedMerchantCreditCardPan = this.decryptPan(merchantCreditCard.getPan());
+            String decryptedMerchantCreditCardPan = this.decrypt(merchantCreditCard.getPan());
             log.info("Paying with credit card's PAN: " + decryptedMerchantCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedMerchantCreditCardPan.substring(12));
             merchantCreditCard.setAvailableAmount(merchantCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             creditCardRepository.save(merchantCreditCard);
 
-            String decryptedCustomerCreditCardPan = this.decryptPan(customerCreditCard.getPan());
+            String decryptedCustomerCreditCardPan = this.decrypt(customerCreditCard.getPan());
             log.info("Wage payed - credit card's PAN: " + decryptedCustomerCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedCustomerCreditCardPan.substring(12));
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             creditCardRepository.save(customerCreditCard);
@@ -317,7 +317,7 @@ public class TransactionService implements ITransactionService {
                 wageResponse.setMessage(pccWageResponse.getMessage());
                 return wageResponse;
             } else {
-                String decryptedMerchantCreditCardPan = this.decryptPan(merchantCreditCard.getPan());
+                String decryptedMerchantCreditCardPan = this.decrypt(merchantCreditCard.getPan());
                 log.info("Paying with credit card's PAN: " + decryptedMerchantCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedMerchantCreditCardPan.substring(12));
                 merchantCreditCard.setAvailableAmount(merchantCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
                 creditCardRepository.save(merchantCreditCard);
@@ -389,7 +389,7 @@ public class TransactionService implements ITransactionService {
         return creditCardRepository.findByPan(pan);
     }
 
-    private String encryptPan(String value) {
+    private String encrypt(String value) {
         try {
             IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
             SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");
@@ -406,7 +406,7 @@ public class TransactionService implements ITransactionService {
         return null;
     }
 
-    public String decryptPan(String encrypted) {
+    public String decrypt(String encrypted) {
         try {
             IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
             SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");

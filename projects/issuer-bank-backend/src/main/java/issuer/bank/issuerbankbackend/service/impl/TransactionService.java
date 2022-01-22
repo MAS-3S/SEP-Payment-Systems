@@ -92,7 +92,7 @@ public class TransactionService implements ITransactionService {
         }
 
         log.info("Card found with available amount: " + creditCard.getAvailableAmount());
-        String decryptedCreditCardPan = this.decryptPan(creditCard.getPan());
+        String decryptedCreditCardPan = this.decrypt(creditCard.getPan());
         log.info("Paying with credit card's PAN: " + decryptedCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedCreditCardPan.substring(12));
         creditCard.setAvailableAmount(creditCard.getAvailableAmount() - convertTransactionAmountToEUR(pccRequest.getAmount(), pccRequest.getCurrency()));
         creditCard.setReservedAmount(creditCard.getReservedAmount() + convertTransactionAmountToEUR(pccRequest.getAmount(), pccRequest.getCurrency()));
@@ -126,7 +126,7 @@ public class TransactionService implements ITransactionService {
         log.info("Trying to execute wage transaction in issuer bank");
         WageResponse wageResponse = new WageResponse();
 
-        if (wageTransactionRequest.getBankNumber().equals(issuerBankNumber)) {
+        if (this.decrypt(wageTransactionRequest.getBankNumber()).equals(issuerBankNumber)) {
             log.error("Wage payment issuer bank pan is not valid!");
             wageResponse.setSuccess(false);
             wageResponse.setMessage("Wage payment issuer bank pan is not valid!");
@@ -152,7 +152,7 @@ public class TransactionService implements ITransactionService {
         transactionRepository.save(transaction);
         log.info("Transaction is successfully saved!");
 
-        String decryptedCustomerCreditCardPan = this.decryptPan(customerCreditCard.getPan());
+        String decryptedCustomerCreditCardPan = this.decrypt(customerCreditCard.getPan());
         log.info("Wage payed - credit card's PAN: " + decryptedCustomerCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedCustomerCreditCardPan.substring(12));
         customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
         creditCardRepository.save(customerCreditCard);
@@ -179,7 +179,7 @@ public class TransactionService implements ITransactionService {
         }
     }
 
-    private String encryptPan(String value) {
+    private String encrypt(String value) {
         try {
             IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
             SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");
@@ -196,7 +196,7 @@ public class TransactionService implements ITransactionService {
         return null;
     }
 
-    public String decryptPan(String encrypted) {
+    public String decrypt(String encrypted) {
         try {
             IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
             SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");

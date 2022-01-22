@@ -15,9 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 @Service
 public class ShoppingCartService implements IShoppingCartService {
@@ -37,6 +41,10 @@ public class ShoppingCartService implements IShoppingCartService {
     private String pspBackPaymentUrl;
     @Value("${pspback.paymentWageUrl.route}")
     private String pspBackPaymentWageUrl;
+    @Value("${encryption.key}")
+    private String encryptionKey;
+    @Value("${encryption.vector}")
+    private String encryptionVector;
 
     private final ShoppingCartRepository shoppingCartRepository;
     private final UserRepository userRepository;
@@ -122,6 +130,8 @@ public class ShoppingCartService implements IShoppingCartService {
         transactionRepository.save(transaction);
         log.info("Transaction " + transaction.getId() + " is saved.");
 
+        wageDto.setAccountNumber(this.encrypt(wageDto.getAccountNumber()));
+        wageDto.setBankNumber(this.encrypt(wageDto.getBankNumber()));
         WageResponse wageResponse = sendPaymentWageRequest(wageDto, transaction);
 
         if(wageResponse.isSuccess()) {
@@ -168,5 +178,22 @@ public class ShoppingCartService implements IShoppingCartService {
 
         ResponseEntity<WageResponse> result = restTemplate.postForEntity(uri, wageRequest, WageResponse.class);
         return result.getBody();
+    }
+
+    private String encrypt(String value) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
+            SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(value.getBytes());
+            return Base64.getEncoder()
+                    .encodeToString(encrypted);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

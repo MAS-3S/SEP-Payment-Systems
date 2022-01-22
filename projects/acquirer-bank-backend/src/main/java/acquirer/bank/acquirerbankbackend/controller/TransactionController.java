@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.Cipher;
@@ -91,17 +90,17 @@ public class TransactionController {
     }
 
     private String formatQrCodeData(Transaction transaction, CreditCard merchantCreditCard) {
-        String decryptedMerchantPan = this.decryptPan(transaction.getMerchantPan());
+        String decryptedAccountNumber = this.decrypt(merchantCreditCard.getAccountNumber());
         return "Transaction{\n" +
                 "amount=" + transaction.getAmount() + ",\n" +
                 "currency=" + transaction.getCurrency() + ",\n" +
                 "timestamp=" + transaction.getTimestamp().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")) + ",\n" +
                 "merchantName=" + merchantCreditCard.getClient().getFirstName() + " " + merchantCreditCard.getClient().getLastName() + ",\n" +
-                "merchantPan=" + decryptedMerchantPan.substring(0, 4) + " - **** - **** - " + decryptedMerchantPan.substring(12) + "\n" +
+                "accountNumber=" + decryptedAccountNumber.substring(0, 4) + "**********" + decryptedAccountNumber.substring(14) + "\n" +
                 '}';
     }
 
-    public String decryptPan(String encrypted) {
+    public String decrypt(String encrypted) {
         try {
             IvParameterSpec iv = new IvParameterSpec(this.encryptionVector.getBytes("UTF-8"));
             SecretKeySpec keySpec = new SecretKeySpec(this.encryptionKey.getBytes("UTF-8"), "AES");
