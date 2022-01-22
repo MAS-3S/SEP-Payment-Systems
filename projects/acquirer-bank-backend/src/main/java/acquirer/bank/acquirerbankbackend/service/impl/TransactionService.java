@@ -268,6 +268,15 @@ public class TransactionService implements ITransactionService {
         transactionRepository.save(transaction);
         log.info("Transaction is successfully saved!");
 
+        if (merchantCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()) < 0) {
+            log.error("No enough available money on merchant credit card");
+            transaction.setStatus(TransactionStatus.FAILED);
+            transactionRepository.save(transaction);
+            wageResponse.setSuccess(false);
+            wageResponse.setMessage("Payment failed! No enough available money on customer credit card");
+            return wageResponse;
+        }
+
         wageResponse.setBankTransactionId(transaction.getId());
         if(wageTransactionRequest.getBankNumber().equals(acquirerBankPan)) { // The same bank
             log.info("Trying to execute transaction in acquirer bank");
@@ -279,70 +288,42 @@ public class TransactionService implements ITransactionService {
                 return wageResponse;
             }
 
-            if (merchantCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()) < 0) {
-                log.error("No enough available money on merchant credit card");
-                transaction.setStatus(TransactionStatus.FAILED);
-                transactionRepository.save(transaction);
-                wageResponse.setSuccess(false);
-                wageResponse.setMessage("Payment failed! No enough available money on customer credit card");
-                return wageResponse;
-            }
-
             String decryptedMerchantCreditCardPan = this.decryptPan(merchantCreditCard.getPan());
             log.info("Paying with credit card's PAN: " + decryptedMerchantCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedMerchantCreditCardPan.substring(12));
             merchantCreditCard.setAvailableAmount(merchantCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             creditCardRepository.save(merchantCreditCard);
 
             String decryptedCustomerCreditCardPan = this.decryptPan(customerCreditCard.getPan());
-            log.info("Wage payed - credit card's PAN: " + decryptedCustomerCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedMerchantCreditCardPan.substring(12));
+            log.info("Wage payed - credit card's PAN: " + decryptedCustomerCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedCustomerCreditCardPan.substring(12));
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             creditCardRepository.save(customerCreditCard);
             transaction.setCustomerPan(customerCreditCard.getPan());
         } else { // Different bank
-//            log.info("Payment is not from the same bank");
-//            log.info("Trying to execute transaction in issuer bank");
-//            PccRequest pccRequest = new PccRequest();
-//            pccRequest.setAcquirerOrderId(transactionId);
-//            pccRequest.setAcquirerTimestamp(transaction.getTimestamp());
-//            pccRequest.setAmount(transaction.getAmount());
-//            pccRequest.setCurrency(transaction.getCurrency());
-//            pccRequest.setPan(this.encryptPan(creditCardRequest.getPan()));
-//            pccRequest.setCcv(creditCardRequest.getCcv());
-//            pccRequest.setExpirationDate(creditCardRequest.getExpirationDate());
-//            pccRequest.setCardholderName(creditCardRequest.getCardholderName());
-//
-//            PccResponse pccResponse = new PccResponse();
-//            try {
-//                pccResponse = sendRequestToPcc(pccRequest);
-//            } catch (Exception e) {
-//                log.error("Pcc redirection error!");
-//            }
-//
-//            if(!pccResponse.isSuccess()) {
-//
-//                if (pccResponse.getAcquirerOrderId() != null && pccResponse.getAcquirerTimestamp() != null && pccResponse.getIssuerTimestamp() != null && pccResponse.getIssuerOrderId() != null) {
-//                    log.info(String.format("Failed to executed transaction with ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, ISSUER_ORDER_ID %s, ISSUER_TIMESTAMP %s",
-//                            pccResponse.getAcquirerTimestamp().toString(), pccResponse.getAcquirerOrderId(), pccResponse.getIssuerOrderId(), pccResponse.getIssuerTimestamp().toString()));
-//                }
-//
-//                boolean failed = pccResponse.getAcquirerOrderId() != null;
-//                if (failed) {
-//                    transaction.setStatus(TransactionStatus.FAILED);
-//                    transactionRepository.save(transaction);
-//                    log.info("Transaction failed!");
-//                }
-//
-//                transactionResponse.setPaymentUrl(failed ? transaction.getFailedUrl() : null);
-//                transactionResponse.setSuccess(false);
-//                transactionResponse.setMessage(pccResponse.getMessage());
-//                sendRequestToPsp(pccResponse.getAcquirerTimestamp(), transaction.getOrderId(), transaction.getId(), pccResponse.getAcquirerOrderId(), false, type);
-//                return transactionResponse;
-//            }
-//
-//            log.info(String.format("Successfully executed transaction with ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, ISSUER_ORDER_ID %s, ISSUER_TIMESTAMP %s",
-//                    pccResponse.getAcquirerTimestamp().toString(), pccResponse.getAcquirerOrderId(), pccResponse.getIssuerOrderId(), pccResponse.getIssuerTimestamp().toString()));
-//
-//            sendRequestToPsp(pccResponse.getAcquirerTimestamp(), transaction.getOrderId(), transaction.getId(), pccResponse.getAcquirerOrderId(), true, type);
+            log.info("Payment is not from the same bank");
+            log.info("Trying to execute transaction in issuer bank");
+
+
+            WageResponse pccWageResponse = new WageResponse();
+            try {
+                pccWageResponse = sendWageRequestToPcc(wageTransactionRequest);
+            } catch (Exception e) {
+                log.error("Pcc wage redirection error!");
+           }
+
+            if(!pccWageResponse.isSuccess()) {
+                log.error(pccWageResponse.getMessage());
+                transaction.setStatus(TransactionStatus.FAILED);
+                transactionRepository.save(transaction);
+                wageResponse.setSuccess(false);
+                wageResponse.setMessage(pccWageResponse.getMessage());
+                return wageResponse;
+            } else {
+                String decryptedMerchantCreditCardPan = this.decryptPan(merchantCreditCard.getPan());
+                log.info("Paying with credit card's PAN: " + decryptedMerchantCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedMerchantCreditCardPan.substring(12));
+                merchantCreditCard.setAvailableAmount(merchantCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
+                creditCardRepository.save(merchantCreditCard);
+            }
+
         }
 
         transaction.setStatus(TransactionStatus.SUBMITTED);
@@ -376,6 +357,16 @@ public class TransactionService implements ITransactionService {
         URI uri = new URI(url);
 
         ResponseEntity<?> result = restTemplate.postForEntity(uri, pspResponse, PspResponse.class);
+    }
+
+    private WageResponse sendWageRequestToPcc(WageTransactionRequest wageTransactionRequest) throws URISyntaxException {
+        log.info("Sending wage request to PCC");
+
+        final String url = HTTPS_PREFIX + this.pccAddress + ":" + this.pccPort + "/api/pcc/wage";
+        URI uri = new URI(url);
+
+        ResponseEntity<WageResponse> result = restTemplate.postForEntity(uri, wageTransactionRequest, WageResponse.class);
+        return result.getBody();
     }
 
     @Override

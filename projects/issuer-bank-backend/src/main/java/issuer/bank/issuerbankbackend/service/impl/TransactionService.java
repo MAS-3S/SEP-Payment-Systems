@@ -2,6 +2,8 @@ package issuer.bank.issuerbankbackend.service.impl;
 
 import issuer.bank.issuerbankbackend.dto.PccRequest;
 import issuer.bank.issuerbankbackend.dto.PccResponse;
+import issuer.bank.issuerbankbackend.dto.WageResponse;
+import issuer.bank.issuerbankbackend.dto.WageTransactionRequest;
 import issuer.bank.issuerbankbackend.model.CreditCard;
 import issuer.bank.issuerbankbackend.model.Transaction;
 import issuer.bank.issuerbankbackend.model.enums.TransactionStatus;
@@ -33,6 +35,8 @@ public class TransactionService implements ITransactionService {
     private String encryptionKey;
     @Value("${encryption.vector}")
     private String encryptionVector;
+    @Value("issuer.bank.pan")
+    private String issuerBankNumber;
 
     private final TransactionRepository transactionRepository;
     private final CreditCardRepository creditCardRepository;
@@ -115,6 +119,52 @@ public class TransactionService implements ITransactionService {
 
         log.info("Sending response to ACQUIRER");
         return pccResponse;
+    }
+
+    @Override
+    public WageResponse handleWageTransactionRequest(WageTransactionRequest wageTransactionRequest) {
+        log.info("Trying to execute wage transaction in issuer bank");
+        WageResponse wageResponse = new WageResponse();
+
+        if (wageTransactionRequest.getBankNumber().equals(issuerBankNumber)) {
+            log.error("Wage payment issuer bank pan is not valid!");
+            wageResponse.setSuccess(false);
+            wageResponse.setMessage("Wage payment issuer bank pan is not valid!");
+            return wageResponse;
+        }
+
+        CreditCard customerCreditCard = creditCardRepository.findByAccountNumber(wageTransactionRequest.getAccountNumber());
+        if(customerCreditCard == null || customerCreditCard.getExpirationDate().isBefore(LocalDate.now())) {
+            log.error("Customer credit card not found or expired!");
+            wageResponse.setSuccess(false);
+            wageResponse.setMessage("Customer credit card not found or expired!");
+            return wageResponse;
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(wageTransactionRequest.getAmount());
+        transaction.setCurrency(wageTransactionRequest.getCurrency());
+        transaction.setAcquirerOrderId("");
+        transaction.setAcquirerTimestamp(wageTransactionRequest.getTimestamp());
+        transaction.setTimestamp(LocalDateTime.now());
+        transaction.setCreditCard(customerCreditCard);
+        transaction.setStatus(TransactionStatus.OPEN);
+        transactionRepository.save(transaction);
+        log.info("Transaction is successfully saved!");
+
+
+        String decryptedCustomerCreditCardPan = this.decryptPan(customerCreditCard.getPan());
+        log.info("Wage payed - credit card's PAN: " + decryptedCustomerCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedCustomerCreditCardPan.substring(12));
+        customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
+        creditCardRepository.save(customerCreditCard);
+
+        transaction.setStatus(TransactionStatus.SUBMITTED);
+        transactionRepository.save(transaction);
+        log.info("Transaction " + transaction.getId() + " submitted!");
+
+        wageResponse.setSuccess(true);
+        wageResponse.setMessage("Payment is successful!");
+        return wageResponse;
     }
 
     private Double convertTransactionAmountToEUR(Double amount, String transactionCurrency) {

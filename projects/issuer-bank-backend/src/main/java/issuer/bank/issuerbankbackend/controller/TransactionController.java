@@ -2,6 +2,8 @@ package issuer.bank.issuerbankbackend.controller;
 
 import issuer.bank.issuerbankbackend.dto.PccRequest;
 import issuer.bank.issuerbankbackend.dto.PccResponse;
+import issuer.bank.issuerbankbackend.dto.WageResponse;
+import issuer.bank.issuerbankbackend.dto.WageTransactionRequest;
 import issuer.bank.issuerbankbackend.service.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,5 +25,11 @@ public class TransactionController {
     public ResponseEntity<PccResponse> handleTransactionRequest(@RequestBody PccRequest pccRequest) {
         PccResponse pccResponse = transactionService.handleTransactionRequest(pccRequest);
         return new ResponseEntity<>(pccResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(value="/wage", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<WageResponse> handleWageTransactionRequest(@RequestBody WageTransactionRequest wageTransactionRequest) {
+        WageResponse wageResponse = transactionService.handleWageTransactionRequest(wageTransactionRequest);
+        return new ResponseEntity<>(wageResponse, HttpStatus.OK);
     }
 }
