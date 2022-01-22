@@ -282,9 +282,9 @@ public class TransactionService implements ITransactionService {
             log.info("Trying to execute transaction in acquirer bank");
             CreditCard customerCreditCard = creditCardRepository.findByAccountNumber(wageTransactionRequest.getAccountNumber());
             if(customerCreditCard == null || customerCreditCard.getExpirationDate().isBefore(LocalDate.now())) {
-                log.error("Customer credit card not found or expired!");
+                log.error("Credit card for account number not found or expired!");
                 wageResponse.setSuccess(false);
-                wageResponse.setMessage("Customer credit card not found or expired!");
+                wageResponse.setMessage("Credit card for account number not found or expired!");
                 return wageResponse;
             }
 
@@ -301,7 +301,6 @@ public class TransactionService implements ITransactionService {
         } else { // Different bank
             log.info("Payment is not from the same bank");
             log.info("Trying to execute transaction in issuer bank");
-
 
             WageResponse pccWageResponse = new WageResponse();
             try {
@@ -323,7 +322,6 @@ public class TransactionService implements ITransactionService {
                 merchantCreditCard.setAvailableAmount(merchantCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
                 creditCardRepository.save(merchantCreditCard);
             }
-
         }
 
         transaction.setStatus(TransactionStatus.SUBMITTED);

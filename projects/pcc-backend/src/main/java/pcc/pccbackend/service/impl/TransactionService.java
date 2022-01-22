@@ -126,7 +126,6 @@ public class TransactionService implements ITransactionService {
         }
 
         return wageResponse;
-
     }
 
     private PccResponse forwardToIssuerBank(PccRequest pccRequest) throws URISyntaxException {
