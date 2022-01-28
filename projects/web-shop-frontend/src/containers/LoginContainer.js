@@ -66,7 +66,6 @@ export default function LoginContainer() {
                   "Your profile is blocked. Please wait for admin to unblock you."
                 );
               } else {
-                LocalStorageService.removeItem("numberOfFailedPasswordEntries");
                 setSnackbarMessage("Invalid email");
               }
               setShouldOpenSnackbar(true);
