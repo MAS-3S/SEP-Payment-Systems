@@ -58,9 +58,13 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         User account = (User) authentication.getPrincipal();
+        if (account.isBlocked()) {
+            return new ResponseEntity<>("User profile is blocked", HttpStatus.BAD_REQUEST);
+        }
         if (!account.isRegistered()) {
             return new ResponseEntity<>("Verify profile before using application", HttpStatus.UNAUTHORIZED);
         }
+
         String jwt = tokenUtils.generateToken(account.getEmail(), account.getRole().toString());
         String refresh = tokenUtils.refreshToken(jwt, account.getId());
         int expiresIn = tokenUtils.getExpiredIn();

@@ -70,6 +70,11 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PutMapping(value = "/block", consumes =  MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> blockUser(@RequestBody UserDto dto) throws Exception {
+        return new ResponseEntity<>(userService.blockUser(dto.getEmail()), HttpStatus.OK);
+    }
+
     private String getSiteURL(HttpServletRequest request) {
         String siteURL = request.getRequestURL().toString();
         return siteURL.replace(request.getServletPath(), "");
