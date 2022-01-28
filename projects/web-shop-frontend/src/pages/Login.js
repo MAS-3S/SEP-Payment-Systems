@@ -46,6 +46,9 @@ const SignInSchema = Yup.object().shape({
 
 export default function Login(props) {
   const [open, setOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(
+    "You have entered an invalid email or password"
+  );
 
   const handleLogin = (email, password) => {
     props.handleLogin(email, password);
@@ -54,6 +57,10 @@ export default function Login(props) {
   useEffect(() => {
     setOpen(props.shouldOpenSnackbar);
   }, [props.shouldOpenSnackbar]);
+
+  useEffect(() => {
+    setSnackbarMessage(props.snackbarMessage);
+  }, [props.snackbarMessage]);
 
   const handleAlertClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -65,12 +72,12 @@ export default function Login(props) {
   const snackbar = (
     <Snackbar
       open={open}
-      autoHideDuration={2300}
+      autoHideDuration={3300}
       onClose={handleAlertClose}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
     >
       <Alert onClose={handleAlertClose} severity="error">
-        You have entered an invalid username or password
+        {snackbarMessage}
       </Alert>
     </Snackbar>
   );
