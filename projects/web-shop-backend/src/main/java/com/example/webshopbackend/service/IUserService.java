@@ -8,5 +8,6 @@ public interface IUserService {
     User findById(String id);
     void registerNewCustomer(UserRegistrationDTO dto, String siteUrl) throws Exception;
     boolean verifyCustomer(String verificationCode);
+    boolean blockUser(String email) throws Exception;
 
 }
