@@ -141,6 +141,7 @@ public class TransactionService implements ITransactionService {
             return transactionResponse;
         }
 
+        CreditCard merchantCreditCard = findCreditCardByMerchantPan(transaction.getMerchantPan());
         if(creditCardRequest.getPan().startsWith(acquirerBankPan)) { // The same bank
             log.info("Trying to execute transaction in acquirer bank");
             String encryptedCreditCardPan = this.encrypt(creditCardRequest.getPan());
@@ -181,6 +182,10 @@ public class TransactionService implements ITransactionService {
             customerCreditCard.setAvailableAmount(customerCreditCard.getAvailableAmount() - convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             customerCreditCard.setReservedAmount(customerCreditCard.getReservedAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
             log.info("Amount " + transaction.getAmount() + " transfer from available to reserved amount");
+            String decryptedMerchantCreditCardPan = this.decrypt(merchantCreditCard.getPan());
+            log.info("Payed on card's PAN: " + decryptedMerchantCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedMerchantCreditCardPan.substring(12));
+            merchantCreditCard.setAvailableAmount(merchantCreditCard.getAvailableAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
+            creditCardRepository.save(merchantCreditCard);
             sendRequestToPsp(transaction.getTimestamp(), transaction.getOrderId(), transaction.getId(), transaction.getId(), true, type);
         } else { // Different bank
             log.info("Payment is not from the same bank");
@@ -221,6 +226,11 @@ public class TransactionService implements ITransactionService {
                 transactionResponse.setMessage(pccResponse.getMessage());
                 sendRequestToPsp(pccResponse.getAcquirerTimestamp(), transaction.getOrderId(), transaction.getId(), pccResponse.getAcquirerOrderId(), false, type);
                 return transactionResponse;
+            } else {
+                String decryptedMerchantCreditCardPan = this.decrypt(merchantCreditCard.getPan());
+                log.info("Payed on card's PAN: " + decryptedMerchantCreditCardPan.substring(0, 4) + " - **** - **** - " + decryptedMerchantCreditCardPan.substring(12));
+                merchantCreditCard.setAvailableAmount(merchantCreditCard.getAvailableAmount() + convertTransactionAmountToEUR(transaction.getAmount(), transaction.getCurrency()));
+                creditCardRepository.save(merchantCreditCard);
             }
 
             log.info(String.format("Successfully executed transaction with ACQUIRER_TIMESTAMP %s, ACQUIRER_ORDER_ID %s, ISSUER_ORDER_ID %s, ISSUER_TIMESTAMP %s",
