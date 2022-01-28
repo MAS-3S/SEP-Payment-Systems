@@ -92,4 +92,20 @@ public class UserService implements IUserService {
         }
     }
 
+    @Override
+    public boolean blockUser(String email) throws Exception {
+        log.info("Blocking user with email " + email);
+        User u = userRepository.findByEmail(email);
+        if (u == null) {
+            log.error("User with " + email + " does not exists!");
+            return false;
+        } else {
+            u.setBlocked(true);
+            userRepository.save(u);
+        }
+
+        log.info("User with email " + email + " is blocked!");
+        return true;
+    }
+
 }

@@ -40,6 +40,8 @@ public class User implements UserDetails {
     private String verificationCode;
     @Column(name = "registered")
     private boolean isRegistered;
+    @Column(name = "blocked", nullable = false)
+    private boolean isBlocked;
 
     //**
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -175,5 +177,13 @@ public class User implements UserDetails {
 
     public void setShoppingCarts(List<ShoppingCart> shoppingCarts) {
         this.shoppingCarts = shoppingCarts;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
     }
 }
