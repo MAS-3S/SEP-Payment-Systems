@@ -1,5 +1,6 @@
 package com.example.webshopbackend.controller;
 
+import com.example.webshopbackend.dto.UppApplicationDto;
 import com.example.webshopbackend.dto.UppDto;
 import com.example.webshopbackend.dto.UppOnlineConferenceDTO;
 import com.example.webshopbackend.model.*;
@@ -12,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/upp")
@@ -25,25 +28,36 @@ public class UppController {
     private final TransactionRepository transactionRepository;
     private final AccommodationRepository accommodationRepository;
     private final TransportRepository transportRepository;
+    private final ApplicationRepository applicationRepository;
 
     @Autowired
-    public UppController(ConferenceRepository conferenceRepository, ShoppingCartRepository shoppingCartRepository, ItemToPurchaseRepository itemToPurchaseRepository, TransactionRepository transactionRepository, AccommodationRepository accommodationRepository, TransportRepository transportRepository) {
+    public UppController(ConferenceRepository conferenceRepository, ShoppingCartRepository shoppingCartRepository, ItemToPurchaseRepository itemToPurchaseRepository, TransactionRepository transactionRepository, AccommodationRepository accommodationRepository, TransportRepository transportRepository, ApplicationRepository applicationRepository) {
         this.conferenceRepository = conferenceRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.itemToPurchaseRepository = itemToPurchaseRepository;
         this.transactionRepository = transactionRepository;
         this.accommodationRepository = accommodationRepository;
         this.transportRepository = transportRepository;
+        this.applicationRepository = applicationRepository;
     }
 
-    @PostMapping("/pay")
-    public ResponseEntity<UppDto> pay(@RequestBody UppDto dto) {
-        UppDto result = new UppDto();
-        result.setPrice(dto.getPrice());
-
-        if(dto.getPrice() < 500.0) {
-            result.setSuccess(true);
+    @PostMapping("/application")
+    public ResponseEntity<UppApplicationDto> saveApplication(@RequestParam String city) {
+        Application newApplication = new Application();
+        if(city.contains(",")) {
+            String[] parts = city.split(",");
+            newApplication.setCityName(parts[1].trim());
+        } else {
+            newApplication.setCityName(city);
         }
+        newApplication.setTimeHour(LocalTime.now().getHour());
+        applicationRepository.save(newApplication);
+
+        UppApplicationDto result = new UppApplicationDto();
+        List<String> mostCommonCityNames = applicationRepository.findMostCommonCityNames();
+        result.setMostCommonCity(mostCommonCityNames.get(0));
+        List<Integer> mostCommonTimeHours = applicationRepository.findMostCommonTimeHours();
+        result.setMostCommonTime(mostCommonTimeHours.get(0));
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -174,6 +188,18 @@ public class UppController {
         transactionRepository.save(transaction);
 
         result.setSuccess(true);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/pay")
+    public ResponseEntity<UppDto> pay(@RequestBody UppDto dto) {
+        UppDto result = new UppDto();
+        result.setPrice(dto.getPrice());
+
+        if(dto.getPrice() < 500.0) {
+            result.setSuccess(true);
+        }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

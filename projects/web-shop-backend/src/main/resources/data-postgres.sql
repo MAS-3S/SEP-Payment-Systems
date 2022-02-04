@@ -44,3 +44,5 @@ insert into items_to_purchase (id, quantity, product_id, shopping_cart_id) value
 
 insert into transactions (id, timestamp, currency, amount, status, shopping_cart_id) values ('a06e51b7-cbcf-4223-be6f-4381becdfeec', '2021-11-30 08:00:00', 'EUR', 1400.0, 1, '6c0f1553-baaf-4d0e-9434-8d7dc3b352fa');
 
+insert into applications (id, city_name, time_hour) values ('1ec1b1c1-f7e1-40c4-93a6-c9171d5e7a36', 'Novi Sad', 8);
+insert into applications (id, city_name, time_hour) values ('38c42772-63e1-4a3f-83ad-dc38d0773c3b', 'Novi Sad', 8);
