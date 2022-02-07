@@ -1,20 +1,21 @@
 package com.example.webshopbackend.controller;
 
-import com.example.webshopbackend.dto.UppApplicationDto;
-import com.example.webshopbackend.dto.UppDto;
-import com.example.webshopbackend.dto.UppOnlineConferenceDTO;
+import com.example.webshopbackend.dto.*;
 import com.example.webshopbackend.model.*;
 import com.example.webshopbackend.model.enums.Currency;
 import com.example.webshopbackend.model.enums.TransactionStatus;
 import com.example.webshopbackend.repository.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,9 +30,10 @@ public class UppController {
     private final AccommodationRepository accommodationRepository;
     private final TransportRepository transportRepository;
     private final ApplicationRepository applicationRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public UppController(ConferenceRepository conferenceRepository, ShoppingCartRepository shoppingCartRepository, ItemToPurchaseRepository itemToPurchaseRepository, TransactionRepository transactionRepository, AccommodationRepository accommodationRepository, TransportRepository transportRepository, ApplicationRepository applicationRepository) {
+    public UppController(ConferenceRepository conferenceRepository, ShoppingCartRepository shoppingCartRepository, ItemToPurchaseRepository itemToPurchaseRepository, TransactionRepository transactionRepository, AccommodationRepository accommodationRepository, TransportRepository transportRepository, ApplicationRepository applicationRepository, ProductRepository productRepository) {
         this.conferenceRepository = conferenceRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.itemToPurchaseRepository = itemToPurchaseRepository;
@@ -39,6 +41,7 @@ public class UppController {
         this.accommodationRepository = accommodationRepository;
         this.transportRepository = transportRepository;
         this.applicationRepository = applicationRepository;
+        this.productRepository = productRepository;
     }
 
     @PostMapping("/application")
@@ -188,6 +191,54 @@ public class UppController {
         transactionRepository.save(transaction);
 
         result.setSuccess(true);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/payEquipment")
+    public ResponseEntity<UppEquipmentDto> payEquipment(@RequestBody UppOfferDto dto) {
+        UppEquipmentDto result = new UppEquipmentDto();
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setWebShop(null);
+        shoppingCart.setCreateDate(LocalDateTime.now());
+        shoppingCart.setUser(null);
+        shoppingCart.setTotalPrice(0.0);
+        shoppingCartRepository.save(shoppingCart);
+
+        int totalPrice = 0;
+        for (UppOfferItemDto uppOfferItemDto: dto.getOfferItems()) {
+            Product product = new Product();
+            product.setName(uppOfferItemDto.getEquipment().getName());
+            product.setDescription(uppOfferItemDto.getEquipment().getType().getName());
+            product.setPrice((double) uppOfferItemDto.getPrice());
+            product.setCurrency(Currency.EUR);
+            product.setAvailableBalance(uppOfferItemDto.getEquipment().getQuantity());
+            product.setWebShop(null);
+            product.setImage("");
+            productRepository.save(product);
+
+            ItemToPurchase itemToPurchase = new ItemToPurchase();
+            itemToPurchase.setShoppingCart(shoppingCart);
+            itemToPurchase.setProduct(product);
+            itemToPurchase.setQuantity(uppOfferItemDto.getEquipment().getQuantity());
+            itemToPurchaseRepository.save(itemToPurchase);
+
+            totalPrice += (uppOfferItemDto.getPrice() * uppOfferItemDto.getEquipment().getQuantity());
+        }
+        shoppingCart.setTotalPrice((double) totalPrice);
+        shoppingCartRepository.save(shoppingCart);
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(shoppingCart.getTotalPrice());
+        transaction.setCurrency(Currency.EUR.toString());
+        transaction.setTimestamp(shoppingCart.getCreateDate());
+        transaction.setStatus(TransactionStatus.IN_PROGRESS);
+        transaction.setShoppingCart(shoppingCart);
+        transactionRepository.save(transaction);
+
+        result.setSuccess(true);
+        result.setPrice(totalPrice);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
